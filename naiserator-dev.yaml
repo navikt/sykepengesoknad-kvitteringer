@@ -47,3 +47,4 @@ spec:
   accessPolicy:
     external:
       - host: www.googleapis.com
+      - host: storage.googleapis.com
