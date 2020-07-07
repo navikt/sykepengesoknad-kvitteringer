@@ -46,4 +46,4 @@ spec:
       value: flex-reisetilskudd-kvitteringer
   accessPolicy:
     external:
-      - www.googleapis.com
+      - host: www.googleapis.com
