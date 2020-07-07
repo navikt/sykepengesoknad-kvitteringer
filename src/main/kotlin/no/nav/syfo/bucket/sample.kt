@@ -1,15 +1,12 @@
 package no.nav.syfo.bucket
 
-import com.google.cloud.storage.StorageOptions
+import com.google.cloud.storage.Bucket
 import io.ktor.application.call
 import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
-import no.nav.syfo.Environment
 
-fun Route.setupSample(env: Environment) {
-    val storage = StorageOptions.getDefaultInstance().service
-    val bucket = storage.get(env.bucketName) ?: error("Bucket $env.bucketName does not exist.")
+fun Route.setupSample(bucket: Bucket) {
 
     get("/sample") {
         call.respond(
