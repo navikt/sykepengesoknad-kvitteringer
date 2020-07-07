@@ -1,4 +1,4 @@
-name: Deploy to dev
+name: Deploy to dev-gcp
 on:
   push:
     branches:
@@ -50,7 +50,7 @@ jobs:
           docker build --tag ${IMAGE} .
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
-      - name: Deploy to Preprod
+      - name: Deploy to dev-gcp
         uses: nais/deploy/actions/deploy@master
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}

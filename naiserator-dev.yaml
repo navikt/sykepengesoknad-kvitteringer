@@ -6,6 +6,9 @@ metadata:
   labels:
     team: flex
 spec:
+  gcp:
+    buckets:
+      - name: flex-reisetilskudd-kvitteringer
   image: {{ image }}
   replicas:
     min: 2
