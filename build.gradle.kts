@@ -18,7 +18,7 @@ val smCommonVersion = "1.7cb158e"
 val mockkVersion = "1.9.3"
 val nimbusdsVersion = "7.5.1"
 val testContainerKafkaVersion = "1.12.5"
-val googleCloudVersion = "1.36.0"
+val googleCloudVersion = "1.6.4"
 
 tasks.withType<Jar> {
     manifest.attributes["Main-Class"] = "no.nav.syfo.BootstrapKt"
