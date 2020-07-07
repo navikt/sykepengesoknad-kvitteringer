@@ -41,3 +41,6 @@ spec:
   ingresses:
     - "https://flex-bucket-uploader.dev-gcp.nais.io"
   webproxy: true
+  env:
+    - name: BUCKET_NAME
+      value: flex-reisetilskudd-kvitteringer
