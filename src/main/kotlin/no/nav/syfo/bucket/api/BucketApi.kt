@@ -31,23 +31,27 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
     }
 
     post("/opplasting") {
-        val bucket = storage.get(env.bucketName)
-        var blob: InputStream? = null
-        val blobNavn = UUID.randomUUID().toString()
+        val bucket: Bucket? = storage.get(env.bucketName)
+        if (bucket != null) {
+            var blob: InputStream? = null
+            val blobNavn = UUID.randomUUID().toString()
 
-        val multipart = call.receiveMultipart()
-        multipart.forEachPart { part ->
-            if (part is PartData.FileItem) {
-                blob = part.streamProvider().buffered()
+            val multipart = call.receiveMultipart()
+            multipart.forEachPart { part ->
+                if (part is PartData.FileItem) {
+                    blob = part.streamProvider().buffered()
+                }
+                part.dispose()
             }
-            part.dispose()
-        }
 
-        if (blob != null && ValiderBlob(blob!!)) {
-            bucket.create(blobNavn, blob)
-            call.respond(HttpStatusCode.Created, "$blobNavn ble lastet opp")
+            if (blob != null && ValiderBlob(blob!!)) {
+                bucket.create(blobNavn, blob)
+                call.respond(HttpStatusCode.Created, "$blobNavn ble lastet opp")
+            } else {
+                call.respond(HttpStatusCode.BadRequest, "Fikk ikke lastet opp $blobNavn")
+            }
         } else {
-            call.respond(HttpStatusCode.BadRequest, "Fikk ikke lastet opp $blobNavn")
+            call.respond("Bucket $env.bucketName does not exist.")
         }
     }
 }
