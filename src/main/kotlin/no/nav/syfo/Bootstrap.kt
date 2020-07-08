@@ -16,12 +16,11 @@ fun main() {
     val applicationState = ApplicationState()
 
     val storage = StorageOptions.getDefaultInstance().service
-    val bucket = storage.get(env.bucketName) ?: error("Bucket $env.bucketName does not exist.")
 
     val applicationEngine = createApplicationEngine(
         env,
         applicationState,
-        bucket
+        storage
     )
     val applicationServer = ApplicationServer(applicationEngine, applicationState)
     applicationServer.start()

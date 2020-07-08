@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import com.google.cloud.storage.Bucket
+import com.google.cloud.storage.Storage
 import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.call
 import io.ktor.application.install
@@ -24,7 +24,6 @@ import no.nav.syfo.Environment
 import no.nav.syfo.application.api.registerNaisApi
 import no.nav.syfo.application.metrics.monitorHttpRequests
 import no.nav.syfo.bucket.api.setupBucketApi
-import no.nav.syfo.bucket.setupSample
 import no.nav.syfo.log
 import java.util.UUID
 
@@ -32,7 +31,7 @@ import java.util.UUID
 fun createApplicationEngine(
     env: Environment,
     applicationState: ApplicationState,
-    bucket: Bucket
+    storage: Storage
 ): ApplicationEngine =
     embeddedServer(Netty, env.applicationPort) {
         install(ContentNegotiation) {
@@ -58,8 +57,7 @@ fun createApplicationEngine(
 
         routing {
             registerNaisApi(applicationState)
-            setupSample(bucket)
-            setupBucketApi(bucket)
+            setupBucketApi(storage, env)
         }
         intercept(ApplicationCallPipeline.Monitoring, monitorHttpRequests())
     }
