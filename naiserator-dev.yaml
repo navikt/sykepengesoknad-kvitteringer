@@ -45,7 +45,8 @@ spec:
     - name: BUCKET_NAME
       value: flex-reisetilskudd-kvitteringer
   accessPolicy:
-    external:
-      - host: www.googleapis.com
-      - host: storage.googleapis.com
-      - host: oauth2.googleapis.com
+    outbound:
+      external:
+        - host: www.googleapis.com
+        - host: storage.googleapis.com
+        - host: oauth2.googleapis.com
