@@ -3,16 +3,22 @@ package no.nav.syfo.bucket.api
 import com.google.cloud.storage.Bucket
 import com.google.cloud.storage.Storage
 import io.ktor.application.call
+import io.ktor.http.ContentDisposition
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart
 import io.ktor.http.content.streamProvider
 import io.ktor.request.receiveMultipart
+import io.ktor.response.header
 import io.ktor.response.respond
+import io.ktor.response.respondFile
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.routing.post
 import no.nav.syfo.Environment
+import no.nav.syfo.log
+import java.io.File
 import java.io.InputStream
 import java.util.UUID
 
@@ -25,6 +31,27 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
                     "${blob.name} (content-type: ${blob.contentType}, size: ${blob.size})"
                 }
             )
+        } else {
+            call.respond("Bucket $env.bucketName does not exist.")
+        }
+    }
+
+    get("/kvittering/{blobName}") {
+        val bucket: Bucket? = storage.get(env.bucketName)
+        if (bucket != null) {
+            var blobName = call.parameters["blobName"]
+            log.info("Attempting to query blob with name $blobName")
+            val blob = bucket.get(blobName)
+            val file = File(blob.getContent()!!.contentToString())
+
+            call.response.header(
+                HttpHeaders.ContentDisposition,
+                ContentDisposition.Attachment.withParameter(
+                    ContentDisposition.Parameters.FileName,
+                    "$blobName"
+                ).toString()
+            )
+            call.respondFile(file)
         } else {
             call.respond("Bucket $env.bucketName does not exist.")
         }
