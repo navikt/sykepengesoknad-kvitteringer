@@ -42,14 +42,15 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             var blobName = call.parameters["blobName"]
             log.info("Attempting to query blob with name $blobName")
             val blob = bucket.get(blobName)
-
-            val kvittering = File("kvittering-$blobName")
+            log.info("Found blob ${blobName} (content-type: ${blob.contentType})")
+            val filNavn = "kvittering-$blobName"
+            val kvittering = File(filNavn)
             kvittering.writeBytes(blob.getContent())
             call.response.header(
                 HttpHeaders.ContentDisposition,
                 ContentDisposition.Attachment.withParameter(
                     ContentDisposition.Parameters.FileName,
-                    "$blobName"
+                    filNavn
                 ).toString()
             )
             call.respondFile(kvittering)
