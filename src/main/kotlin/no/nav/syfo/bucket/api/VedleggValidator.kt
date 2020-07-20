@@ -29,7 +29,7 @@ class VedleggValidator(
         return true
     }
 
-    private fun PartData.FileItem.erForStort(maksFilStørrelse: Long): Boolean = maksFilStørrelse > 0
+    private fun PartData.FileItem.erForStort(maksFilStørrelse: Long): Boolean = false
 
     private fun PartData.FileItem.erTillattFiltype(tillatteFiltyper: List<MediaType>): Boolean {
         val type = tika.detector.detect(this.streamProvider().buffered(), Metadata())
