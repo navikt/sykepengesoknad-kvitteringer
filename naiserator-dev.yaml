@@ -49,3 +49,4 @@ spec:
       external:
         - host: www.googleapis.com
         - host: storage.googleapis.com
+        - host: oauth2.googleapis.com
