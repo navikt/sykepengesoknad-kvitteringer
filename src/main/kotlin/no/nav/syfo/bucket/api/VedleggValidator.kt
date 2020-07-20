@@ -22,7 +22,7 @@ class VedleggValidator(
             return false
         }
 
-        if (vedlegg.erTillattFiltype(tillatteFiltyper)) {
+        if (!vedlegg.erTillattFiltype(tillatteFiltyper)) {
             log.warn("Vedlegg er ikke av tillatt filtype")
             return false
         }
