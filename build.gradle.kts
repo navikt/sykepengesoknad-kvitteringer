@@ -19,6 +19,7 @@ val mockkVersion = "1.9.3"
 val nimbusdsVersion = "7.5.1"
 val testContainerKafkaVersion = "1.12.5"
 val googleCloudVersion = "1.111.0"
+val tikaVersion = "1.24.1"
 
 tasks.withType<Jar> {
     manifest.attributes["Main-Class"] = "no.nav.syfo.BootstrapKt"
@@ -82,6 +83,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
+
+    implementation("org.apache.tika:tika-core:$tikaVersion")
 
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")

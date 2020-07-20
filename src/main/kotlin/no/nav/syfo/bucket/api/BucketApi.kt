@@ -19,7 +19,6 @@ import io.ktor.routing.post
 import no.nav.syfo.Environment
 import no.nav.syfo.log
 import java.io.File
-import java.io.InputStream
 import java.util.UUID
 
 fun Route.setupBucketApi(storage: Storage, env: Environment) {
@@ -42,7 +41,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             var blobName = call.parameters["blobName"]
             log.info("Attempting to query blob with name $blobName")
             val blob = bucket.get(blobName)
-            log.info("Found blob ${blobName} (content-type: ${blob.contentType})")
+            log.info("Found blob $blobName (content-type: ${blob.contentType})")
             val filNavn = "kvittering-$blobName"
             val kvittering = File(filNavn)
             kvittering.writeBytes(blob.getContent())
@@ -67,8 +66,9 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             val multipart = call.receiveMultipart()
             multipart.forEachPart { part ->
                 if (part is PartData.FileItem) {
-                    val blob = part.streamProvider().buffered()
-                    if (ValiderBlob(blob!!)) {
+                    val validator = VedleggValidator()
+                    if (validator.validerVedlegg(part)) {
+                        val blob = part.streamProvider().buffered()
                         bucket.create(blobNavn, blob)
                         call.respond(HttpStatusCode.Created, "$blobNavn ble lastet opp")
                     } else {
@@ -81,8 +81,4 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             call.respond("Bucket $env.bucketName does not exist.")
         }
     }
-}
-
-fun ValiderBlob(blob: InputStream): Boolean {
-    return true
 }
