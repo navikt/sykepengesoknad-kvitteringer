@@ -21,6 +21,8 @@ import io.ktor.routing.get
 import io.ktor.routing.post
 import no.nav.syfo.Environment
 import no.nav.syfo.log
+import no.nav.syfo.models.VedleggRespons
+import no.nav.syfo.models.toJson
 import java.io.File
 import java.util.UUID
 
@@ -41,7 +43,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
     get("/kvittering/{blobName}") {
         val bucket: Bucket? = storage.get(env.bucketName)
         if (bucket != null) {
-            var blobName = call.parameters["blobName"]
+            val blobName = call.parameters["blobName"]
             log.info("Attempting to query blob with name $blobName")
             val blob = bucket.get(blobName)
             log.info("Found blob $blobName (content-type: ${blob.contentType})")
@@ -70,20 +72,22 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             multipart.forEachPart { part ->
                 if (part is PartData.FileItem) {
                     val validator = VedleggValidator()
-                    val file = File(part.originalFileName)
+                    val file = File(part.originalFileName!!)
                     part.streamProvider().use { input -> file.outputStream().buffered().use { output -> input.copyToSuspend(output) } }
                     if (validator.valider(file)) {
                         val blob = file.inputStream().buffered()
                         bucket.create(blobNavn, blob)
-                        call.respond(TextContent("{'id': '$blobNavn'}", ContentType.Application.Json.withCharset(Charsets.UTF_8), HttpStatusCode.Created))
+                        val vedleggRespons = VedleggRespons(blobNavn, "opprettet")
+                        call.respond(TextContent(vedleggRespons.toJson(), ContentType.Application.Json.withCharset(Charsets.UTF_8), HttpStatusCode.Created))
                     } else {
-                        call.respond(HttpStatusCode.BadRequest, "Fikk ikke lastet opp $blobNavn")
+                        val vedleggRespons = VedleggRespons(blobNavn, "kunne ikke opprette")
+                        call.respond(TextContent(vedleggRespons.toJson(), ContentType.Application.Json.withCharset(Charsets.UTF_8), HttpStatusCode.BadRequest))
                     }
                 }
                 part.dispose()
             }
         } else {
-            call.respond("Bucket $env.bucketName does not exist.")
+            call.respond(TextContent(VedleggRespons(id = null, melding = "bøtta finnes ikke").toJson(), ContentType.Application.Json.withCharset(Charsets.UTF_8), HttpStatusCode.NotFound))
         }
     }
 }
