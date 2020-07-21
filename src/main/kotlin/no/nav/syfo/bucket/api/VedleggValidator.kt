@@ -6,6 +6,9 @@ import no.nav.syfo.log
 import org.apache.tika.config.TikaConfig
 import org.apache.tika.metadata.Metadata
 import org.apache.tika.mime.MediaType
+import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
 
 class VedleggValidator(
     val maksFilStørrelse: Long = 1024 * 1024,
@@ -29,7 +32,13 @@ class VedleggValidator(
         return true
     }
 
-    private fun PartData.FileItem.erForStort(maksFilStørrelse: Long): Boolean = false
+    private fun PartData.FileItem.erForStort(maksFilStørrelse: Long): Boolean {
+        val file = File(this.originalFileName)
+        this.streamProvider().use { input -> file.outputStream().buffered().use { output -> input.copyToSuspend(output) } }
+        val size = file.totalSpace
+        log.info("Prøver å laste opp fil med $size når maksstørrelse er $maksFilStørrelse")
+        return size > maksFilStørrelse
+    }
 
     private fun PartData.FileItem.erTillattFiltype(tillatteFiltyper: List<MediaType>): Boolean {
         val type = tika.detector.detect(this.streamProvider().buffered(), Metadata())
@@ -37,4 +46,18 @@ class VedleggValidator(
         log.info("Tillatte filtyper er $tillatteFiltyper")
         return tillatteFiltyper.contains(type)
     }
+}
+
+fun InputStream.copyToSuspend(
+    out: OutputStream,
+    bufferSize: Int = DEFAULT_BUFFER_SIZE
+): Long {
+    val buffer = ByteArray(bufferSize)
+    var bytesCopied = 0L
+    while (true) {
+        val bytes = read(buffer).takeIf { it >= 0 } ?: break
+        out.write(buffer, 0, bytes)
+        bytesCopied += bytes
+    }
+    return bytesCopied
 }
