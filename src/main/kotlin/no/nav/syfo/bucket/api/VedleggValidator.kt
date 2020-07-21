@@ -22,33 +22,30 @@ class VedleggValidator(
     private val tika = TikaConfig()
 
     fun validerVedlegg(vedlegg: PartData.FileItem): Boolean {
-        if (vedlegg.erForStort()) {
+        val file = File(vedlegg.originalFileName);
+        vedlegg.streamProvider().use { input -> file.outputStream().buffered().use { output -> input.copyToSuspend(output) } }
+
+        if (file.erForStor()) {
             log.warn("Vedlegg er for stort")
             return false
         }
 
-        if (!vedlegg.erTillattFiltype()) {
+        if (!file.erTillattFiltype()) {
             log.warn("Vedlegg er ikke av tillatt filtype")
             return false
         }
         return true
     }
 
-    private fun PartData.FileItem.erForStort(): Boolean {
-        val file = File(this.originalFileName)
-        this.streamProvider().use { input -> file.outputStream().buffered().use { output -> input.copyToSuspend(output) } }
-        val size = file.length()
-        log.info("Prøver å laste opp fil ${this.originalFileName} med ${bytesTilFilstørrelse(size)} når maksstørrelse er ${bytesTilFilstørrelse(maksFilStørrelse)}")
-
-        val file2 = File(this.originalFileName)
-        file2.writeBytes(this.streamProvider().buffered().readAllBytes())
-        val size2 = file.totalSpace
-        log.info("Prøver å laste opp fil2 ${this.originalFileName} med ${bytesTilFilstørrelse(size2)} når maksstørrelse er ${bytesTilFilstørrelse(maksFilStørrelse)}")
-        return size > maksFilStørrelse
+    private fun File.erForStor(): Boolean {
+        log.info("Prøver å laste opp fil ${this.name} " +
+                "med ${bytesTilFilstørrelse(this.length())} " +
+                "når maksstørrelse er ${bytesTilFilstørrelse(maksFilStørrelse)}")
+        return this.length() > maksFilStørrelse
     }
 
-    private fun PartData.FileItem.erTillattFiltype(): Boolean {
-        val type = tika.detector.detect(this.streamProvider().buffered(), Metadata())
+    private fun File.erTillattFiltype(): Boolean {
+        val type = tika.detector.detect(this.inputStream(), Metadata())
         log.info("Tika detekterer typen til å være $type")
         log.info("Tillatte filtyper er $tillatteFiltyper")
         return tillatteFiltyper.contains(type)
