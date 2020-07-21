@@ -1,7 +1,5 @@
 package no.nav.syfo.bucket.api
 
-import io.ktor.http.content.PartData
-import io.ktor.http.content.streamProvider
 import no.nav.syfo.log
 import org.apache.tika.Tika
 import org.apache.tika.metadata.Metadata
@@ -21,9 +19,7 @@ class VedleggValidator(
 ) {
     private val tika = Tika()
 
-    fun valider(part: PartData.FileItem): Boolean {
-        val file = File(part.originalFileName)
-        part.streamProvider().use { input -> file.outputStream().buffered().use { output -> input.copyToSuspend(output) } }
+    fun valider(file: File): Boolean {
 
         if (!erTillattFilstørrelse(file)) {
             log.warn("Vedlegg er for stort")
