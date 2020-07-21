@@ -67,7 +67,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             multipart.forEachPart { part ->
                 if (part is PartData.FileItem) {
                     val validator = VedleggValidator()
-                    if (validator.validerVedlegg(part)) {
+                    if (validator.valider(part)) {
                         val blob = part.streamProvider().buffered()
                         bucket.create(blobNavn, blob)
                         call.respond(HttpStatusCode.Created, "$blobNavn ble lastet opp")
