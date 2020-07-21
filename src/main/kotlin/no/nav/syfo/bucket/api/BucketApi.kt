@@ -4,11 +4,14 @@ import com.google.cloud.storage.Bucket
 import com.google.cloud.storage.Storage
 import io.ktor.application.call
 import io.ktor.http.ContentDisposition
+import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.PartData
+import io.ktor.http.content.TextContent
 import io.ktor.http.content.forEachPart
 import io.ktor.http.content.streamProvider
+import io.ktor.http.withCharset
 import io.ktor.request.receiveMultipart
 import io.ktor.response.header
 import io.ktor.response.respond
@@ -72,7 +75,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
                     if (validator.valider(file)) {
                         val blob = file.inputStream().buffered()
                         bucket.create(blobNavn, blob)
-                        call.respond(HttpStatusCode.Created, "$blobNavn ble lastet opp")
+                        call.respond(TextContent("{'id': '$blobNavn'}", ContentType.Application.Json.withCharset(Charsets.UTF_8), HttpStatusCode.Created))
                     } else {
                         call.respond(HttpStatusCode.BadRequest, "Fikk ikke lastet opp $blobNavn")
                     }
