@@ -13,7 +13,7 @@ import java.text.CharacterIterator
 import java.text.StringCharacterIterator
 
 class VedleggValidator(
-    val maksFilStørrelse: Long = 1024 * 1024,
+    val maksFilStørrelse: Long = 1024 * 1024 * 50,
     val tillatteFiltyper: List<MediaType> = listOf(
         MediaType.image("jpeg"),
         MediaType.image("png")
