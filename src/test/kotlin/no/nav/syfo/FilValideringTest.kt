@@ -11,14 +11,26 @@ import java.io.File
 object FilValideringTest : Spek({
 
     describe("Fil med riktig type er gyldig") {
-        val filnavn = this::class.java.getResource("/bilder/gyldig_bilde.jpg").toURI()
+        val filnavn = this::class.java.getResource("/bilder/example.jpg").toURI()
+        val fil = File(filnavn)
+        val validator = VedleggValidator()
+        validator.erTillattFiltype(fil) shouldEqual true
+    }
+    describe("Fil med HEIC-endelse er gyldig") {
+        val filnavn = this::class.java.getResource("/bilder/example.heic").toURI()
+        val fil = File(filnavn)
+        val validator = VedleggValidator()
+        validator.erTillattFiltype(fil) shouldEqual true
+    }
+    describe("Fil med PDF-endelse er gyldig") {
+        val filnavn = this::class.java.getResource("/bilder/example.pdf").toURI()
         val fil = File(filnavn)
         val validator = VedleggValidator()
         validator.erTillattFiltype(fil) shouldEqual true
     }
 
     describe("Fil med størrelse under 50Mb er gyldig") {
-        val filnavn = this::class.java.getResource("/bilder/gyldig_bilde.jpg").toURI()
+        val filnavn = this::class.java.getResource("/bilder/example.jpg").toURI()
         val fil = File(filnavn)
         val validator = VedleggValidator()
         validator.erTillattFilstørrelse(fil) shouldEqual true
@@ -32,7 +44,7 @@ object FilValideringTest : Spek({
     }
 
     describe("For stor fil er ugyldig") {
-        val filnavn = this::class.java.getResource("/bilder/gyldig_bilde.jpg").toURI()
+        val filnavn = this::class.java.getResource("/bilder/example.jpg").toURI()
         val fil = File(filnavn)
         val validator = VedleggValidator(maksFilStørrelse = 0)
         validator.erTillattFilstørrelse(fil) shouldEqual false
