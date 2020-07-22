@@ -49,11 +49,12 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             log.info("Found blob $blobName (content-type: ${blob.contentType})")
             val kvittering = File(blobName)
             kvittering.writeBytes(blob.getContent())
+            val kvitteringNavn = "kvittering-$blobName.${kvittering.extension}"
             call.response.header(
                 HttpHeaders.ContentDisposition,
                 ContentDisposition.Attachment.withParameter(
                     ContentDisposition.Parameters.FileName,
-                    blobName ?: "kvittering-${UUID.randomUUID()}"
+                    kvitteringNavn
                 ).toString()
             )
             call.respondBytes(kvittering.readBytes(), contentType = ContentType.parse(blob.contentType))
@@ -65,17 +66,17 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
     post("/opplasting") {
         val bucket: Bucket? = storage.get(env.bucketName)
         if (bucket != null) {
-            val blobNavn = UUID.randomUUID().toString()
             val multipart = call.receiveMultipart()
             multipart.forEachPart { part ->
                 if (part is PartData.FileItem) {
+                    val blobNavn = UUID.randomUUID().toString()
                     val validator = VedleggValidator()
                     val fil = File(part.originalFileName!!)
                     part.streamProvider().use { input -> fil.outputStream().buffered().use { output -> input.copyToSuspend(output) } }
                     if (validator.valider(fil)) {
                         val type = validator.filtype(fil)
                         val blob = fil.inputStream().buffered()
-                        bucket.create("kvittering-$blobNavn.${fil.extension}", blob, type.toString())
+                        bucket.create(blobNavn, blob, type.toString())
                         val vedleggRespons = VedleggRespons(blobNavn, "opprettet")
                         call.respond(TextContent(vedleggRespons.toJson(), ContentType.Application.Json.withCharset(Charsets.UTF_8), HttpStatusCode.Created))
                     } else {
