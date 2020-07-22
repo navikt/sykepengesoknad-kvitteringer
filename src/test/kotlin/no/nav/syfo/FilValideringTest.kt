@@ -29,6 +29,14 @@ object FilValideringTest : Spek({
         validator.erTillattFiltype(fil) shouldEqual true
     }
 
+    describe("Fil med PDF-endelse returnerer application/pdf") {
+        val filnavn = this::class.java.getResource("/bilder/example.pdf").toURI()
+        val fil = File(filnavn)
+        val validator = VedleggValidator()
+
+        validator.filtype(fil).toString() shouldEqual "application/pdf"
+    }
+
     describe("Fil med størrelse under 50Mb er gyldig") {
         val filnavn = this::class.java.getResource("/bilder/example.jpg").toURI()
         val fil = File(filnavn)

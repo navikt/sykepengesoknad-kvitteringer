@@ -76,11 +76,12 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             multipart.forEachPart { part ->
                 if (part is PartData.FileItem) {
                     val validator = VedleggValidator()
-                    val file = File(part.originalFileName!!)
-                    part.streamProvider().use { input -> file.outputStream().buffered().use { output -> input.copyToSuspend(output) } }
-                    if (validator.valider(file)) {
-                        val blob = file.inputStream().buffered()
-                        bucket.create(blobNavn, blob)
+                    val fil = File(part.originalFileName!!)
+                    part.streamProvider().use { input -> fil.outputStream().buffered().use { output -> input.copyToSuspend(output) } }
+                    if (validator.valider(fil)) {
+                        val type = validator.filtype(fil)
+                        val blob = fil.inputStream().buffered()
+                        bucket.create(blobNavn, blob, type.toString())
                         val vedleggRespons = VedleggRespons(blobNavn, "opprettet")
                         call.respond(TextContent(vedleggRespons.toJson(), ContentType.Application.Json.withCharset(Charsets.UTF_8), HttpStatusCode.Created))
                     } else {

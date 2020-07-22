@@ -46,10 +46,14 @@ class VedleggValidator(
     }
 
     fun erTillattFiltype(file: File): Boolean {
-        val type = tika.detector.detect(file.inputStream().buffered(), Metadata())
+        val type = filtype(file)
         log.info("Tika detekterer typen til å være $type")
         log.info("Tillatte filtyper er $tillatteFiltyper")
         return tillatteFiltyper.contains(type)
+    }
+
+    fun filtype(fil: File): MediaType {
+        return tika.detector.detect(fil.inputStream().buffered(), Metadata())
     }
 }
 
