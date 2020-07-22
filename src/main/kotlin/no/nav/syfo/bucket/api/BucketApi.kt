@@ -53,7 +53,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
                 HttpHeaders.ContentDisposition,
                 ContentDisposition.Attachment.withParameter(
                     ContentDisposition.Parameters.FileName,
-                    blobName
+                    blobName ?: "kvittering-${UUID.randomUUID()}"
                 ).toString()
             )
             call.respondBytes(kvittering.readBytes(), contentType = ContentType.parse(blob.contentType))
@@ -66,7 +66,6 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
         val bucket: Bucket? = storage.get(env.bucketName)
         if (bucket != null) {
             val blobNavn = UUID.randomUUID().toString()
-
             val multipart = call.receiveMultipart()
             multipart.forEachPart { part ->
                 if (part is PartData.FileItem) {
