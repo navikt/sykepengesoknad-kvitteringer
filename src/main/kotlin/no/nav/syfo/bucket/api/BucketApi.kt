@@ -15,7 +15,7 @@ import io.ktor.http.withCharset
 import io.ktor.request.receiveMultipart
 import io.ktor.response.header
 import io.ktor.response.respond
-import io.ktor.response.respondFile
+import io.ktor.response.respondBytes
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.routing.post
@@ -57,11 +57,8 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
                     filNavn
                 ).toString()
             )
-            call.response.header(
-                HttpHeaders.ContentType,
-                blob.contentType ?: ContentType.Image.Any.contentType
-            )
-            call.respondFile(kvittering)
+
+            call.respondBytes(kvittering.readBytes(), contentType = ContentType.parse(blob.contentType))
         } else {
             call.respond("Bucket $env.bucketName does not exist.")
         }
