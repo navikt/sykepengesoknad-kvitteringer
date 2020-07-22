@@ -47,7 +47,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             val blob = bucket.get(blobName)
             val kvittering = File(blobName)
             kvittering.writeBytes(blob.getContent())
-            val kvitteringNavn = "kvittering-$blobName.${kvittering.extension}"
+            val kvitteringNavn = "kvittering-$blobName.${blob.contentType.split("/")[1]}"
             call.response.header(
                 HttpHeaders.ContentDisposition,
                 ContentDisposition.Attachment.withParameter(
