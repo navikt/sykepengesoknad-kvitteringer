@@ -47,14 +47,13 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             log.info("Attempting to query blob with name $blobName")
             val blob = bucket.get(blobName)
             log.info("Found blob $blobName (content-type: ${blob.contentType})")
-            val filNavn = "kvittering-$blobName"
-            val kvittering = File(filNavn)
+            val kvittering = File(blobName)
             kvittering.writeBytes(blob.getContent())
             call.response.header(
                 HttpHeaders.ContentDisposition,
                 ContentDisposition.Attachment.withParameter(
                     ContentDisposition.Parameters.FileName,
-                    filNavn
+                    blobName
                 ).toString()
             )
             call.respondBytes(kvittering.readBytes(), contentType = ContentType.parse(blob.contentType))
@@ -77,7 +76,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
                     if (validator.valider(fil)) {
                         val type = validator.filtype(fil)
                         val blob = fil.inputStream().buffered()
-                        bucket.create(blobNavn, blob, type.toString())
+                        bucket.create("kvittering-$blobNavn.${fil.extension}", blob, type.toString())
                         val vedleggRespons = VedleggRespons(blobNavn, "opprettet")
                         call.respond(TextContent(vedleggRespons.toJson(), ContentType.Application.Json.withCharset(Charsets.UTF_8), HttpStatusCode.Created))
                     } else {
