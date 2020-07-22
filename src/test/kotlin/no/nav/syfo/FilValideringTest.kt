@@ -33,7 +33,6 @@ object FilValideringTest : Spek({
         val filnavn = this::class.java.getResource("/bilder/example.pdf").toURI()
         val fil = File(filnavn)
         val validator = VedleggValidator()
-
         validator.filtype(fil).toString() shouldEqual "application/pdf"
     }
 

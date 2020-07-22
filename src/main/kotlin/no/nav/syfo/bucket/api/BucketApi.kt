@@ -57,7 +57,6 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
                     filNavn
                 ).toString()
             )
-
             call.respondBytes(kvittering.readBytes(), contentType = ContentType.parse(blob.contentType))
         } else {
             call.respond("Bucket $env.bucketName does not exist.")
