@@ -57,6 +57,10 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
                     filNavn
                 ).toString()
             )
+            call.response.header(
+                HttpHeaders.ContentType,
+                blob.contentType
+            )
             call.respondFile(kvittering)
         } else {
             call.respond("Bucket $env.bucketName does not exist.")
