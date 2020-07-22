@@ -23,32 +23,30 @@ class VedleggValidator(
     private val tika = Tika()
 
     fun valider(file: File): Boolean {
-
         if (!erTillattFilstørrelse(file)) {
-            log.warn("Vedlegg er for stort")
             return false
         }
-
         if (!erTillattFiltype(file)) {
-            log.warn("Vedlegg er ikke av tillatt filtype")
             return false
         }
         return true
     }
 
     fun erTillattFilstørrelse(file: File): Boolean {
-        log.info(
-            "Prøver å laste opp fil ${file.name} " +
-                "med ${bytesTilFilstørrelse(file.length())} " +
-                "når maksstørrelse er ${bytesTilFilstørrelse(maksFilStørrelse)}"
-        )
+        if (file.length() > maksFilStørrelse) {
+            log.info(
+                "${file.name} ( ${bytesTilFilstørrelse(file.length())} ) er for stor. " +
+                    "Maks størrelse er ${bytesTilFilstørrelse(maksFilStørrelse)}"
+            )
+        }
         return file.length() <= maksFilStørrelse
     }
 
     fun erTillattFiltype(file: File): Boolean {
         val type = filtype(file)
-        log.info("Tika detekterer typen til å være $type")
-        log.info("Tillatte filtyper er $tillatteFiltyper")
+        if (!tillatteFiltyper.contains(type)) {
+            log.info("Bruker lastet opp filen ${file.name} feilaktig. Tika detekterer typen til å være $type")
+        }
         return tillatteFiltyper.contains(type)
     }
 

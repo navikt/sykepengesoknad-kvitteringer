@@ -44,9 +44,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
         val bucket: Bucket? = storage.get(env.bucketName)
         if (bucket != null) {
             val blobName = call.parameters["blobName"]
-            log.info("Attempting to query blob with name $blobName")
             val blob = bucket.get(blobName)
-            log.info("Found blob $blobName (content-type: ${blob.contentType})")
             val kvittering = File(blobName)
             kvittering.writeBytes(blob.getContent())
             val kvitteringNavn = "kvittering-$blobName.${kvittering.extension}"
@@ -58,6 +56,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
                 ).toString()
             )
             call.respondBytes(kvittering.readBytes(), contentType = ContentType.parse(blob.contentType))
+            log.info("Returnerer $kvitteringNavn (content-type: ${blob.contentType})")
         } else {
             call.respond("Bucket $env.bucketName does not exist.")
         }
