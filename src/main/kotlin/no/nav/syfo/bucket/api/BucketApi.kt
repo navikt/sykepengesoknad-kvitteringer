@@ -59,7 +59,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             )
             call.response.header(
                 HttpHeaders.ContentType,
-                blob.contentType
+                blob.contentType ?: ContentType.Image.Any.contentType
             )
             call.respondFile(kvittering)
         } else {
