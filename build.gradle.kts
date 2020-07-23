@@ -20,6 +20,7 @@ val nimbusdsVersion = "7.5.1"
 val testContainerKafkaVersion = "1.12.5"
 val googleCloudVersion = "1.111.0"
 val tikaVersion = "1.24.1"
+val metadataExtractorVersion = "2.14.0"
 
 tasks.withType<Jar> {
     manifest.attributes["Main-Class"] = "no.nav.syfo.BootstrapKt"
@@ -85,6 +86,7 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
 
     implementation("org.apache.tika:tika-core:$tikaVersion")
+    implementation("com.drewnoakes:metadata-extractor:$metadataExtractorVersion")
 
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
