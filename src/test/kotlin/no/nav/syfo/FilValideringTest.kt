@@ -56,4 +56,25 @@ object FilValideringTest : Spek({
         val validator = VedleggValidator(maksFilStørrelse = 0)
         validator.erTillattFilstørrelse(fil) shouldEqual false
     }
+
+    describe("Fil med Exif-data godkjennes ikke") {
+        val filnavn = this::class.java.getResource("/bilder/example.jpg").toURI()
+        val fil = File(filnavn)
+        val validator = VedleggValidator()
+        validator.erStrippetForExifData(fil) shouldEqual false
+    }
+
+    describe("Fil uten Exif-data godkjennes") {
+        val filnavn = this::class.java.getResource("/bilder/example.heic").toURI()
+        val fil = File(filnavn)
+        val validator = VedleggValidator()
+        validator.erStrippetForExifData(fil) shouldEqual true
+    }
+
+    describe("Filtype som ikke kan ha Exif-data godkjennes") {
+        val filnavn = this::class.java.getResource("/bilder/example.pdf").toURI()
+        val fil = File(filnavn)
+        val validator = VedleggValidator()
+        validator.erStrippetForExifData(fil) shouldEqual true
+    }
 })

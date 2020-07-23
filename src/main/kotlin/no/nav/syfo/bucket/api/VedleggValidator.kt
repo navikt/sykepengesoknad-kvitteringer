@@ -29,6 +29,9 @@ class VedleggValidator(
         if (!erTillattFiltype(file)) {
             return false
         }
+        if (!erStrippetForExifData(file)) {
+            return false
+        }
         return true
     }
 
@@ -48,6 +51,15 @@ class VedleggValidator(
             log.info("Bruker lastet opp filen ${file.name} feilaktig. Tika detekterer typen til å være $type")
         }
         return tillatteFiltyper.contains(type)
+    }
+
+    fun erStrippetForExifData(fil: File): Boolean {
+        val exifStripper = ExifStripper(fil)
+
+        if (exifStripper.lesGeoLokasjon().isEmpty()) {
+            return true
+        }
+        return false
     }
 
     fun filtype(fil: File): MediaType {
