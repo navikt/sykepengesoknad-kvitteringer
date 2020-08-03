@@ -32,6 +32,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
     get("/list") {
         val principal: JWTPrincipal = call.authentication.principal()!!
         val fnr = principal.payload.subject
+
         val bucket: Bucket? = storage.get(env.bucketName)
         // TODO: Burde også sjekke om fnr er eier av reisetilskuddet
         if (fnr != null && bucket != null) {
