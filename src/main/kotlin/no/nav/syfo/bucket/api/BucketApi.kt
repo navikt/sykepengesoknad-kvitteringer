@@ -3,8 +3,6 @@ package no.nav.syfo.bucket.api
 import com.google.cloud.storage.Bucket
 import com.google.cloud.storage.Storage
 import io.ktor.application.call
-import io.ktor.auth.authentication
-import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.http.ContentDisposition
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -30,12 +28,8 @@ import java.util.UUID
 
 fun Route.setupBucketApi(storage: Storage, env: Environment) {
     get("/list") {
-        val principal: JWTPrincipal = call.authentication.principal()!!
-        val fnr = principal.payload.subject
-
         val bucket: Bucket? = storage.get(env.bucketName)
-        // TODO: Burde også sjekke om fnr er eier av reisetilskuddet
-        if (fnr != null && bucket != null) {
+        if (bucket != null) {
             call.respond(
                 bucket.list().iterateAll().joinToString(separator = "\n") { blob ->
                     "${blob.name} (content-type: ${blob.contentType}, size: ${blob.size})"
@@ -47,12 +41,8 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
     }
 
     get("/kvittering/{blobName}") {
-        val principal: JWTPrincipal = call.authentication.principal()!!
-        val fnr = principal.payload.subject
-
         val bucket: Bucket? = storage.get(env.bucketName)
-        // TODO: Burde også sjekke om fnr er eier av reisetilskuddet
-        if (fnr != null && bucket != null) {
+        if (bucket != null) {
             val blobName = call.parameters["blobName"]
             val blob = bucket.get(blobName)
             val kvittering = File(blobName)
@@ -73,12 +63,8 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
     }
 
     post("/opplasting") {
-        val principal: JWTPrincipal = call.authentication.principal()!!
-        val fnr = principal.payload.subject
-
         val bucket: Bucket? = storage.get(env.bucketName)
-        // TODO: Burde også sjekke om fnr er eier av reisetilskuddet
-        if (fnr != null && bucket != null) {
+        if (bucket != null) {
             val multipart = call.receiveMultipart()
             multipart.forEachPart { part ->
                 if (part is PartData.FileItem) {
