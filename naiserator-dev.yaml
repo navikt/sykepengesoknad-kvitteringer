@@ -44,8 +44,6 @@ spec:
   env:
     - name: BUCKET_NAME
       value: flex-reisetilskudd-kvitteringer
-    - name: JWT_ISSUER
-      value: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
   accessPolicy:
     outbound:
       external:
