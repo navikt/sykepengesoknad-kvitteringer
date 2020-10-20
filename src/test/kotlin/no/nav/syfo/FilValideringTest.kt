@@ -1,11 +1,11 @@
 package no.nav.syfo
 
 import io.ktor.util.KtorExperimentalAPI
+import java.io.File
 import no.nav.syfo.bucket.api.VedleggValidator
 import org.amshove.kluent.shouldEqual
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe
-import java.io.File
 
 @KtorExperimentalAPI
 object FilValideringTest : Spek({

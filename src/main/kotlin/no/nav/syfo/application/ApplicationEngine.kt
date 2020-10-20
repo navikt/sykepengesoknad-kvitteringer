@@ -1,5 +1,6 @@
 package no.nav.syfo.application
 
+import com.auth0.jwk.JwkProvider
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -8,6 +9,7 @@ import com.google.cloud.storage.Storage
 import io.ktor.application.ApplicationCallPipeline
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.auth.authenticate
 import io.ktor.features.CallId
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.StatusPages
@@ -20,18 +22,21 @@ import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.util.KtorExperimentalAPI
+import java.util.UUID
 import no.nav.syfo.Environment
 import no.nav.syfo.application.api.registerNaisApi
 import no.nav.syfo.application.metrics.monitorHttpRequests
 import no.nav.syfo.bucket.api.setupBucketApi
 import no.nav.syfo.log
-import java.util.UUID
 
 @KtorExperimentalAPI
 fun createApplicationEngine(
     env: Environment,
     applicationState: ApplicationState,
-    storage: Storage
+    storage: Storage,
+    jwkProvider: JwkProvider,
+    issuer: String,
+    loginserviceClientId: String
 ): ApplicationEngine =
     embeddedServer(Netty, env.applicationPort) {
         install(ContentNegotiation) {
@@ -42,6 +47,11 @@ fun createApplicationEngine(
                 configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             }
         }
+        setupAuth(
+            jwkProvider = jwkProvider,
+            issuer = issuer,
+            loginserviceClientId = loginserviceClientId
+        )
 
         install(CallId) {
             generate { UUID.randomUUID().toString() }
@@ -57,7 +67,9 @@ fun createApplicationEngine(
 
         routing {
             registerNaisApi(applicationState)
-            setupBucketApi(storage, env)
+            authenticate("jwt") {
+                setupBucketApi(storage, env)
+            }
         }
         intercept(ApplicationCallPipeline.Monitoring, monitorHttpRequests())
     }
