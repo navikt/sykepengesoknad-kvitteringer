@@ -39,7 +39,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             call.respond(
                 bucket.list().iterateAll().filter{ it.metadata?.get("fnr") == fnr }
                     .joinToString(separator = "\n") { blob ->
-                        "${blob.name} (content-type: ${blob.contentType}, size: ${blob.size})"
+                        "${blob.name} (content-type: ${blob.metadata?.get("content-type")}, size: ${blob.size})"
                 }
             )
         } else {
@@ -58,7 +58,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             if (blob.metadata?.get("fnr") == fnr) {
                 val kvittering = File(blobName)
                 kvittering.writeBytes(blob.getContent())
-                val kvitteringNavn = "kvittering-$blobName.${blob.contentType.split("/")[1]}"
+                val kvitteringNavn = "kvittering-$blobName.${blob.metadata?.get("content-type")!!.split("/")[1]}"
                 call.response.header(
                     HttpHeaders.ContentDisposition,
                     ContentDisposition.Attachment.withParameter(
@@ -66,8 +66,8 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
                         kvitteringNavn
                     ).toString()
                 )
-                call.respondBytes(kvittering.readBytes(), contentType = ContentType.parse(blob.contentType))
-                log.info("Returnerer $kvitteringNavn (content-type: ${blob.contentType})")
+                call.respondBytes(kvittering.readBytes(), contentType = ContentType.parse(blob.metadata?.get("content-type")!!))
+                log.info("Returnerer $kvitteringNavn (content-type: ${blob.metadata?.get("content-type")})")
             } else {
                 call.respond("fant ikke dokument")
             }
