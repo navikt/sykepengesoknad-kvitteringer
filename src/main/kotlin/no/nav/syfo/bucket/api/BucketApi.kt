@@ -37,7 +37,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
         val bucket: Bucket? = storage.get(env.bucketName)
         if (bucket != null) {
             call.respond(
-                bucket.list().iterateAll().filter{ it.metadata.getOrDefault("fnr", null) == fnr }
+                bucket.list().iterateAll().filter{ it.metadata?.get("fnr") == fnr }
                     .joinToString(separator = "\n") { blob ->
                         "${blob.name} (content-type: ${blob.contentType}, size: ${blob.size})"
                 }
@@ -55,7 +55,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
         if (bucket != null) {
             val blobName = call.parameters["blobName"]!!
             val blob = bucket.get(blobName)
-            if (blob.metadata.getOrDefault("fnr", null) == fnr) {
+            if (blob.metadata?.get("fnr") == fnr) {
                 val kvittering = File(blobName)
                 kvittering.writeBytes(blob.getContent())
                 val kvitteringNavn = "kvittering-$blobName.${blob.contentType.split("/")[1]}"
