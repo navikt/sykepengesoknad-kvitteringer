@@ -5,12 +5,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.google.api.gax.retrying.RetrySettings
 import com.google.cloud.storage.StorageOptions
 import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
+import java.net.URL
+import java.util.concurrent.TimeUnit
 import no.nav.syfo.application.ApplicationServer
 import no.nav.syfo.application.ApplicationState
 import no.nav.syfo.application.createApplicationEngine
@@ -18,9 +19,6 @@ import no.nav.syfo.application.getWellKnown
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.threeten.bp.Duration
-import java.net.URL
-import java.nio.file.Paths
-import java.util.concurrent.TimeUnit
 
 val log: Logger = LoggerFactory.getLogger("no.nav.syfo.flex-bucket-uploader")
 
@@ -34,15 +32,12 @@ val objectMapper: ObjectMapper = ObjectMapper().apply {
 @KtorExperimentalAPI
 fun main() {
     val env = Environment()
-    val vaultSecrets =
-        objectMapper.readValue<VaultSecrets>(Paths.get("/secrets/credentials.json").toFile())
-    val wellKnown = getWellKnown(vaultSecrets.oidcWellKnownUri)
-    val jwkProvider = JwkProviderBuilder(URL(wellKnown.jwks_uri))
-        .cached(10, 24, TimeUnit.HOURS)
-        .rateLimited(10, 1, TimeUnit.MINUTES)
-        .build()
 
-    val jwkProviderInternal = JwkProviderBuilder(URL(vaultSecrets.internalJwtWellKnownUri))
+    log.info("Sover i ${env.sidecarInitialDelay} ms i håp om at sidecars er klare")
+    Thread.sleep(env.sidecarInitialDelay)
+
+    val wellKnown = getWellKnown(env.oidcWellKnownUri)
+    val jwkProvider = JwkProviderBuilder(URL(wellKnown.jwks_uri))
         .cached(10, 24, TimeUnit.HOURS)
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
@@ -57,13 +52,9 @@ fun main() {
         env,
         applicationState,
         storage,
-        vaultSecrets = vaultSecrets,
         jwkProvider = jwkProvider,
         issuer = wellKnown.issuer,
-        jwkProviderInternal = jwkProviderInternal,
-        issuerServiceuser = env.jwtIssuer,
-        clientId = env.clientId,
-        appIds = env.appIds
+        loginserviceClientId = env.loginserviceClientId
     )
     val applicationServer = ApplicationServer(applicationEngine, applicationState)
     applicationServer.start()

@@ -1,14 +1,14 @@
 package no.nav.syfo.bucket.api
 
-import no.nav.syfo.log
-import org.apache.tika.Tika
-import org.apache.tika.metadata.Metadata
-import org.apache.tika.mime.MediaType
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
 import java.text.CharacterIterator
 import java.text.StringCharacterIterator
+import no.nav.syfo.log
+import org.apache.tika.Tika
+import org.apache.tika.metadata.Metadata
+import org.apache.tika.mime.MediaType
 
 class VedleggValidator(
     val maksFilStørrelse: Long = 1024 * 1024 * 50,

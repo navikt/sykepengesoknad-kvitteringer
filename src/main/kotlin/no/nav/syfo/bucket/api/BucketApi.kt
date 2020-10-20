@@ -21,12 +21,12 @@ import io.ktor.response.respondBytes
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.routing.post
+import java.io.File
+import java.util.UUID
 import no.nav.syfo.Environment
 import no.nav.syfo.log
 import no.nav.syfo.models.VedleggRespons
 import no.nav.syfo.models.toJson
-import java.io.File
-import java.util.UUID
 
 fun Route.setupBucketApi(storage: Storage, env: Environment) {
     get("/list") {

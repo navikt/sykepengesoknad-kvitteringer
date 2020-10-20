@@ -22,26 +22,21 @@ import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.util.KtorExperimentalAPI
+import java.util.UUID
 import no.nav.syfo.Environment
-import no.nav.syfo.VaultSecrets
 import no.nav.syfo.application.api.registerNaisApi
 import no.nav.syfo.application.metrics.monitorHttpRequests
 import no.nav.syfo.bucket.api.setupBucketApi
 import no.nav.syfo.log
-import java.util.UUID
 
 @KtorExperimentalAPI
 fun createApplicationEngine(
     env: Environment,
     applicationState: ApplicationState,
     storage: Storage,
-    vaultSecrets: VaultSecrets,
     jwkProvider: JwkProvider,
     issuer: String,
-    jwkProviderInternal: JwkProvider,
-    issuerServiceuser: String,
-    clientId: String,
-    appIds: List<String>
+    loginserviceClientId: String
 ): ApplicationEngine =
     embeddedServer(Netty, env.applicationPort) {
         install(ContentNegotiation) {
@@ -53,13 +48,9 @@ fun createApplicationEngine(
             }
         }
         setupAuth(
-            vaultSecrets = vaultSecrets,
             jwkProvider = jwkProvider,
             issuer = issuer,
-            jwkProviderInternal = jwkProviderInternal,
-            issuerServiceuser = issuerServiceuser,
-            clientId = clientId,
-            appIds = appIds
+            loginserviceClientId = loginserviceClientId
         )
 
         install(CallId) {
