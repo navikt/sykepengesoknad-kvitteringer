@@ -4,10 +4,10 @@ data class Environment(
     val applicationPort: Int = getEnvVar("APPLICATION_PORT", "8080").toInt(),
     val applicationName: String = getEnvVar("NAIS_APP_NAME", "flex-bucket-uploader"),
     val bucketName: String = getEnvVar("BUCKET_NAME", "flex-reisetilskudd-kvitteringer"),
-    val oidcWellKnownUri: String = getEnvVar("OIDC_WELLKNOWN_URI"),
     val cluster: String = getEnvVar("NAIS_CLUSTER_NAME"),
     val sidecarInitialDelay: Long = getEnvVar("SIDECAR_INITIAL_DELAY", "15000").toLong(),
-    val loginserviceClientId: String = getEnvVar("LOGINSERVICE_CLIENTID")
+    val loginserviceIdportenDiscoveryUrl: String = getEnvVar("LOGINSERVICE_IDPORTEN_DISCOVERY_URL"),
+    val loginserviceIdportenAudience: String = getEnvVar("LOGINSERVICE_IDPORTEN_AUDIENCE")
 )
 
 fun getEnvVar(varName: String, defaultValue: String? = null) =

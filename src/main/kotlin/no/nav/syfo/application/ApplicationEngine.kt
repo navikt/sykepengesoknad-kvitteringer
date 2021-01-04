@@ -36,7 +36,7 @@ fun createApplicationEngine(
     storage: Storage,
     jwkProvider: JwkProvider,
     issuer: String,
-    loginserviceClientId: String
+    loginserviceIdportenAudience: String
 ): ApplicationEngine =
     embeddedServer(Netty, env.applicationPort) {
         install(ContentNegotiation) {
@@ -50,7 +50,7 @@ fun createApplicationEngine(
         setupAuth(
             jwkProvider = jwkProvider,
             issuer = issuer,
-            loginserviceClientId = loginserviceClientId
+            loginserviceIdportenAudience = loginserviceIdportenAudience
         )
 
         install(CallId) {

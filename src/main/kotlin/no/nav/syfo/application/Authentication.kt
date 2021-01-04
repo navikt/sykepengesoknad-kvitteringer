@@ -14,14 +14,14 @@ import no.nav.syfo.log
 fun Application.setupAuth(
     jwkProvider: JwkProvider,
     issuer: String,
-    loginserviceClientId: String
+    loginserviceIdportenAudience: String
 ) {
     install(Authentication) {
         jwt(name = "jwt") {
             verifier(jwkProvider, issuer)
             validate { credentials ->
                 when {
-                    hasLoginserviceClientIdAudience(credentials, loginserviceClientId) -> JWTPrincipal(credentials.payload)
+                    hasloginserviceIdportenAudienceAudience(credentials, loginserviceIdportenAudience) -> JWTPrincipal(credentials.payload)
                     else -> unauthorized(credentials)
                 }
             }
@@ -38,6 +38,6 @@ fun unauthorized(credentials: JWTCredential): Principal? {
     return null
 }
 
-fun hasLoginserviceClientIdAudience(credentials: JWTCredential, loginserviceClientId: String): Boolean {
-    return credentials.payload.audience.contains(loginserviceClientId)
+fun hasloginserviceIdportenAudienceAudience(credentials: JWTCredential, loginserviceIdportenAudience: String): Boolean {
+    return credentials.payload.audience.contains(loginserviceIdportenAudience)
 }
