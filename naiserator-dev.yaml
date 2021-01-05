@@ -38,8 +38,6 @@ spec:
       memory: 768Mi
   vault:
     enabled: false
-  ingresses:
-    - "https://flex-bucket-uploader.dev-gcp.nais.io"
   webproxy: true
   envFrom:
     - configmap: loginservice-idporten
@@ -50,4 +48,3 @@ spec:
         - host: www.googleapis.com
         - host: storage.googleapis.com
         - host: oauth2.googleapis.com
-        - host: login.microsoftonline.com
