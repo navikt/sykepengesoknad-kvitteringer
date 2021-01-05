@@ -48,3 +48,6 @@ spec:
         - host: www.googleapis.com
         - host: storage.googleapis.com
         - host: oauth2.googleapis.com
+    inbound:
+      rules:
+        - application: flex-bucket-uploader-proxy
