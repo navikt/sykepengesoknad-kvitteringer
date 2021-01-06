@@ -10,8 +10,6 @@ import com.google.api.gax.retrying.RetrySettings
 import com.google.cloud.storage.StorageOptions
 import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
-import java.net.URL
-import java.util.concurrent.TimeUnit
 import no.nav.syfo.application.ApplicationServer
 import no.nav.syfo.application.ApplicationState
 import no.nav.syfo.application.createApplicationEngine
@@ -19,6 +17,8 @@ import no.nav.syfo.application.getWellKnown
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.threeten.bp.Duration
+import java.net.URL
+import java.util.concurrent.TimeUnit
 
 val log: Logger = LoggerFactory.getLogger("no.nav.syfo.flex-bucket-uploader")
 
@@ -42,6 +42,12 @@ fun main() {
         .rateLimited(10, 1, TimeUnit.MINUTES)
         .build()
 
+    val aadWellKnown = getWellKnown(env.azureAppWellKnownUrl)
+    val aadProvider = JwkProviderBuilder(URL(aadWellKnown.jwks_uri))
+        .cached(10, 24, TimeUnit.HOURS)
+        .rateLimited(10, 1, TimeUnit.MINUTES)
+        .build()
+
     DefaultExports.initialize()
     val applicationState = ApplicationState()
 
@@ -54,7 +60,10 @@ fun main() {
         storage,
         jwkProvider = jwkProvider,
         issuer = wellKnown.issuer,
-        loginserviceIdportenAudience = env.loginserviceIdportenAudience
+        loginserviceIdportenAudience = env.loginserviceIdportenAudience,
+        aadProvider = aadProvider,
+        aadIssuer = aadWellKnown.issuer,
+        aadClientId = env.azureAppClientId
     )
     val applicationServer = ApplicationServer(applicationEngine, applicationState)
     applicationServer.start()

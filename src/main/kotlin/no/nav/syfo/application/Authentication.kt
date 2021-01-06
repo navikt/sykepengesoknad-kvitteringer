@@ -9,21 +9,38 @@ import io.ktor.auth.jwt.JWTCredential
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import net.logstash.logback.argument.StructuredArguments
+import no.nav.syfo.PreAuthorizedClient
 import no.nav.syfo.log
 
 fun Application.setupAuth(
     jwkProvider: JwkProvider,
     issuer: String,
-    loginserviceIdportenAudience: String
+    loginserviceIdportenAudience: String,
+    aadProvider: JwkProvider,
+    aadIssuer: String,
+    aadClientId: String,
+    aadPreauthorizedApps: List<PreAuthorizedClient>
 ) {
     install(Authentication) {
         jwt(name = "jwt") {
             verifier(jwkProvider, issuer)
             validate { credentials ->
                 when {
-                    hasloginserviceIdportenAudienceAudience(credentials, loginserviceIdportenAudience) -> JWTPrincipal(credentials.payload)
+                    hasExpectedAudience(credentials, loginserviceIdportenAudience) -> JWTPrincipal(credentials.payload)
                     else -> unauthorized(credentials)
                 }
+            }
+        }
+        jwt(name = "aad") {
+            verifier(aadProvider, aadIssuer)
+            validate { credentials ->
+                if (!hasExpectedAudience(credentials, aadClientId)) {
+                    return@validate unauthorized(credentials)
+                }
+                if (!aadPreauthorizedApps.map { it.clientId }.contains(credentials.payload.getClaim("azp").asString())) {
+                    return@validate unauthorized(credentials)
+                }
+                return@validate JWTPrincipal(credentials.payload)
             }
         }
     }
@@ -38,6 +55,6 @@ fun unauthorized(credentials: JWTCredential): Principal? {
     return null
 }
 
-fun hasloginserviceIdportenAudienceAudience(credentials: JWTCredential, loginserviceIdportenAudience: String): Boolean {
+fun hasExpectedAudience(credentials: JWTCredential, loginserviceIdportenAudience: String): Boolean {
     return credentials.payload.audience.contains(loginserviceIdportenAudience)
 }

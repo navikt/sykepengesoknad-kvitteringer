@@ -22,12 +22,13 @@ import io.ktor.server.engine.ApplicationEngine
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.util.KtorExperimentalAPI
-import java.util.UUID
 import no.nav.syfo.Environment
 import no.nav.syfo.application.api.registerNaisApi
 import no.nav.syfo.application.metrics.monitorHttpRequests
 import no.nav.syfo.bucket.api.setupBucketApi
+import no.nav.syfo.bucket.api.setupMachineBucketApi
 import no.nav.syfo.log
+import java.util.UUID
 
 @KtorExperimentalAPI
 fun createApplicationEngine(
@@ -36,7 +37,10 @@ fun createApplicationEngine(
     storage: Storage,
     jwkProvider: JwkProvider,
     issuer: String,
-    loginserviceIdportenAudience: String
+    loginserviceIdportenAudience: String,
+    aadProvider: JwkProvider,
+    aadIssuer: String,
+    aadClientId: String
 ): ApplicationEngine =
     embeddedServer(Netty, env.applicationPort) {
         install(ContentNegotiation) {
@@ -50,7 +54,11 @@ fun createApplicationEngine(
         setupAuth(
             jwkProvider = jwkProvider,
             issuer = issuer,
-            loginserviceIdportenAudience = loginserviceIdportenAudience
+            loginserviceIdportenAudience = loginserviceIdportenAudience,
+            aadProvider = aadProvider,
+            aadIssuer = aadIssuer,
+            aadClientId = aadClientId,
+            aadPreauthorizedApps = env.azureAppPreAuthorizedApps
         )
 
         install(CallId) {
@@ -69,6 +77,9 @@ fun createApplicationEngine(
             registerNaisApi(applicationState)
             authenticate("jwt") {
                 setupBucketApi(storage, env)
+            }
+            authenticate("aad") {
+                setupMachineBucketApi(storage, env)
             }
         }
         intercept(ApplicationCallPipeline.Monitoring, monitorHttpRequests())
