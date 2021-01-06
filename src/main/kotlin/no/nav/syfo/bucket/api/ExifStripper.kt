@@ -3,9 +3,9 @@ import com.drew.imaging.ImageMetadataReader
 import com.drew.imaging.ImageProcessingException
 import com.drew.metadata.Metadata
 import com.drew.metadata.exif.GpsDirectory
+import no.nav.syfo.log
 import java.io.File
 import java.lang.NullPointerException
-import no.nav.syfo.log
 
 class ExifStripper(fil: File) {
     private val fil: File = fil

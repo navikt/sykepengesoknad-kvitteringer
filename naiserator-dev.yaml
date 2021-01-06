@@ -41,6 +41,10 @@ spec:
   webproxy: true
   envFrom:
     - configmap: loginservice-idporten
+  azure:
+    application:
+      enabled: true
+      tenant: "trygdeetaten.no"
   accessPolicy:
     outbound:
       external:
@@ -51,3 +55,4 @@ spec:
     inbound:
       rules:
         - application: flex-bucket-uploader-proxy
+        - application: flex-reisetilskudd-gsak
