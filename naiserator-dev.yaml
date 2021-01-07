@@ -54,5 +54,5 @@ spec:
         - host: oauth2.googleapis.com
     inbound:
       rules:
-        - application: flex-bucket-uploader-proxy
+        - application: flex-gateway
         - application: flex-reisetilskudd-gsak
