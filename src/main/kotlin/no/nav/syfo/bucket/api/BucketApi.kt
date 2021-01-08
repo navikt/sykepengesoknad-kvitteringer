@@ -112,9 +112,9 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
         log.info("Mottok en fil av type $contentType")
 
         val client = HttpClient(Apache)
-        val processedFile = withContext(Dispatchers.IO) { client.post<HttpResponse>("${env.imageProcessingUrl}/prosesser") {
+        val processedFile = client.post<HttpResponse>("${env.imageProcessingUrl}/prosesser") {
             body = ByteArrayContent(fil, contentType)
-        } }
+        }
         log.info("Mottok en prosessert fil fra ${env.imageProcessingUrl}")
 
         if (processedFile.status != HttpStatusCode.OK) {
