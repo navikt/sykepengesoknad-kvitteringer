@@ -10,6 +10,8 @@ import com.google.api.gax.retrying.RetrySettings
 import com.google.cloud.storage.StorageOptions
 import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.hotspot.DefaultExports
+import kotlinx.coroutines.DEBUG_PROPERTY_NAME
+import kotlinx.coroutines.DEBUG_PROPERTY_VALUE_ON
 import no.nav.syfo.application.ApplicationServer
 import no.nav.syfo.application.ApplicationState
 import no.nav.syfo.application.createApplicationEngine
@@ -31,6 +33,7 @@ val objectMapper: ObjectMapper = ObjectMapper().apply {
 
 @KtorExperimentalAPI
 fun main() {
+    System.setProperty(DEBUG_PROPERTY_NAME, DEBUG_PROPERTY_VALUE_ON)
     val env = Environment()
 
     log.info("Sover i ${env.sidecarInitialDelay} ms i håp om at sidecars er klare")
