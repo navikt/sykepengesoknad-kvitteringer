@@ -109,7 +109,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
 
         val client = HttpClient(Apache)
 
-        val processedFile = client.post<HttpResponse>(env.imageProcessingUrl) {
+        val processedFile = client.post<HttpResponse>("${env.imageProcessingUrl}/prosesser") {
             body = ByteArrayContent(fil, contentType)
         }
 

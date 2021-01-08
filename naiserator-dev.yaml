@@ -47,6 +47,8 @@ spec:
       tenant: "trygdeetaten.no"
   accessPolicy:
     outbound:
+      rules:
+        - application: flex-bildeprosessering
       external:
         - host: navtestb2c.b2clogin.com
         - host: www.googleapis.com

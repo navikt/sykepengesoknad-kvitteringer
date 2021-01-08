@@ -11,7 +11,7 @@ data class Environment(
     val applicationName: String = getEnvVar("NAIS_APP_NAME", "flex-bucket-uploader"),
     val bucketName: String = getEnvVar("BUCKET_NAME", "flex-reisetilskudd-kvitteringer"),
     val cluster: String = getEnvVar("NAIS_CLUSTER_NAME"),
-    val imageProcessingUrl: String = getEnvVar("IMAGE_PROCESSING_URL", "http://flex-bildeprosessering/"),
+    val imageProcessingUrl: String = getEnvVar("IMAGE_PROCESSING_URL", "http://flex-bildeprosessering"),
     val sidecarInitialDelay: Long = getEnvVar("SIDECAR_INITIAL_DELAY", "15000").toLong(),
     val loginserviceIdportenDiscoveryUrl: String = getEnvVar("LOGINSERVICE_IDPORTEN_DISCOVERY_URL"),
     val loginserviceIdportenAudience: String = getEnvVar("LOGINSERVICE_IDPORTEN_AUDIENCE"),
