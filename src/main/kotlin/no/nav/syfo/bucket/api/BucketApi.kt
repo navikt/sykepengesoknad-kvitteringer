@@ -41,6 +41,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
         val fnr = principal.payload.subject
         val bucket: Bucket? = storage.get(env.bucketName)
         if (bucket == null) {
+            log.error("Fant ikke bøtte ved navn ${env.bucketName}")
             call.respond(
                 TextContent(
                     VedleggRespons(id = null, melding = "bøtta finnes ikke").toJson(),
@@ -63,6 +64,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
         val fnr = principal.payload.subject
         val bucket: Bucket? = storage.get(env.bucketName)
         if (bucket == null) {
+            log.error("Fant ikke bøtte ved navn ${env.bucketName}")
             call.respond(
                 TextContent(
                     VedleggRespons(id = null, melding = "bøtta finnes ikke").toJson(),
@@ -75,6 +77,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
         val blobName = call.parameters["blobName"]!!
         val blob = bucket.get(blobName)
         if (blob.metadata?.get("fnr") != fnr) {
+            log.error("Forespørrende person eier ikke dokumentet")
             call.respond("fant ikke dokument")
             return@get
         }
@@ -106,14 +109,17 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             ?: throw RuntimeException("Fant ikke fil")
         val contentType = filpart.contentType
         val fil = withContext(Dispatchers.IO) { filpart.streamProvider().readBytes() }
+        log.info("Mottok en fil av type $contentType")
 
         val client = HttpClient(Apache)
 
         val processedFile = client.post<HttpResponse>("${env.imageProcessingUrl}/prosesser") {
             body = ByteArrayContent(fil, contentType)
         }
+        log.info("Mottok en prosessert fil fra ${env.imageProcessingUrl}")
 
         if (processedFile.status != HttpStatusCode.OK) {
+            log.error("flex-bildeprosessering returnerte ikke HTTP OK")
             call.respond(
                 TextContent(
                     VedleggRespons(null, "kunne ikke opprette vedlegg").toJson(),
