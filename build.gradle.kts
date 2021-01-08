@@ -21,7 +21,6 @@ val testContainerKafkaVersion = "1.12.5"
 val googleCloudVersion = "1.111.0"
 val tikaVersion = "1.24.1"
 val metadataExtractorVersion = "2.14.0"
-val okHttpVersion = "4.9.0"
 
 tasks.withType<Jar> {
     manifest.attributes["Main-Class"] = "no.nav.syfo.BootstrapKt"
@@ -77,7 +76,6 @@ dependencies {
     implementation("io.ktor:ktor-jackson:$ktorVersion")
     implementation("io.ktor:ktor-auth:$ktorVersion")
     implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
-    implementation("com.squareup.okhttp3:okhttp:$okHttpVersion")
     implementation("com.google.cloud:google-cloud-storage:$googleCloudVersion")
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
