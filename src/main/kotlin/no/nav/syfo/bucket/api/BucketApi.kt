@@ -10,8 +10,8 @@ import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.apache.Apache
 import io.ktor.client.request.post
-import io.ktor.client.statement.readBytes
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.readBytes
 import io.ktor.http.ContentDisposition
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -32,8 +32,6 @@ import no.nav.syfo.log
 import no.nav.syfo.models.VedleggRespons
 import no.nav.syfo.models.toJson
 import java.io.File
-import java.io.InputStream
-import java.io.OutputStream
 import java.lang.RuntimeException
 import java.util.UUID
 
