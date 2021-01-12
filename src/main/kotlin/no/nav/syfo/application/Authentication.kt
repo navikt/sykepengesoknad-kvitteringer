@@ -24,11 +24,14 @@ fun Application.setupAuth(
     install(Authentication) {
         jwt(name = "jwt") {
             verifier(jwkProvider, issuer)
-            validate { credentials ->
-                when {
-                    hasExpectedAudience(credentials, loginserviceIdportenAudience) -> JWTPrincipal(credentials.payload)
-                    else -> unauthorized(credentials)
+            validate { credentials: JWTCredential ->
+                if (!hasExpectedAudience(credentials, loginserviceIdportenAudience)){
+                    return@validate unauthorized(credentials)
                 }
+                if (!erNiva4(credentials)) {
+                    return@validate unauthorized(credentials)
+                }
+                return@validate JWTPrincipal(credentials.payload)
             }
         }
         jwt(name = "aad") {
@@ -57,4 +60,8 @@ fun unauthorized(credentials: JWTCredential): Principal? {
 
 fun hasExpectedAudience(credentials: JWTCredential, loginserviceIdportenAudience: String): Boolean {
     return credentials.payload.audience.contains(loginserviceIdportenAudience)
+}
+
+fun erNiva4(credentials: JWTCredential): Boolean {
+    return "Level4" == credentials.payload.getClaim("acr").asString()
 }

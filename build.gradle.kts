@@ -13,18 +13,14 @@ val ktorVersion = "1.3.0"
 val logbackVersion = "1.2.3"
 val logstashEncoderVersion = "5.1"
 val prometheusVersion = "0.6.0"
-val spekVersion = "2.0.9"
 val smCommonVersion = "1.7cb158e"
 val mockkVersion = "1.9.3"
 val nimbusdsVersion = "7.5.1"
-val testContainerKafkaVersion = "1.12.5"
+val testContainerKafkaVersion = "1.15.1"
 val googleCloudVersion = "1.111.0"
 val tikaVersion = "1.24.1"
 val metadataExtractorVersion = "2.14.0"
-
-tasks.withType<Jar> {
-    manifest.attributes["Main-Class"] = "no.nav.syfo.BootstrapKt"
-}
+val junitVersion = "5.7.0"
 
 plugins {
     id("org.jmailen.kotlinter") version "2.1.1"
@@ -49,7 +45,6 @@ repositories {
     mavenCentral()
     jcenter()
     maven(url = "https://dl.bintray.com/kotlin/ktor")
-    maven(url = "https://dl.bintray.com/spekframework/spek-dev")
     maven(url = "https://packages.confluent.io/maven/")
     maven(url = "https://kotlin.bintray.com/kotlinx")
     maven {
@@ -91,59 +86,30 @@ dependencies {
 
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
-    testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion")
     testImplementation("com.nimbusds:nimbus-jose-jwt:$nimbusdsVersion")
     testImplementation("org.testcontainers:kafka:$testContainerKafkaVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
     }
-    testImplementation("org.spekframework.spek2:spek-dsl-jvm:$spekVersion") {
-        exclude(group = "org.jetbrains.kotlin")
-    }
-    testRuntimeOnly("org.spekframework.spek2:spek-runner-junit5:$spekVersion") {
-        exclude(group = "org.jetbrains.kotlin")
-    }
+
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
+
+    testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }
 
-tasks.jacocoTestReport {
-    reports {
-        xml.isEnabled = true
-        html.isEnabled = true
-    }
+tasks.withType<Jar> {
+    manifest.attributes["Main-Class"] = "no.nav.syfo.BootstrapKt"
 }
 
 tasks {
-
-    create("printVersion") {
-        println(project.version)
-    }
-
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "12"
-    }
-
-    withType<JacocoReport> {
-        classDirectories.setFrom(
-            sourceSets.main.get().output.asFileTree.matching {
-                exclude()
-            }
-        )
-    }
-    withType<ShadowJar> {
-        transform(ServiceFileTransformer::class.java) {
-            setPath("META-INF/cxf")
-            include("bus-extensions.txt")
-        }
-    }
-
     withType<Test> {
-        useJUnitPlatform {
-            includeEngines("spek2")
+        useJUnitPlatform()
+        testLogging {
+            events("PASSED", "FAILED", "SKIPPED")
         }
-        testLogging.showStandardStreams = true
     }
-
-    "check" {
-        dependsOn("formatKotlin")
+    named<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>("compileTestKotlin") {
+        kotlinOptions.jvmTarget = "12"
     }
 }

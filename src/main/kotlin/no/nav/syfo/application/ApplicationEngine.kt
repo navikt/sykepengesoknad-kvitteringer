@@ -6,9 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.google.cloud.storage.Storage
-import io.ktor.application.ApplicationCallPipeline
-import io.ktor.application.call
-import io.ktor.application.install
+import io.ktor.application.*
 import io.ktor.auth.authenticate
 import io.ktor.features.CallId
 import io.ktor.features.ContentNegotiation
@@ -43,6 +41,32 @@ fun createApplicationEngine(
     aadClientId: String
 ): ApplicationEngine =
     embeddedServer(Netty, env.applicationPort) {
+        configureApplication(
+            env = env,
+            applicationState = applicationState,
+            storage = storage,
+            jwkProvider = jwkProvider,
+            issuer = issuer,
+            loginserviceIdportenAudience = loginserviceIdportenAudience,
+            aadProvider = jwkProvider,
+            aadIssuer = aadIssuer,
+            aadClientId = aadClientId
+
+        )
+    }
+
+@KtorExperimentalAPI
+fun Application.configureApplication(
+    env: Environment,
+    applicationState: ApplicationState,
+    storage: Storage,
+    jwkProvider: JwkProvider,
+    issuer: String,
+    loginserviceIdportenAudience: String,
+    aadProvider: JwkProvider,
+    aadIssuer: String,
+    aadClientId: String
+) {
         install(ContentNegotiation) {
             jackson {
                 registerKotlinModule()
