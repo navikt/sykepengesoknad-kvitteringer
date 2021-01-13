@@ -17,7 +17,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.*
-import io.ktor.http.withCharset
 import io.ktor.request.receiveMultipart
 import io.ktor.response.header
 import io.ktor.response.respond
@@ -29,28 +28,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import no.nav.syfo.Environment
 import no.nav.syfo.log
-import no.nav.syfo.models.VedleggRespons
-import no.nav.syfo.models.toJson
+import no.nav.syfo.models.jsonStatus
 import java.io.File
 import java.lang.RuntimeException
 import java.util.UUID
 
 fun Route.setupBucketApi(storage: Storage, env: Environment) {
     get("/list") {
+        log.warn("Dette endepunktet skal ikke brukes i prod")
+
         val principal: JWTPrincipal = call.authentication.principal()!!
         val fnr = principal.payload.subject
-        val bucket: Bucket? = storage.get(env.bucketName)
-        if (bucket == null) {
-            log.error("Fant ikke bøtte ved navn ${env.bucketName}")
-            call.respond(
-                TextContent(
-                    VedleggRespons(id = null, melding = "bøtta finnes ikke").toJson(),
-                    ContentType.Application.Json.withCharset(Charsets.UTF_8),
-                    HttpStatusCode.NotFound
-                )
-            )
-            return@get
-        }
+        val bucket: Bucket = storage.get(env.bucketName) ?: throw RuntimeException("Fant ikke bøtte ved navn ${env.bucketName}")
+
         call.respond(
             bucket.list().iterateAll().filter { it.metadata?.get("fnr") == fnr }
                 .joinToString(separator = "\n") { blob ->
@@ -62,29 +52,20 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
     get("/kvittering/{blobName}") {
         val principal: JWTPrincipal = call.authentication.principal()!!
         val fnr = principal.payload.subject
-        val bucket: Bucket? = storage.get(env.bucketName)
-        if (bucket == null) {
-            log.error("Fant ikke bøtte ved navn ${env.bucketName}")
-            call.respond(
-                TextContent(
-                    VedleggRespons(id = null, melding = "bøtta finnes ikke").toJson(),
-                    ContentType.Application.Json.withCharset(Charsets.UTF_8),
-                    HttpStatusCode.NotFound
-                )
-            )
-            return@get
-        }
+        val bucket: Bucket = storage.get(env.bucketName) ?: throw RuntimeException("Fant ikke bøtte ved navn ${env.bucketName}")
         val blobName = call.parameters["blobName"]!!
         val blob = bucket.get(blobName)
         if (blob.metadata?.get("fnr") != fnr) {
             log.error("Forespørrende person eier ikke dokumentet")
-            call.respond("fant ikke dokument")
+            call.jsonStatus(statusCode = HttpStatusCode.NotFound, message = "fant ikke dokument")
             return@get
         }
 
         val kvittering = File(blobName)
         kvittering.writeBytes(blob.getContent())
         val kvitteringNavn = "kvittering-$blobName.${blob.metadata?.get("content-type")!!.split("/")[1]}"
+
+        log.info("Returnerer $kvitteringNavn (content-type: ${blob.metadata?.get("content-type")})")
         call.response.header(
             HttpHeaders.ContentDisposition,
             ContentDisposition.Attachment.withParameter(
@@ -96,7 +77,6 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             kvittering.readBytes(),
             contentType = ContentType.parse(blob.metadata?.get("content-type")!!)
         )
-        log.info("Returnerer $kvitteringNavn (content-type: ${blob.metadata?.get("content-type")})")
     }
 
     post("/opplasting") {
@@ -119,13 +99,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
 
         if (processedFile.status != HttpStatusCode.OK) {
             log.error("flex-bildeprosessering returnerte ikke HTTP OK")
-            call.respond(
-                TextContent(
-                    VedleggRespons(null, "kunne ikke opprette vedlegg").toJson(),
-                    ContentType.Application.Json.withCharset(Charsets.UTF_8),
-                    HttpStatusCode.BadRequest
-                )
-            )
+            call.jsonStatus(statusCode = HttpStatusCode.BadRequest, message = "kunne ikke opprette vedlegg")
             return@post
         }
 
@@ -134,12 +108,6 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             .setMetadata(mapOf("fnr" to fnr, "content-type" to "image/jpg"))
             .build()
         storage.create(bInfo, processedFile.readBytes())
-        call.respond(
-            TextContent(
-                VedleggRespons(blobNavn, "opprettet").toJson(),
-                ContentType.Application.Json.withCharset(Charsets.UTF_8),
-                HttpStatusCode.Created
-            )
-        )
+        call.jsonStatus(HttpStatusCode.Created, blobNavn, "opprettet")
     }
 }
