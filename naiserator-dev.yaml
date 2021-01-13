@@ -59,3 +59,4 @@ spec:
         - application: flex-bildeprosessering
         - application: flex-gateway
         - application: flex-reisetilskudd-gsak
+        - application: flex-reisetilskudd-backend
