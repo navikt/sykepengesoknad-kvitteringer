@@ -109,7 +109,7 @@ tasks {
             events("PASSED", "FAILED", "SKIPPED")
         }
     }
-    named<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>("compileTestKotlin") {
+    named<KotlinCompile>("compileTestKotlin") {
         kotlinOptions.jvmTarget = "12"
     }
 }
