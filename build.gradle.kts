@@ -19,7 +19,7 @@ val nimbusdsVersion = "7.5.1"
 val testContainerKafkaVersion = "1.15.1"
 val googleCloudVersion = "1.111.0"
 val tikaVersion = "1.24.1"
-val metadataExtractorVersion = "2.14.0"
+val metadataExtractorVersion = "2.15.0"
 val junitVersion = "5.7.0"
 
 plugins {
