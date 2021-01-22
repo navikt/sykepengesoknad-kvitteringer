@@ -26,7 +26,7 @@ plugins {
     id("org.jmailen.kotlinter") version "3.3.0"
     kotlin("jvm") version "1.3.70"
     id("com.diffplug.gradle.spotless") version "3.23.1"
-    id("com.github.johnrengelman.shadow") version "4.0.4"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
     jacoco
 }
 
