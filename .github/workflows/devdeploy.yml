@@ -61,6 +61,7 @@ jobs:
           docker login docker.pkg.github.com -u ${GITHUB_REPOSITORY} -p ${GITHUB_TOKEN}
           docker push ${IMAGE}
       - name: Deploy to dev-gcp
+        if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/dev-')
         uses: nais/deploy/actions/deploy@master
         env:
           APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
