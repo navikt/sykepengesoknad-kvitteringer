@@ -7,7 +7,7 @@ version = "1.0.0"
 
 val coroutinesVersion = "1.3.3"
 val javaxActivationVersion = "1.1.1"
-val jacksonVersion = "2.9.7"
+val jacksonVersion = "2.12.1"
 val kluentVersion = "1.49"
 val ktorVersion = "1.5.0"
 val logbackVersion = "1.2.3"
