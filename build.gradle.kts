@@ -17,7 +17,7 @@ val smCommonVersion = "1.7cb158e"
 val mockkVersion = "1.10.5"
 val nimbusdsVersion = "7.5.1"
 val testContainerKafkaVersion = "1.15.1"
-val googleCloudVersion = "1.111.0"
+val googleCloudVersion = "1.113.9"
 val tikaVersion = "1.25"
 val metadataExtractorVersion = "2.15.0"
 val junitVersion = "5.7.0"
@@ -33,7 +33,7 @@ plugins {
 buildscript {
     dependencies {
         classpath("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
-        classpath("org.glassfish.jaxb:jaxb-runtime:2.4.0-b180830.0438")
+        classpath("org.glassfish.jaxb:jaxb-runtime:3.0.0")
         classpath("com.sun.activation:javax.activation:1.2.0")
     }
 }
