@@ -12,7 +12,7 @@ val kluentVersion = "1.65"
 val ktorVersion = "1.5.0"
 val logbackVersion = "1.2.3"
 val logstashEncoderVersion = "5.1"
-val prometheusVersion = "0.9.0"
+val prometheusVersion = "0.10.0"
 val smCommonVersion = "1.7cb158e"
 val mockkVersion = "1.10.5"
 val nimbusdsVersion = "7.5.1"
@@ -24,7 +24,7 @@ val junitVersion = "5.7.0"
 
 plugins {
     id("org.jmailen.kotlinter") version "3.3.0"
-    kotlin("jvm") version "1.3.70"
+    kotlin("jvm") version "1.4.21-2"
     id("com.diffplug.gradle.spotless") version "3.23.1"
     id("com.github.johnrengelman.shadow") version "6.1.0"
     jacoco
