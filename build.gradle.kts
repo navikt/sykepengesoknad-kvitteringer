@@ -24,7 +24,7 @@ val junitVersion = "5.7.0"
 
 plugins {
     id("org.jmailen.kotlinter") version "3.3.0"
-    kotlin("jvm") version "1.3.70"
+    kotlin("jvm") version "1.4.21-2"
     id("com.diffplug.gradle.spotless") version "3.23.1"
     id("com.github.johnrengelman.shadow") version "6.1.0"
     jacoco
