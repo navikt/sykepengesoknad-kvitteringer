@@ -99,7 +99,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
 
         if (processedFile.status != HttpStatusCode.OK) {
             log.error("flex-bildeprosessering returnerte ikke HTTP OK")
-            call.jsonStatus(statusCode = HttpStatusCode.BadRequest, message = "kunne ikke opprette vedlegg")
+            call.jsonStatus(statusCode = processedFile.status, message = "kunne ikke opprette vedlegg")
             return@post
         }
 
