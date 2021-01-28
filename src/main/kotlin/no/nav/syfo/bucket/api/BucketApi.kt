@@ -9,6 +9,7 @@ import io.ktor.auth.authentication
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.apache.Apache
+import io.ktor.client.features.*
 import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.readBytes
@@ -92,10 +93,22 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
         log.info("Mottok en fil av type $contentType")
 
         val client = HttpClient(Apache)
-        val processedFile = client.post<HttpResponse>("${env.imageProcessingUrl}/prosesser") {
-            body = ByteArrayContent(fil, contentType)
+        val processedFile: HttpResponse
+
+        try {
+            processedFile = client.post("${env.imageProcessingUrl}/prosesser") {
+                body = ByteArrayContent(fil, contentType)
+            }
+            log.info("Mottok en prosessert fil fra ${env.imageProcessingUrl}")
+        } catch (ex: ClientRequestException) {
+            log.error("flex-bildeprosessering kastet en ClientRequestException, ${ex.message}")
+            call.jsonStatus(statusCode = ex.response.status, message = "kunne ikke opprette vedlegg")
+            return@post
+        } catch (ex: Exception) {
+            log.error("flex-bildeprosessering kastet en Exception, ${ex.message}")
+            call.jsonStatus(statusCode = HttpStatusCode.InternalServerError, message = "kunne ikke opprette vedlegg")
+            return@post
         }
-        log.info("Mottok en prosessert fil fra ${env.imageProcessingUrl}")
 
         if (processedFile.status != HttpStatusCode.OK) {
             log.error("flex-bildeprosessering returnerte ikke HTTP OK")
