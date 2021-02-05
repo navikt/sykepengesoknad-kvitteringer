@@ -20,7 +20,7 @@ val testContainerKafkaVersion = "1.15.1"
 val googleCloudVersion = "1.113.9"
 val tikaVersion = "1.25"
 val metadataExtractorVersion = "2.15.0"
-val junitVersion = "5.7.0"
+val junitVersion = "5.7.1"
 
 plugins {
     id("org.jmailen.kotlinter") version "3.3.0"
