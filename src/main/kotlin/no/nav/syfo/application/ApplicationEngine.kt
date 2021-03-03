@@ -48,7 +48,7 @@ fun createApplicationEngine(
             jwkProvider = jwkProvider,
             issuer = issuer,
             loginserviceIdportenAudience = loginserviceIdportenAudience,
-            aadProvider = jwkProvider,
+            aadProvider = aadProvider,
             aadIssuer = aadIssuer,
             aadClientId = aadClientId
 
