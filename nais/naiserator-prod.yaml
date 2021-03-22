@@ -9,7 +9,6 @@ spec:
   gcp:
     buckets:
       - name: flex-kvitteringer-prod
-        cascadingDelete: true
   image: {{ image }}
   replicas:
     min: 1
