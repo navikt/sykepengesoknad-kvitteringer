@@ -75,6 +75,5 @@ spec:
   resourceRef:
     apiVersion: storage.cnrm.cloud.google.com/v1beta1
     kind: StorageBucket
-    name: flex-kvitteringer-prod
-    namespace: flex
+    external: flex-kvitteringer-prod
   role: roles/storage.admin
