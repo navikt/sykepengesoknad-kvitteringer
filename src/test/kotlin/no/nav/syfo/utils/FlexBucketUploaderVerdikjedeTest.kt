@@ -3,7 +3,7 @@ package no.nav.syfo.utils
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.server.testing.*
 import io.ktor.http.*
-import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.BeforeAll
 
@@ -28,7 +28,7 @@ internal class FlexBucketUploaderVerdikjedeTest {
                     medSelvbetjeningToken(fnr, level = "level3")
                 }
             ) {
-                response.status() shouldEqual HttpStatusCode.Unauthorized
+                response.status() shouldBeEqualTo HttpStatusCode.Unauthorized
             }
         }
     }
@@ -41,7 +41,7 @@ internal class FlexBucketUploaderVerdikjedeTest {
                     medSelvbetjeningToken(fnr)
                 }
             ) {
-                response.status() shouldEqual HttpStatusCode.OK
+                response.status() shouldBeEqualTo HttpStatusCode.OK
             }
         }
     }

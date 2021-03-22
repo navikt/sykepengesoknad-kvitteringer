@@ -6,7 +6,7 @@ import io.ktor.server.testing.handleRequest
 import io.ktor.util.KtorExperimentalAPI
 import no.nav.syfo.utils.TestApp
 import no.nav.syfo.utils.skapTestApplication
-import org.amshove.kluent.shouldEqual
+import org.amshove.kluent.shouldBeEqualTo
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.BeforeAll
 
@@ -30,13 +30,13 @@ internal class SelftestTest {
             applicationState.alive = true
 
             with(engine.handleRequest(HttpMethod.Get, "/is_alive")) {
-                response.status() shouldEqual HttpStatusCode.OK
-                response.content shouldEqual "I'm alive! :)"
+                response.status() shouldBeEqualTo HttpStatusCode.OK
+                response.content shouldBeEqualTo "I'm alive! :)"
             }
 
             with(engine.handleRequest(HttpMethod.Get, "/is_ready")) {
-                response.status() shouldEqual HttpStatusCode.OK
-                response.content shouldEqual "I'm ready! :)"
+                response.status() shouldBeEqualTo HttpStatusCode.OK
+                response.content shouldBeEqualTo "I'm ready! :)"
             }
         }
     }
@@ -48,13 +48,13 @@ internal class SelftestTest {
             applicationState.alive = false
 
             with(engine.handleRequest(HttpMethod.Get, "/is_alive")) {
-                response.status() shouldEqual HttpStatusCode.InternalServerError
-                response.content shouldEqual "I'm dead x_x"
+                response.status() shouldBeEqualTo HttpStatusCode.InternalServerError
+                response.content shouldBeEqualTo "I'm dead x_x"
             }
 
             with(engine.handleRequest(HttpMethod.Get, "/is_ready")) {
-                response.status() shouldEqual HttpStatusCode.InternalServerError
-                response.content shouldEqual "Please wait! I'm not ready :("
+                response.status() shouldBeEqualTo HttpStatusCode.InternalServerError
+                response.content shouldBeEqualTo "Please wait! I'm not ready :("
             }
         }
     }
