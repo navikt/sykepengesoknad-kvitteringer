@@ -15,6 +15,8 @@ spec:
     max: 1
     cpuThresholdPercentage: 90
   port: 8080
+  ingresses:
+    - https://flex-bucket-uploader.dev.intern.nav.no
   liveness:
     path: /is_alive
     initialDelay: 10
@@ -58,8 +60,9 @@ spec:
       rules:
         - application: flex-bildeprosessering
         - application: flex-gateway
-        - application: flex-reisetilskudd-gsak
-        - application: flex-reisetilskudd-backend
         - application: syfosoknad
+          namespace: flex
+          cluster: dev-fss
+        - application: syfogsak
           namespace: flex
           cluster: dev-fss
