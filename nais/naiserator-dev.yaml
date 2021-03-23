@@ -60,3 +60,6 @@ spec:
         - application: flex-gateway
         - application: flex-reisetilskudd-gsak
         - application: flex-reisetilskudd-backend
+        - application: syfosoknad
+          namespace: flex
+          cluster: dev-fss
