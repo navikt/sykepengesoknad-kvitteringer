@@ -23,7 +23,7 @@ val metadataExtractorVersion = "2.15.0"
 val junitVersion = "5.7.1"
 
 plugins {
-    id("org.jmailen.kotlinter") version "3.3.0"
+    id("org.jmailen.kotlinter") version "3.4.0"
     kotlin("jvm") version "1.4.32"
     id("com.diffplug.spotless") version "5.11.0"
     id("com.github.johnrengelman.shadow") version "6.1.0"
