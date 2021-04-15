@@ -25,11 +25,13 @@ fun Application.setupAuth(
         jwt(name = "jwt") {
             verifier(jwkProvider, issuer)
             validate { credentials: JWTCredential ->
-                if (!hasExpectedAudience(credentials, loginserviceIdportenAudience)){
-                    return@validate unauthorized(credentials)
+                if (!hasExpectedAudience(credentials, loginserviceIdportenAudience)) {
+                    log.warn("Auth: Unexpected audience: expected: $loginserviceIdportenAudience Actual: ${credentials.payload.audience}")
+                    return@validate null
                 }
                 if (!erNiva4(credentials)) {
-                    return@validate unauthorized(credentials)
+                    log.warn("Auth: Ikke nivå 4")
+                    return@validate null
                 }
                 return@validate JWTPrincipal(credentials.payload)
             }
@@ -38,10 +40,14 @@ fun Application.setupAuth(
             verifier(aadProvider, aadIssuer)
             validate { credentials ->
                 if (!hasExpectedAudience(credentials, aadClientId)) {
-                    return@validate unauthorized(credentials)
+                    log.warn("Auth: Unexpected audience: expected: $aadClientId Actual: ${credentials.payload.audience}")
+                    return@validate null
                 }
-                if (!aadPreauthorizedApps.map { it.clientId }.contains(credentials.payload.getClaim("azp").asString())) {
-                    return@validate unauthorized(credentials)
+                val azpClaim = credentials.payload.getClaim("azp").asString()
+                val expectedClientIds = aadPreauthorizedApps.map { it.clientId }
+                if (!expectedClientIds.contains(azpClaim)) {
+                    log.warn("Auth: Unexpected azp: expected: $expectedClientIds Actual: $azpClaim")
+                    return@validate null
                 }
                 return@validate JWTPrincipal(credentials.payload)
             }
@@ -49,14 +55,7 @@ fun Application.setupAuth(
     }
 }
 
-fun unauthorized(credentials: JWTCredential): Principal? {
-    log.warn(
-        "Auth: Unexpected audience for jwt {}, {}",
-        StructuredArguments.keyValue("issuer", credentials.payload.issuer),
-        StructuredArguments.keyValue("audience", credentials.payload.audience)
-    )
-    return null
-}
+
 
 fun hasExpectedAudience(credentials: JWTCredential, loginserviceIdportenAudience: String): Boolean {
     return credentials.payload.audience.contains(loginserviceIdportenAudience)
