@@ -20,7 +20,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.*
 import io.ktor.request.receiveMultipart
 import io.ktor.response.header
-import io.ktor.response.respond
 import io.ktor.response.respondBytes
 import io.ktor.routing.Route
 import io.ktor.routing.get
@@ -35,21 +34,6 @@ import java.lang.RuntimeException
 import java.util.UUID
 
 fun Route.setupBucketApi(storage: Storage, env: Environment) {
-    get("/list") {
-        log.warn("Dette endepunktet skal ikke brukes i prod")
-
-        val principal: JWTPrincipal = call.authentication.principal()!!
-        val fnr = principal.payload.subject
-        val bucket: Bucket = storage.get(env.bucketName) ?: throw RuntimeException("Fant ikke bøtte ved navn ${env.bucketName}")
-
-        call.respond(
-            bucket.list().iterateAll().filter { it.metadata?.get("fnr") == fnr }
-                .joinToString(separator = "\n") { blob ->
-                    "${blob.name} (content-type: ${blob.metadata?.get("content-type")}, size: ${blob.size})"
-                }
-        )
-    }
-
     get("/kvittering/{blobName}") {
         val principal: JWTPrincipal = call.authentication.principal()!!
         val fnr = principal.payload.subject
