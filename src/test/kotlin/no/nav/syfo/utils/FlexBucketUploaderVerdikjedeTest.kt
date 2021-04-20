@@ -24,24 +24,11 @@ internal class FlexBucketUploaderVerdikjedeTest {
     fun `Nivå 3 token returnerer 401`() {
         with(testApp) {
             with(
-                engine.handleRequest(HttpMethod.Get, "/list") {
+                engine.handleRequest(HttpMethod.Get, "/kvittering/123") {
                     medSelvbetjeningToken(fnr, level = "level3")
                 }
             ) {
                 response.status() shouldBeEqualTo HttpStatusCode.Unauthorized
-            }
-        }
-    }
-
-    @Test
-    fun `Nivå 4 token returnerer 200`() {
-        with(testApp) {
-            with(
-                engine.handleRequest(HttpMethod.Get, "/list") {
-                    medSelvbetjeningToken(fnr)
-                }
-            ) {
-                response.status() shouldBeEqualTo HttpStatusCode.OK
             }
         }
     }
