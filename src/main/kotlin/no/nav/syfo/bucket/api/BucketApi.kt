@@ -29,7 +29,6 @@ import kotlinx.coroutines.withContext
 import no.nav.syfo.Environment
 import no.nav.syfo.log
 import no.nav.syfo.models.jsonStatus
-import java.io.File
 import java.lang.RuntimeException
 import java.util.UUID
 
@@ -46,8 +45,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             return@get
         }
 
-        val kvittering = File(blobName)
-        kvittering.writeBytes(blob.getContent())
+        val bytes = blob.getContent()
         val kvitteringNavn = "kvittering-$blobName.${blob.metadata?.get("content-type")!!.split("/")[1]}"
 
         log.info("Returnerer $kvitteringNavn (content-type: ${blob.metadata?.get("content-type")})")
@@ -59,7 +57,7 @@ fun Route.setupBucketApi(storage: Storage, env: Environment) {
             ).toString()
         )
         call.respondBytes(
-            kvittering.readBytes(),
+            bytes,
             contentType = ContentType.parse(blob.metadata?.get("content-type")!!)
         )
     }

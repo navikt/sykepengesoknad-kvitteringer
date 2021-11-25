@@ -11,7 +11,6 @@ import io.ktor.routing.get
 import no.nav.syfo.Environment
 import no.nav.syfo.log
 import no.nav.syfo.models.jsonStatus
-import java.io.File
 
 fun Route.setupMachineBucketApi(storage: Storage, env: Environment) {
     get("/maskin/kvittering/{blobname}") {
@@ -19,8 +18,7 @@ fun Route.setupMachineBucketApi(storage: Storage, env: Environment) {
 
         val blobName = call.parameters["blobName"]!!
         val blob = bucket.get(blobName)
-        val kvittering = File(blobName)
-        kvittering.writeBytes(blob.getContent())
+        val bytes = blob.getContent()
         val kvitteringNavn = "$blobName.${blob.metadata?.get("content-type")!!.split("/")[1]}"
 
         log.info("Returnerer $kvitteringNavn (content-type: ${blob.metadata?.get("content-type")})")
@@ -31,7 +29,7 @@ fun Route.setupMachineBucketApi(storage: Storage, env: Environment) {
                 kvitteringNavn
             ).toString()
         )
-        call.respondBytes(kvittering.readBytes(), contentType = ContentType.parse(blob.metadata?.get("content-type")!!))
+        call.respondBytes(bytes, contentType = ContentType.parse(blob.metadata?.get("content-type")!!))
     }
 
     get("/maskin/slett/{blobname}") {
