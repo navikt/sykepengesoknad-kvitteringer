@@ -1,7 +1,7 @@
 name: Bygg, publish og deploy
 on:
   schedule:
-    - cron: '8 30 * * THU'
+    - cron: "35 8 * * THU"
   workflow_dispatch:
   push:
 env:
