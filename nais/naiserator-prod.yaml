@@ -14,7 +14,7 @@ spec:
   image: {{ image }}
   replicas:
     min: 2
-    max: 2
+    max: 3
     cpuThresholdPercentage: 90
   port: 8080
   ingresses:
