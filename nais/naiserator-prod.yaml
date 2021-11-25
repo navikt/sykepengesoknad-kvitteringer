@@ -5,6 +5,8 @@ metadata:
   namespace: flex
   labels:
     team: flex
+  annotations:
+    nais.io/security-does-not-matter: "true"
 spec:
   gcp:
     buckets:
