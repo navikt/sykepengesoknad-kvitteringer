@@ -66,3 +66,6 @@ spec:
         - application: syfogsak
           namespace: flex
           cluster: dev-fss
+        - application: sykepengesoknad-arkivering-oppgave
+          namespace: flex
+          cluster: dev-fss
