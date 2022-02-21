@@ -70,4 +70,4 @@ spec:
           cluster: prod-fss
         - application: sykepengesoknad-arkivering-oppgave
           namespace: flex
-          cluster: prod-fss
+          cluster: prod-gcp
