@@ -1,7 +1,7 @@
 # flex-bucket-uploader
 Brukes til å laste opp kvitteringer fra reisetilskuddsøknader.
 
-## Teknologi used
+## Teknologi brukt
 * Kotlin
 * Ktor
 * Gradle
