@@ -62,10 +62,8 @@ spec:
       rules:
         - application: flex-bildeprosessering
         - application: flex-gateway
+        - application: sykepengesoknad-backend
         - application: syfosoknad
-          namespace: flex
-          cluster: prod-fss
-        - application: syfogsak
           namespace: flex
           cluster: prod-fss
         - application: sykepengesoknad-arkivering-oppgave
