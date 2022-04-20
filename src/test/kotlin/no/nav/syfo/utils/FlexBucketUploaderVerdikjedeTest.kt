@@ -1,13 +1,11 @@
 package no.nav.syfo.utils
 
-import io.ktor.util.KtorExperimentalAPI
-import io.ktor.server.testing.*
 import io.ktor.http.*
+import io.ktor.server.testing.*
 import org.amshove.kluent.shouldBeEqualTo
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
-@KtorExperimentalAPI
 internal class FlexBucketUploaderVerdikjedeTest {
 
     companion object {
@@ -20,6 +18,7 @@ internal class FlexBucketUploaderVerdikjedeTest {
             testApp = skapTestApplication()
         }
     }
+
     @Test
     fun `Nivå 3 token returnerer 401`() {
         with(testApp) {

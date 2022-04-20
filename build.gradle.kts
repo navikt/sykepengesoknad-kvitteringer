@@ -1,34 +1,35 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+    id("org.jmailen.kotlinter") version "3.10.0"
+    id("com.diffplug.spotless") version "6.4.2"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.ben-manes.versions") version "0.42.0"
+    kotlin("jvm") version "1.6.21"
+    jacoco
+}
 
 group = "no.nav.syfo"
 version = "1.0.0"
+description = "flex-bucket-uploader"
+java.sourceCompatibility = JavaVersion.VERSION_17
 
-val coroutinesVersion = "1.4.3-native-mt"
+val ktorVersion = "1.6.8"
+val coroutinesVersion = "1.6.1"
 val javaxActivationVersion = "1.1.1"
-val jacksonVersion = "2.12.2"
-val kluentVersion = "1.65"
-val ktorVersion = "1.5.2"
+val jacksonVersion = "2.13.2"
+val kluentVersion = "1.68"
 val logbackVersion = "1.2.3"
-val logstashEncoderVersion = "6.6"
-val prometheusVersion = "0.10.0"
+val logstashEncoderVersion = "7.1.1"
+val prometheusVersion = "0.15.0"
 val smCommonVersion = "1.7cb158e"
-val mockkVersion = "1.11.0"
-val nimbusdsVersion = "9.7"
-val testContainerKafkaVersion = "1.15.2"
-val googleCloudVersion = "1.113.14"
-val tikaVersion = "1.25"
-val metadataExtractorVersion = "2.15.0"
-val junitVersion = "5.7.1"
-
-plugins {
-    id("org.jmailen.kotlinter") version "3.4.0"
-    kotlin("jvm") version "1.4.32"
-    id("com.diffplug.spotless") version "5.11.0"
-    id("com.github.johnrengelman.shadow") version "6.1.0"
-    jacoco
-}
+val mockkVersion = "1.12.3"
+val nimbusdsVersion = "9.21"
+val testContainerKafkaVersion = "1.17.1"
+val googleCloudVersion = "2.6.1"
+val tikaVersion = "2.3.0"
+val metadataExtractorVersion = "2.17.0"
+val junitVersion = "5.8.2"
 
 buildscript {
     dependencies {
@@ -43,7 +44,6 @@ val githubPassword: String by project
 
 repositories {
     mavenCentral()
-    jcenter()
     maven(url = "https://dl.bintray.com/kotlin/ktor")
     maven(url = "https://packages.confluent.io/maven/")
     maven(url = "https://kotlin.bintray.com/kotlinx")
@@ -57,12 +57,9 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
-
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+    implementation(kotlin("stdlib-jdk8"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$coroutinesVersion")
-    implementation("io.prometheus:simpleclient_hotspot:$prometheusVersion")
-    implementation("io.prometheus:simpleclient_common:$prometheusVersion")
-
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-client-core:$ktorVersion")
     implementation("io.ktor:ktor-client-apache:$ktorVersion")
@@ -72,30 +69,24 @@ dependencies {
     implementation("io.ktor:ktor-auth:$ktorVersion")
     implementation("io.ktor:ktor-auth-jwt:$ktorVersion")
     implementation("com.google.cloud:google-cloud-storage:$googleCloudVersion")
-
+    implementation("io.prometheus:simpleclient_hotspot:$prometheusVersion")
+    implementation("io.prometheus:simpleclient_common:$prometheusVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashEncoderVersion")
-
     implementation("com.fasterxml.jackson.module:jackson-module-jaxb-annotations:$jacksonVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:$jacksonVersion")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion")
-
     implementation("org.apache.tika:tika-core:$tikaVersion")
     implementation("com.drewnoakes:metadata-extractor:$metadataExtractorVersion")
 
+    testImplementation(platform("org.junit:junit-bom:$junitVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
+    testImplementation("org.testcontainers:kafka:$testContainerKafkaVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("com.nimbusds:nimbus-jose-jwt:$nimbusdsVersion")
-    testImplementation("org.testcontainers:kafka:$testContainerKafkaVersion")
-    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
-        exclude(group = "org.eclipse.jetty")
-    }
-
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
-
-    testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
 }
 
 tasks.withType<Jar> {
@@ -109,7 +100,12 @@ tasks {
             events("PASSED", "FAILED", "SKIPPED")
         }
     }
-    named<KotlinCompile>("compileTestKotlin") {
-        kotlinOptions.jvmTarget = "12"
+}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions {
+        freeCompilerArgs = listOf("-Xjsr305=strict")
+        jvmTarget = "17"
+        kotlinOptions.allWarningsAsErrors = true
     }
 }
