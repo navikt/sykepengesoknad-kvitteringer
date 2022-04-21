@@ -35,8 +35,8 @@ fun skapTestApplication(): TestApp {
     }
     setupEnvMock()
 
-    val e = TestApplicationEngine()
-    with(e) {
+    val testApplicationEngine = TestApplicationEngine()
+    with(testApplicationEngine) {
 
         val path = "src/test/resources/jwkset.json"
         val uri = Paths.get(path).toUri().toURL()
@@ -57,7 +57,7 @@ fun skapTestApplication(): TestApp {
     }
 
     return TestApp(
-        engine = e,
+        engine = testApplicationEngine,
         applicationState = applicationState
     )
 }
