@@ -4,7 +4,6 @@ import com.auth0.jwk.JwkProviderBuilder
 import com.google.cloud.storage.Storage
 import io.ktor.http.*
 import io.ktor.server.testing.*
-import io.ktor.util.*
 import io.mockk.clearAllMocks
 import io.mockk.every
 import io.mockk.mockk
@@ -17,13 +16,11 @@ import java.nio.file.Paths
 private val selvbetjeningissuer = "TestIssuer"
 private val selvbetjeningaudience = "AUD"
 
-@KtorExperimentalAPI
 class TestApp(
     val engine: TestApplicationEngine,
     val applicationState: ApplicationState
 )
 
-@KtorExperimentalAPI
 fun skapTestApplication(): TestApp {
     val applicationState = ApplicationState()
     val env = mockk<Environment>()
@@ -38,8 +35,8 @@ fun skapTestApplication(): TestApp {
     }
     setupEnvMock()
 
-    val e = TestApplicationEngine()
-    with(e) {
+    val testApplicationEngine = TestApplicationEngine()
+    with(testApplicationEngine) {
 
         val path = "src/test/resources/jwkset.json"
         val uri = Paths.get(path).toUri().toURL()
@@ -60,7 +57,7 @@ fun skapTestApplication(): TestApp {
     }
 
     return TestApp(
-        engine = e,
+        engine = testApplicationEngine,
         applicationState = applicationState
     )
 }
@@ -69,12 +66,12 @@ fun TestApplicationRequest.medSelvbetjeningToken(subject: String, level: String 
     addHeader(
         HttpHeaders.Authorization,
         "Bearer ${
-            generateJWT(
-                audience = selvbetjeningaudience,
-                issuer = selvbetjeningissuer,
-                subject = subject,
-                level = level
-            )
+        generateJWT(
+            audience = selvbetjeningaudience,
+            issuer = selvbetjeningissuer,
+            subject = subject,
+            level = level
+        )
         }"
     )
 }

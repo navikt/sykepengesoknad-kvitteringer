@@ -1,16 +1,13 @@
 package no.nav.syfo
 
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.testing.handleRequest
-import io.ktor.util.KtorExperimentalAPI
+import io.ktor.http.*
+import io.ktor.server.testing.*
 import no.nav.syfo.utils.TestApp
 import no.nav.syfo.utils.skapTestApplication
 import org.amshove.kluent.shouldBeEqualTo
-import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 
-@KtorExperimentalAPI
 internal class SelftestTest {
 
     companion object {

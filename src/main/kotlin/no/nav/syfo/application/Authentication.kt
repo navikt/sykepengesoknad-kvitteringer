@@ -4,11 +4,9 @@ import com.auth0.jwk.JwkProvider
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.Authentication
-import io.ktor.auth.Principal
 import io.ktor.auth.jwt.JWTCredential
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
-import net.logstash.logback.argument.StructuredArguments
 import no.nav.syfo.PreAuthorizedClient
 import no.nav.syfo.log
 
@@ -54,8 +52,6 @@ fun Application.setupAuth(
         }
     }
 }
-
-
 
 fun hasExpectedAudience(credentials: JWTCredential, loginserviceIdportenAudience: String): Boolean {
     return credentials.payload.audience.contains(loginserviceIdportenAudience)

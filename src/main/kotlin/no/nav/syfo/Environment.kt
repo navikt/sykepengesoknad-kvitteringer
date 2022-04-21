@@ -3,8 +3,8 @@ package no.nav.syfo
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 
 data class Environment(
     val applicationPort: Int = getEnvVar("APPLICATION_PORT", "8080").toInt(),
@@ -25,8 +25,8 @@ fun getEnvVar(varName: String, defaultValue: String? = null) =
 
 fun getAuthorizedApps(aadAuthorizedApps: String): List<PreAuthorizedClient> {
     val objectMapper = ObjectMapper()
+        .registerKotlinModule()
         .registerModule(JavaTimeModule())
-        .registerModule(KotlinModule())
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     return objectMapper.readValue(aadAuthorizedApps)
 }
