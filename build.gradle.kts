@@ -32,7 +32,7 @@ val junitVersion = "5.8.2"
 buildscript {
     dependencies {
         classpath("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
-        classpath("org.glassfish.jaxb:jaxb-runtime:3.0.0")
+        classpath("org.glassfish.jaxb:jaxb-runtime:3.0.2")
         classpath("com.sun.activation:javax.activation:1.2.0")
     }
 }
