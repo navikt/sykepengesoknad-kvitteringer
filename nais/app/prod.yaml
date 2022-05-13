@@ -1,0 +1,5 @@
+environment: prod
+replicas_min: 2
+replicas_max: 3
+env:
+  SPRING_PROFILES_ACTIVE: default
