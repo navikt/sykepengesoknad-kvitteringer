@@ -5,14 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.kafka.annotation.EnableKafka
-import org.springframework.scheduling.annotation.EnableScheduling
 
 @SpringBootApplication
-@EnableKafka
-@EnableScheduling
+@EnableJwtTokenValidation
 class Application
 
 fun main(args: Array<String>) {

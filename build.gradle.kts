@@ -26,6 +26,7 @@ repositories {
 val tokenSupportVersion = "2.0.14"
 val logstashLogbackEncoderVersion = "7.0.1"
 val kluentVersion = "1.68"
+val googleCloudVersion = "2.6.1"
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
@@ -33,12 +34,14 @@ dependencies {
     implementation(kotlin("reflect"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.hibernate.validator:hibernate-validator")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashLogbackEncoderVersion")
     implementation("no.nav.security:token-client-spring:$tokenSupportVersion")
     implementation("no.nav.security:token-validation-spring:$tokenSupportVersion")
+    implementation("com.google.cloud:google-cloud-storage:$googleCloudVersion")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
