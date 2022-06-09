@@ -19,3 +19,5 @@ no.nav.security.jwt:
     azureator:
       discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
       accepted_audience: ${AZURE_APP_CLIENT_ID}
+
+logging.config: "classpath:logback.xml"

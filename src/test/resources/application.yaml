@@ -12,3 +12,5 @@ spring:
   profiles.active: test
   main:
     banner-mode: off
+
+logging.config: "classpath:logback-test.xml"
