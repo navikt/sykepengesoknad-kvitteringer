@@ -39,12 +39,12 @@ class GlobalExceptionHandler {
             }
         }
     }
+
+    private fun skapResponseEntity(status: HttpStatus): ResponseEntity<Any> =
+        ResponseEntity(ApiError(status.reasonPhrase), status)
+
+    private data class ApiError(val reason: String)
 }
-
-private fun skapResponseEntity(status: HttpStatus): ResponseEntity<Any> =
-    ResponseEntity(ApiError(status.reasonPhrase), status)
-
-private data class ApiError(val reason: String)
 
 abstract class AbstractApiError(
     message: String,
