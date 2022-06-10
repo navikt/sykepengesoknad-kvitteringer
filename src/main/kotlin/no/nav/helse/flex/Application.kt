@@ -8,10 +8,19 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import no.nav.security.token.support.spring.api.EnableJwtTokenValidation
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.boot.web.client.RestTemplateBuilder
+import org.springframework.context.annotation.Bean
+import org.springframework.web.client.RestTemplate
 
 @SpringBootApplication
 @EnableJwtTokenValidation
-class Application
+class Application() {
+
+    @Bean
+    fun restTemplate(restTemplateBuilder: RestTemplateBuilder): RestTemplate {
+        return restTemplateBuilder.build()
+    }
+}
 
 fun main(args: Array<String>) {
     runApplication<Application>(*args)

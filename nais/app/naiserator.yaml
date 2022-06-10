@@ -40,9 +40,6 @@ spec:
       memory: 1000Mi
   vault:
     enabled: false
-  env:
-    - name: BUCKET_NAME
-      value: flex-kvitteringer-prod
   envFrom:
     - configmap: loginservice-idporten
   azure:
@@ -65,3 +62,10 @@ spec:
         - application: sykepengesoknad-arkivering-oppgave
           namespace: flex
           cluster: prod-gcp
+  env:
+    - name: BUCKET_NAME
+      value: flex-kvitteringer-prod
+  {{#each env}}
+     - name: {{@key}}
+       value: "{{this}}"
+  {{/each}}

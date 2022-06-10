@@ -1,5 +1,6 @@
 BUCKET_NAME: local-bucket
 AZURE_APP_PRE_AUTHORIZED_APPS: "[{\"name\":\"dev-gcp:flex:flex-gateway\",\"clientId\":\"flex-gateway-client-id\"}]"
+FLEX_BILDEPROSESSERING_URL: "http://flex-bildeprosessering"
 
 management:
   endpoint.prometheus.enabled: true
