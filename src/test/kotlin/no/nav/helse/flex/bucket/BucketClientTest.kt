@@ -1,29 +1,23 @@
 package no.nav.helse.flex.bucket
 
-import com.google.cloud.storage.Storage
-import no.nav.helse.flex.FellesTestOppsett
+import com.google.cloud.storage.contrib.nio.testing.LocalStorageHelper
 import no.nav.helse.flex.no.nav.helse.flex.bucket.BucketClient
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestMethodOrder
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-internal class BucketClientTest : FellesTestOppsett() {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+internal class BucketClientTest {
 
-    @Autowired
-    private lateinit var storage: Storage
-
-    @Autowired
-    private lateinit var bucketClient: BucketClient
-
-    @Value("\${BUCKET_NAME}")
-    private lateinit var bucketName: String
+    private val storage = LocalStorageHelper.getOptions().service
+    private val bucketName = "local-bucker"
+    private val bucketClient = BucketClient(bucketName, storage)
 
     @Test
     @Order(1)
