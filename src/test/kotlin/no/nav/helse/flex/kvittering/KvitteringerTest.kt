@@ -1,50 +1,45 @@
 package no.nav.helse.flex.kvittering
 
 import no.nav.helse.flex.FellesTestOppsett
-import no.nav.helse.flex.no.nav.helse.flex.bucket.BucketClient
 import org.amshove.kluent.invoking
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.shouldThrow
+import org.junit.jupiter.api.MethodOrderer
+import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class KvitteringerTest : FellesTestOppsett() {
-
-    @Autowired
-    private lateinit var bucketClient: BucketClient
 
     @Autowired
     private lateinit var kvitteringer: Kvitteringer
 
     @Test
-    fun `Henter lagret kvittering`() {
-        bucketClient.lagreBlob(
-            "blob-1",
-            MediaType.IMAGE_JPEG.toString(),
-            mapOf("fnr" to "fnr-1"),
-            "blob-content-1".toByteArray()
-        )
+    @Order(1)
+    fun `Lagrer kvittering`() {
+        val bilde = hentTestbilde("example.jpg")
 
+        kvitteringer.lagreKvittering("fnr-1", "blob-1", bilde.contentType, bilde.bytes)
+    }
+
+    @Test
+    @Order(2)
+    fun `Henter lagret kvittering`() {
         kvitteringer.hentKvittering("fnr-1", "blob-1")?.let {
             it.contentType `should be equal to` MediaType.IMAGE_JPEG.toString()
             it.filNavn `should be equal to` "kvittering-blob-1.jpeg"
-            it.contentSize `should be equal to` 14
-            String(it.byteArray) `should be equal to` "blob-content-1"
+            it.contentSize `should be equal to` 64742
         }
     }
 
     @Test
+    @Order(3)
     fun `Kvitteringer som tilhører en annen bruker kaster exception`() {
-        bucketClient.lagreBlob(
-            "blob-2",
-            MediaType.IMAGE_JPEG.toString(),
-            mapOf("fnr" to "fnr-2"),
-            "blob-content-2".toByteArray()
-        )
-
-        invoking { kvitteringer.hentKvittering("fnr-1", "blob-2") } shouldThrow IllegalAccessException::class
+        invoking { kvitteringer.hentKvittering("fnr-2", "blob-1") } shouldThrow IllegalAccessException::class
     }
 
     @Test
