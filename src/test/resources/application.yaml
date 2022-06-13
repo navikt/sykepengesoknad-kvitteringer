@@ -9,6 +9,15 @@ management:
     exposure.include: health,prometheus
     path-mapping.prometheus: /prometheus
 
+no.nav.security.jwt:
+  issuer:
+    loginservice:
+      discoveryurl: http://localhost:${mock-oauth2-server.port}/loginservice/.well-known/openid-configuration
+      accepted_audience: loginservice-client-id
+    azureator:
+      discoveryurl: http://localhost:${mock-oauth2-server.port}/azureator/.well-known/openid-configuration
+      accepted_audience: flex-bucket-uploader-client-id
+
 spring:
   profiles.active: test
   main:

@@ -3,12 +3,14 @@ package no.nav.helse.flex.api
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.helse.flex.AbstractApiError
 import no.nav.helse.flex.LogLevel
+import no.nav.helse.flex.kvittering.Kvitteringer
 import no.nav.helse.flex.logger
 import no.nav.helse.flex.objectMapper
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.GetMapping
@@ -23,6 +25,7 @@ class FrontendApi(
     @Value("\${BUCKET_NAME}") private val bucketName: String,
     @Value("\${AZURE_APP_PRE_AUTHORIZED_APPS}") private val azurePreAuthorizedApps: String,
     private val tokenValidationContextHolder: TokenValidationContextHolder,
+    private val kvitteringer: Kvitteringer
 ) {
 
     private val log = logger()
@@ -31,9 +34,13 @@ class FrontendApi(
 
     @GetMapping("/kvittering/{blobName}")
     @ProtectedWithClaims(issuer = "loginservice", claimMap = ["acr=Level4"])
-    fun hentKvittering(@PathVariable blobName: String): ResponseEntity<String> {
-        log.info("Frontend: hentKvittering $blobName med fnr: ${tokenValidationContextHolder.hentFnr()}")
-        return ResponseEntity.ok("Called")
+    fun hentKvittering(@PathVariable blobName: String): ResponseEntity<ByteArray> {
+        val kvittering = kvitteringer.hentKvittering(hentFnr(), blobName) ?: return ResponseEntity.notFound().build()
+
+        return ResponseEntity
+            .ok()
+            .contentType(MediaType.parseMediaType(kvittering.contentType))
+            .body(kvittering.byteArray)
     }
 
     @PostMapping("/opplasting")
@@ -41,7 +48,7 @@ class FrontendApi(
     fun lagreKvittering(@RequestParam("file") file: MultipartFile): Any {
         val contentType = file.contentType
         val bytes = file.bytes
-        log.info("Mottok fil av typen $contentType på størrelse ${bytes.size} tilhørende ${tokenValidationContextHolder.hentFnr()}")
+        log.info("Mottok fil av typen $contentType på størrelse ${bytes.size} tilhørende ${hentFnr()}")
         return ResponseEntity.accepted()
     }
 
@@ -94,9 +101,13 @@ class FrontendApi(
         }
     }
 
-    private fun TokenValidationContextHolder.hentFnr(): String {
-        val claims = this.tokenValidationContext.getClaims("loginservice")
-        return claims.getStringClaim("pid") ?: claims.subject
+    private fun hentFnr(): String {
+        fun TokenValidationContextHolder.hentFnr(): String {
+            val claims = this.tokenValidationContext.getClaims("loginservice")
+            return claims.getStringClaim("pid") ?: claims.subject
+        }
+
+        return tokenValidationContextHolder.hentFnr()
     }
 
     private fun TokenValidationContextHolder.hentAzpClaim(): String {

@@ -30,6 +30,8 @@ repositories {
     }
 }
 
+ext["okhttp3.version"] = "4.9.3" // Mockwebserver
+
 val tokenSupportVersion = "2.0.14"
 val logstashLogbackEncoderVersion = "7.0.1"
 val kluentVersion = "1.68"
@@ -80,6 +82,8 @@ tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "17"
-        kotlinOptions.allWarningsAsErrors = true
+        if (System.getenv("CI") == "true") {
+            kotlinOptions.allWarningsAsErrors = true
+        }
     }
 }
