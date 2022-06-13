@@ -43,7 +43,22 @@ internal class KvitteringerTest : FellesTestOppsett() {
     }
 
     @Test
+    @Order(4)
+    fun `Sletter kvittering som finnes`() {
+        kvitteringer.slettKvittering("blob-1")
+
+        kvitteringer.hentKvittering("fnr-1", "blob-1") `should be` null
+    }
+
+    @Test
+    @Order(5)
+    fun `Sletter kvittering som allerede er slettet`() {
+        kvitteringer.slettKvittering("blob-1")
+    }
+
+    @Test
+    @Order(6)
     fun `Kvittering som ikke finnes returnerer null`() {
-        kvitteringer.hentKvittering("fnr-1", "blob-0") `should be` null
+        kvitteringer.hentKvittering("fnr-1", "blob-1") `should be` null
     }
 }

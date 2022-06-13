@@ -1,5 +1,6 @@
 package no.nav.helse.flex.kvittering
 
+import no.nav.helse.flex.logger
 import no.nav.helse.flex.no.nav.helse.flex.bildeprosessering.Bilde
 import no.nav.helse.flex.no.nav.helse.flex.bildeprosessering.Bildeprosessering
 import no.nav.helse.flex.no.nav.helse.flex.bucket.BucketClient
@@ -12,6 +13,8 @@ class Kvitteringer(
     private val bucketClient: BucketClient,
     private val bildeprosessering: Bildeprosessering,
 ) {
+
+    private val log = logger()
 
     fun lagreKvittering(fnr: String, navn: String, mediaType: MediaType, blobContent: ByteArray) {
         val prosessertBilde = bildeprosessering.prosesserBilde(Bilde(mediaType, blobContent))
@@ -33,6 +36,14 @@ class Kvitteringer(
                 contentType = it.metadata["content-type"]!!,
                 byteArray = it.blob.getContent(),
             )
+        }
+    }
+
+    fun slettKvittering(blobNavn: String) {
+        val slettetBlob = bucketClient.slettBlob(blobNavn)
+
+        if (!slettetBlob) {
+            log.warn("Slettet ikke blob $blobNavn da den ikke finnes.")
         }
     }
 
