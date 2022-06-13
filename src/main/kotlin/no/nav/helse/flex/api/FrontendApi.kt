@@ -4,7 +4,6 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.helse.flex.AbstractApiError
 import no.nav.helse.flex.LogLevel
 import no.nav.helse.flex.kvittering.Kvitteringer
-import no.nav.helse.flex.logger
 import no.nav.helse.flex.objectMapper
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
@@ -19,46 +18,46 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.multipart.MultipartFile
+import java.util.*
 
 @Controller
 class FrontendApi(
-    @Value("\${BUCKET_NAME}") private val bucketName: String,
-    @Value("\${AZURE_APP_PRE_AUTHORIZED_APPS}") private val azurePreAuthorizedApps: String,
+    @Value("\${AZURE_APP_PRE_AUTHORIZED_APPS}")
+    private val azurePreAuthorizedApps: String,
     private val tokenValidationContextHolder: TokenValidationContextHolder,
     private val kvitteringer: Kvitteringer
 ) {
 
-    private val log = logger()
-
     private val allowedClients: List<PreAuthorizedClient> = objectMapper.readValue(azurePreAuthorizedApps)
+
+    @PostMapping("/opplasting")
+    @ProtectedWithClaims(issuer = "loginservice", claimMap = ["acr=Level4"])
+    @ResponseBody
+    fun lagreKvittering(@RequestParam("file") file: MultipartFile): ResponseEntity<VedleggRespons> {
+        val uuid = UUID.randomUUID().toString()
+
+        kvitteringer.lagreKvittering(fnr(), uuid, MediaType.parseMediaType(file.contentType!!), file.bytes)
+        return ResponseEntity.status(HttpStatus.CREATED).body(VedleggRespons(uuid, "Lagret kvittering med id: $uuid."))
+    }
 
     @GetMapping("/kvittering/{blobName}")
     @ProtectedWithClaims(issuer = "loginservice", claimMap = ["acr=Level4"])
     fun hentKvittering(@PathVariable blobName: String): ResponseEntity<ByteArray> {
-        val kvittering = kvitteringer.hentKvittering(hentFnr(), blobName) ?: return ResponseEntity.notFound().build()
-
-        return ResponseEntity
-            .ok()
-            .contentType(MediaType.parseMediaType(kvittering.contentType))
-            .body(kvittering.byteArray)
-    }
-
-    @PostMapping("/opplasting")
-    @ProtectedWithClaims(issuer = "loginservice", claimMap = ["acr=Level4"])
-    fun lagreKvittering(@RequestParam("file") file: MultipartFile): Any {
-        val contentType = file.contentType
-        val bytes = file.bytes
-        log.info("Mottok fil av typen $contentType på størrelse ${bytes.size} tilhørende ${hentFnr()}")
-        return ResponseEntity.accepted()
+        try {
+            val kvittering = kvitteringer.hentKvittering(fnr(), blobName) ?: return ResponseEntity.notFound().build()
+            return ResponseEntity
+                .ok()
+                .contentType(MediaType.parseMediaType(kvittering.contentType))
+                .body(kvittering.byteArray)
+        } catch (e: IllegalAccessException) {
+            throw UkjentClientException(e.message!!)
+        }
     }
 
     @GetMapping("/maskin/kvittering/{blobName}")
-    @ResponseBody
     @ProtectedWithClaims(issuer = "azureator")
+    @ResponseBody
     fun hentBlob(@PathVariable blobName: String): VedleggRespons {
-
-        log.info("Maskin henter kvittering med blobName $blobName")
-
         validateClientId(
             listOf(
                 NamespaceOgApp(
@@ -67,7 +66,6 @@ class FrontendApi(
                 )
             )
         )
-
         return VedleggRespons("1234", "GetMapping")
     }
 
@@ -75,9 +73,6 @@ class FrontendApi(
     @ResponseBody
     @ProtectedWithClaims(issuer = "azureator")
     fun slettBlob(@PathVariable blobName: String): VedleggRespons {
-
-        log.info("Sletter kvittering med blobname $blobName")
-
         validateClientId(
             listOf(
                 NamespaceOgApp(
@@ -86,7 +81,6 @@ class FrontendApi(
                 )
             )
         )
-
         return VedleggRespons("1234", "GetMapping")
     }
 
@@ -101,7 +95,7 @@ class FrontendApi(
         }
     }
 
-    private fun hentFnr(): String {
+    private fun fnr(): String {
         fun TokenValidationContextHolder.hentFnr(): String {
             val claims = this.tokenValidationContext.getClaims("loginservice")
             return claims.getStringClaim("pid") ?: claims.subject

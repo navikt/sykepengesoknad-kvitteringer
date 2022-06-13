@@ -1,35 +1,62 @@
 package no.nav.helse.flex.api
 
+import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.helse.flex.FellesTestOppsett
-import no.nav.helse.flex.no.nav.helse.flex.bucket.BucketClient
+import no.nav.helse.flex.PROSESSERT_JPEG_SIZE
+import no.nav.helse.flex.objectMapper
 import org.amshove.kluent.`should be equal to`
+import org.amshove.kluent.shouldNotBeNullOrEmpty
+import org.junit.jupiter.api.MethodOrderer
+import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
+import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.mock.web.MockMultipartFile
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class FrontendApiTest : FellesTestOppsett() {
 
-    @Autowired
-    private lateinit var bucketClient: BucketClient
+    private lateinit var kvitteringId: String
 
     @Test
-    fun `Hent kvittering`() {
-
-        bucketClient.lagreBlob(
-            "blob-1",
-            MediaType.IMAGE_JPEG,
-            mapOf("fnr" to "fnr-1"),
-            hentTestbilde("example.jpg").bytes
-        )
+    @Order(1)
+    fun `Last opp kvittering`() {
+        val bilde = hentTestbilde("example.jpg")
+        val multipartFile = MockMultipartFile("file", null, bilde.contentType.toString(), bilde.bytes)
 
         val response = mockMvc.perform(
-            MockMvcRequestBuilders.get("/kvittering/blob-1")
+            multipart("/opplasting")
+                .file(multipartFile)
                 .header("Authorization", "Bearer ${loginserviceToken("fnr-1")}")
-        ).andExpect(MockMvcResultMatchers.status().isOk).andReturn().response
+        ).andExpect(status().isCreated).andReturn().response
+
+        val vedleggRespons: VedleggRespons = objectMapper.readValue(response.contentAsString)
+        vedleggRespons.id.shouldNotBeNullOrEmpty()
+
+        kvitteringId = vedleggRespons.id!!
+    }
+
+    @Test
+    @Order(2)
+    fun `Hent kvittering`() {
+        val response = mockMvc.perform(
+            get("/kvittering/$kvitteringId")
+                .header("Authorization", "Bearer ${loginserviceToken("fnr-1")}")
+        ).andExpect(status().isOk).andReturn().response
 
         response.contentType `should be equal to` MediaType.IMAGE_JPEG_VALUE
-        response.contentLength `should be equal to` 913449
+        response.contentLength `should be equal to` PROSESSERT_JPEG_SIZE
+    }
+
+    @Test
+    @Order(3)
+    fun `Hent kvittering med feil bruker`() {
+        mockMvc.perform(
+            get("/kvittering/$kvitteringId")
+                .header("Authorization", "Bearer ${loginserviceToken("fnr-2")}")
+        ).andExpect(status().isForbidden)
     }
 }
