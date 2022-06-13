@@ -4,6 +4,7 @@ import com.google.cloud.storage.Blob
 import com.google.cloud.storage.BlobInfo
 import com.google.cloud.storage.Storage
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 
 @Component
@@ -13,10 +14,11 @@ class BucketClient(
     private val storage: Storage,
 ) {
 
-    fun lagreBlob(blobName: String, contentType: String, metadata: Map<String, String>, content: ByteArray) {
+    fun lagreBlob(blobName: String, contentType: MediaType, metadata: Map<String, String>, content: ByteArray) {
+        val contentTypeVerdi = contentType.toString()
         val blobInfo = BlobInfo.newBuilder(bucketName, blobName)
-            .setContentType(contentType)
-            .setMetadata(metadata + mapOf("content-type" to contentType))
+            .setContentType(contentTypeVerdi)
+            .setMetadata(metadata + mapOf("content-type" to contentTypeVerdi))
             .build()
 
         storage.create(blobInfo, content)

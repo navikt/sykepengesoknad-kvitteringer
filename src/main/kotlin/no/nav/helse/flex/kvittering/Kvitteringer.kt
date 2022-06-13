@@ -18,7 +18,7 @@ class Kvitteringer(
 
         bucketClient.lagreBlob(
             blobName = navn,
-            contentType = prosessertBilde!!.contentType.toString(),
+            contentType = prosessertBilde!!.contentType,
             metadata = mapOf("fnr" to fnr),
             content = prosessertBilde.bytes
         )

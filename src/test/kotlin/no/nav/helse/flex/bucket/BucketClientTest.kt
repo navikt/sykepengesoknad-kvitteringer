@@ -31,7 +31,7 @@ internal class BucketClientTest {
     @Order(2)
     fun `Lagrer fil i bucket`() {
         val bytes = "blob-content-1".toByteArray()
-        bucketClient.lagreBlob("blob-1", MediaType.TEXT_PLAIN.toString(), mapOf("fnr" to "fnr-1"), bytes)
+        bucketClient.lagreBlob("blob-1", MediaType.TEXT_PLAIN, mapOf("fnr" to "fnr-1"), bytes)
 
         listInnhold().isEmpty() `should be` false
     }
