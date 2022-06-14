@@ -79,7 +79,7 @@ internal class FrontendApiTest : FellesTestOppsett() {
     fun `Hent kvittering som feil maskin`() {
         val azureToken = azureToken(subject = "ukjent-client-id")
 
-        val response = mockMvc.perform(
+        mockMvc.perform(
             get("/maskin/kvittering/$kvitteringId")
                 .header("Authorization", "Bearer $azureToken")
         ).andExpect(status().isForbidden)
@@ -93,6 +93,37 @@ internal class FrontendApiTest : FellesTestOppsett() {
         mockMvc.perform(
             get("/maskin/kvittering/ukjent-kvittering")
                 .header("Authorization", "Bearer $azureToken")
+        ).andExpect(status().isNotFound)
+    }
+
+    @Test
+    @Order(6)
+    fun `Slett kvittering som maskin`() {
+        val azureToken = azureToken(subject = "sykepengesoknad-backend-client-id")
+
+        mockMvc.perform(
+            get("/maskin/slett/$kvitteringId")
+                .header("Authorization", "Bearer $azureToken")
+        ).andExpect(status().isOk)
+    }
+
+    @Test
+    @Order(7)
+    fun `Slett kvittering som ikke finned som maskin`() {
+        val azureToken = azureToken(subject = "sykepengesoknad-backend-client-id")
+
+        mockMvc.perform(
+            get("/maskin/slett/$kvitteringId")
+                .header("Authorization", "Bearer $azureToken")
+        ).andExpect(status().isOk)
+    }
+
+    @Test
+    @Order(8)
+    fun `Hent kvittering som ikke finnes som bruker`() {
+        mockMvc.perform(
+            get("/kvittering/$kvitteringId")
+                .header("Authorization", "Bearer ${loginserviceToken("fnr-1")}")
         ).andExpect(status().isNotFound)
     }
 }

@@ -72,16 +72,10 @@ class FrontendApi(
     @GetMapping("/maskin/slett/{blobName}")
     @ResponseBody
     @ProtectedWithClaims(issuer = "azureator")
-    fun slettBlob(@PathVariable blobName: String): VedleggRespons {
-        validateClientId(
-            listOf(
-                NamespaceOgApp(
-                    namespace = "flex",
-                    app = "sykepengesoknad-backend",
-                )
-            )
-        )
-        return VedleggRespons("1234", "GetMapping")
+    fun slettKvittering(@PathVariable blobName: String): ResponseEntity<VedleggRespons> {
+        validateClientId(validClients())
+        kvitteringer.slettKvittering(blobName)
+        return ResponseEntity.ok().body(VedleggRespons(blobName, "Slettet kvittering med id: $blobName."))
     }
 
     private fun validClients() = listOf(
