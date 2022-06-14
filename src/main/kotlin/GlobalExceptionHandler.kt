@@ -16,25 +16,25 @@ class GlobalExceptionHandler {
     private val log = logger()
 
     @ExceptionHandler(java.lang.Exception::class)
-    fun handleException(ex: Exception, request: HttpServletRequest): ResponseEntity<Any> {
+    fun handleException(exception: Exception, request: HttpServletRequest): ResponseEntity<Any> {
 
-        return when (ex) {
+        return when (exception) {
             is AbstractApiError -> {
-                when (ex.loglevel) {
-                    LogLevel.WARN -> log.warn(ex.message, ex)
-                    LogLevel.ERROR -> log.error(ex.message, ex)
+                when (exception.loglevel) {
+                    LogLevel.WARN -> log.warn(exception.message, exception)
+                    LogLevel.ERROR -> log.error(exception.message, exception)
                     LogLevel.OFF -> {
                     }
                 }
 
-                ResponseEntity(ApiError(ex.reason), ex.httpStatus)
+                ResponseEntity(ApiError(exception.reason), exception.httpStatus)
             }
             is JwtTokenInvalidClaimException -> skapResponseEntity(HttpStatus.UNAUTHORIZED)
             is JwtTokenUnauthorizedException -> skapResponseEntity(HttpStatus.UNAUTHORIZED)
             is MissingRequestHeaderException -> skapResponseEntity(HttpStatus.BAD_REQUEST)
             is HttpMediaTypeNotAcceptableException -> skapResponseEntity(HttpStatus.NOT_ACCEPTABLE)
             else -> {
-                log.error("Internal server error - ${ex.message} - ${request.method}: ${request.requestURI}", ex)
+                log.error("Internal server error - ${exception.message} - ${request.method}: ${request.requestURI}", exception)
                 skapResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
             }
         }

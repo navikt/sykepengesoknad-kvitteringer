@@ -39,9 +39,18 @@ class Kvitteringer(
         }
     }
 
+    fun hentKvittering(blobNavn: String): Kvittering? {
+        return bucketClient.hentBlob(blobNavn)?.let {
+            return Kvittering(
+                filNavn = "kvittering-$blobNavn.${it.filType()}",
+                contentType = it.metadata["content-type"]!!,
+                byteArray = it.blob.getContent(),
+            )
+        }
+    }
+
     fun slettKvittering(blobNavn: String) {
         val slettetBlob = bucketClient.slettBlob(blobNavn)
-
         if (!slettetBlob) {
             log.warn("Slettet ikke blob $blobNavn da den ikke finnes.")
         }

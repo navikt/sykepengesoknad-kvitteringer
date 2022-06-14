@@ -29,7 +29,7 @@ abstract class FellesTestOppsett() {
     lateinit var mockMvc: MockMvc
 
     @Autowired
-    lateinit var server: MockOAuth2Server
+    lateinit var mockOAuth2Server: MockOAuth2Server
 
     companion object {
 
@@ -54,9 +54,17 @@ abstract class FellesTestOppsett() {
         )
     }
 
-    fun loginserviceToken(fnr: String) = server.token(subject = fnr)
+    fun loginserviceToken(fnr: String) = mockOAuth2Server.lagToken(subject = fnr)
 
-    private fun MockOAuth2Server.token(
+    fun azureToken(subject: String) = mockOAuth2Server.lagToken(
+        subject = subject,
+        issuerId = "azureator",
+        clientId = subject,
+        audience = "flex-bucket-uploader-client-id",
+        claims = HashMap<String, String>()
+    )
+
+    private fun MockOAuth2Server.lagToken(
         subject: String,
         issuerId: String = "loginservice",
         clientId: String = UUID.randomUUID().toString(),

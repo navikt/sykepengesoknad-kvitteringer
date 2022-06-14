@@ -34,17 +34,20 @@ class FrontendApi(
     @ProtectedWithClaims(issuer = "loginservice", claimMap = ["acr=Level4"])
     @ResponseBody
     fun lagreKvittering(@RequestParam("file") file: MultipartFile): ResponseEntity<VedleggRespons> {
-        val uuid = UUID.randomUUID().toString()
+        val id = UUID.randomUUID().toString()
 
-        kvitteringer.lagreKvittering(fnr(), uuid, MediaType.parseMediaType(file.contentType!!), file.bytes)
-        return ResponseEntity.status(HttpStatus.CREATED).body(VedleggRespons(uuid, "Lagret kvittering med id: $uuid."))
+        kvitteringer.lagreKvittering(hentFnrFraClaim(), id, MediaType.parseMediaType(file.contentType!!), file.bytes)
+        return ResponseEntity.status(HttpStatus.CREATED).body(VedleggRespons(id, "Lagret kvittering med id: $id."))
     }
 
     @GetMapping("/kvittering/{blobName}")
     @ProtectedWithClaims(issuer = "loginservice", claimMap = ["acr=Level4"])
     fun hentKvittering(@PathVariable blobName: String): ResponseEntity<ByteArray> {
         try {
-            val kvittering = kvitteringer.hentKvittering(fnr(), blobName) ?: return ResponseEntity.notFound().build()
+            val kvittering = kvitteringer.hentKvittering(
+                hentFnrFraClaim(),
+                blobName
+            ) ?: return ResponseEntity.notFound().build()
             return ResponseEntity
                 .ok()
                 .contentType(MediaType.parseMediaType(kvittering.contentType))
@@ -57,16 +60,13 @@ class FrontendApi(
     @GetMapping("/maskin/kvittering/{blobName}")
     @ProtectedWithClaims(issuer = "azureator")
     @ResponseBody
-    fun hentBlob(@PathVariable blobName: String): VedleggRespons {
-        validateClientId(
-            listOf(
-                NamespaceOgApp(
-                    namespace = "flex",
-                    app = "sykepengesoknad-backend",
-                )
-            )
-        )
-        return VedleggRespons("1234", "GetMapping")
+    fun hentMaskinKvittering(@PathVariable blobName: String): ResponseEntity<ByteArray> {
+        validateClientId(validClients())
+        val kvittering = kvitteringer.hentKvittering(blobName) ?: return ResponseEntity.notFound().build()
+        return ResponseEntity
+            .ok()
+            .contentType(MediaType.parseMediaType(kvittering.contentType))
+            .body(kvittering.byteArray)
     }
 
     @GetMapping("/maskin/slett/{blobName}")
@@ -84,6 +84,10 @@ class FrontendApi(
         return VedleggRespons("1234", "GetMapping")
     }
 
+    private fun validClients() = listOf(
+        NamespaceOgApp(namespace = "flex", app = "sykepengesoknad-backend")
+    )
+
     fun validateClientId(apps: List<NamespaceOgApp>) {
         val clientIds = allowedClients
             .filter { apps.contains(it.tilNamespaceOgApp()) }
@@ -91,11 +95,11 @@ class FrontendApi(
 
         val azp = tokenValidationContextHolder.hentAzpClaim()
         if (!clientIds.contains(azp)) {
-            throw UkjentClientException("Client $azp hentet fra azp calim er ikke kjent.")
+            throw UkjentClientException("Ukjent azp claim $azp.")
         }
     }
 
-    private fun fnr(): String {
+    private fun hentFnrFraClaim(): String {
         fun TokenValidationContextHolder.hentFnr(): String {
             val claims = this.tokenValidationContext.getClaims("loginservice")
             return claims.getStringClaim("pid") ?: claims.subject
@@ -108,7 +112,7 @@ class FrontendApi(
         try {
             return this.tokenValidationContext.getJwtToken("azureator").jwtTokenClaims.getStringClaim("azp")!!
         } catch (e: Exception) {
-            throw UkjentClientException("Fant ikke azureator azp claim.", e)
+            throw UkjentClientException("Fant ikke azp claim.", e)
         }
     }
 
