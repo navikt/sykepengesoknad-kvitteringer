@@ -4,8 +4,8 @@ plugins {
     id("org.springframework.boot") version "2.6.7"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
-    kotlin("jvm") version "1.6.21"
-    kotlin("plugin.spring") version "1.6.21"
+    kotlin("jvm") version "1.7.0"
+    kotlin("plugin.spring") version "1.7.0"
 }
 
 group = "no.nav.helse.flex"
@@ -41,7 +41,6 @@ val testcontainersVersion = "1.17.2"
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
     implementation("org.springframework.boot:spring-boot-starter-web")
