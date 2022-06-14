@@ -66,6 +66,6 @@ spec:
     - name: BUCKET_NAME
       value: flex-kvitteringer-prod
   {{#each env}}
-     - name: {{@key}}
-       value: "{{this}}"
+    - name: {{@key}}
+      value: "{{this}}"
   {{/each}}
