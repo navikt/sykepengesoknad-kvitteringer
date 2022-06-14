@@ -8,7 +8,7 @@ metadata:
 spec:
   gcp:
     buckets:
-      - name: flex-kvitteringer-prod
+      - name: {{gcp_bucket}}
   image: {{ image }}
   replicas:
     min: {{replicas_min}}
@@ -64,7 +64,7 @@ spec:
           cluster: prod-gcp
   env:
     - name: BUCKET_NAME
-      value: flex-kvitteringer-prod
+      value: {{gcp_bucket}}
   {{#each env}}
     - name: {{@key}}
       value: "{{this}}"
