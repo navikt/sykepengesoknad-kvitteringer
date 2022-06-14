@@ -34,7 +34,7 @@ abstract class FellesTestOppsett() {
     companion object {
 
         init {
-            GenericContainer(DockerImageName.parse("docker.pkg.github.com/navikt/flex-bildeprosessering/flex-bildeprosessering:latest"))
+            GenericContainer(DockerImageName.parse("ghcr.io/navikt/flex-bildeprosessering/flex-bildeprosessering:latest"))
                 .also {
                     it.withExposedPorts(8080)
                 }
