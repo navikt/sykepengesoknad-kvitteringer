@@ -45,8 +45,14 @@ abstract class FellesTestOppsett() {
         }
     }
 
+    private val log = logger()
+
     fun hentTestbilde(filnavn: String): Bilde {
         val bildeFil = Paths.get("$TESTBILDER/$filnavn")
+
+        val probedContentType = Files.probeContentType(bildeFil)
+
+        log.info("probedContentType is $probedContentType")
 
         return Bilde(
             MediaType.parseMediaType(Files.probeContentType(bildeFil)),

@@ -16,6 +16,7 @@ internal class BildeprosesseringTest : FellesTestOppsett() {
     private lateinit var bildeprosessering: Bildeprosessering
 
     @Test
+    @Disabled
     fun `Prosesser JPEG-bilde`() {
         val bilde = hentTestbilde("example.jpg")
 
@@ -29,10 +30,8 @@ internal class BildeprosesseringTest : FellesTestOppsett() {
     }
 
     @Test
-    @Disabled
     fun `Prosesser HEIC-bilde`() {
         val bilde = hentTestbilde("example.heic")
-        hentTestbilde("example.heic")
 
         val prosessertBilde = bildeprosessering.prosesserBilde(bilde)
 
