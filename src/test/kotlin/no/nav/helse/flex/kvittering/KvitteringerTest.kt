@@ -1,7 +1,7 @@
 package no.nav.helse.flex.kvittering
 
 import no.nav.helse.flex.FellesTestOppsett
-import no.nav.helse.flex.PROSESSERT_JPEG_SIZE
+import no.nav.helse.flex.PROSESSERT_BILDE_BYTE_SIZE
 import org.amshove.kluent.invoking
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.`should be equal to`
@@ -33,7 +33,7 @@ internal class KvitteringerTest : FellesTestOppsett() {
         kvitteringer.hentKvittering("fnr-1", "blob-1")?.let {
             it.contentType `should be equal to` MediaType.IMAGE_JPEG.toString()
             it.filNavn `should be equal to` "kvittering-blob-1.jpeg"
-            it.contentSize `should be equal to` PROSESSERT_JPEG_SIZE.toLong()
+            it.contentSize `should be equal to` PROSESSERT_BILDE_BYTE_SIZE.toLong()
         }
     }
 

@@ -2,7 +2,7 @@ package no.nav.helse.flex.api
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.helse.flex.FellesTestOppsett
-import no.nav.helse.flex.PROSESSERT_JPEG_SIZE
+import no.nav.helse.flex.PROSESSERT_BILDE_BYTE_SIZE
 import no.nav.helse.flex.objectMapper
 import org.amshove.kluent.`should be equal to`
 import org.amshove.kluent.shouldNotBeNullOrEmpty
@@ -48,7 +48,7 @@ internal class FrontendApiTest : FellesTestOppsett() {
         ).andExpect(status().isOk).andReturn().response
 
         response.contentType `should be equal to` MediaType.IMAGE_JPEG_VALUE
-        response.contentLength `should be equal to` PROSESSERT_JPEG_SIZE
+        response.contentLength `should be equal to` PROSESSERT_BILDE_BYTE_SIZE
     }
 
     @Test
@@ -58,72 +58,5 @@ internal class FrontendApiTest : FellesTestOppsett() {
             get("/kvittering/$kvitteringId")
                 .header("Authorization", "Bearer ${loginserviceToken("fnr-2")}")
         ).andExpect(status().isForbidden)
-    }
-
-    @Test
-    @Order(4)
-    fun `Hent kvittering som maskin`() {
-        val azureToken = azureToken(subject = "sykepengesoknad-backend-client-id")
-
-        val response = mockMvc.perform(
-            get("/maskin/kvittering/$kvitteringId")
-                .header("Authorization", "Bearer $azureToken")
-        ).andExpect(status().isOk).andReturn().response
-
-        response.contentType `should be equal to` MediaType.IMAGE_JPEG_VALUE
-        response.contentLength `should be equal to` PROSESSERT_JPEG_SIZE
-    }
-
-    @Test
-    @Order(5)
-    fun `Hent kvittering som feil maskin`() {
-        val azureToken = azureToken(subject = "ukjent-client-id")
-
-        mockMvc.perform(
-            get("/maskin/kvittering/$kvitteringId")
-                .header("Authorization", "Bearer $azureToken")
-        ).andExpect(status().isForbidden)
-    }
-
-    @Test
-    @Order(5)
-    fun `Hent kvittering som ikke finnes som maskin`() {
-        val azureToken = azureToken(subject = "sykepengesoknad-backend-client-id")
-
-        mockMvc.perform(
-            get("/maskin/kvittering/ukjent-kvittering")
-                .header("Authorization", "Bearer $azureToken")
-        ).andExpect(status().isNotFound)
-    }
-
-    @Test
-    @Order(6)
-    fun `Slett kvittering som maskin`() {
-        val azureToken = azureToken(subject = "sykepengesoknad-backend-client-id")
-
-        mockMvc.perform(
-            get("/maskin/slett/$kvitteringId")
-                .header("Authorization", "Bearer $azureToken")
-        ).andExpect(status().isOk)
-    }
-
-    @Test
-    @Order(7)
-    fun `Slett kvittering som ikke finned som maskin`() {
-        val azureToken = azureToken(subject = "sykepengesoknad-backend-client-id")
-
-        mockMvc.perform(
-            get("/maskin/slett/$kvitteringId")
-                .header("Authorization", "Bearer $azureToken")
-        ).andExpect(status().isOk)
-    }
-
-    @Test
-    @Order(8)
-    fun `Hent kvittering som ikke finnes som bruker`() {
-        mockMvc.perform(
-            get("/kvittering/$kvitteringId")
-                .header("Authorization", "Bearer ${loginserviceToken("fnr-1")}")
-        ).andExpect(status().isNotFound)
     }
 }

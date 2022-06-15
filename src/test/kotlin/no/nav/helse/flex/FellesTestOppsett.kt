@@ -17,7 +17,8 @@ import java.nio.file.Paths
 import java.util.*
 
 private const val TESTBILDER = "src/test/resources/bilder/"
-const val PROSESSERT_JPEG_SIZE = 64742
+const val ORIGINALT_BILDE_BYTE_SIZE = 913449
+const val PROSESSERT_BILDE_BYTE_SIZE = 64742
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -44,8 +45,6 @@ abstract class FellesTestOppsett() {
                 }
         }
     }
-
-    private val log = logger()
 
     fun hentTestbilde(filnavn: String): Bilde {
         val bildefil = Paths.get("$TESTBILDER/$filnavn")
