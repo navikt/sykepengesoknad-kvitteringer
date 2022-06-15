@@ -2,7 +2,7 @@ package no.nav.helse.flex.api
 
 import no.nav.helse.flex.FellesTestOppsett
 import no.nav.helse.flex.ORIGINALT_BILDE_BYTE_SIZE
-import no.nav.helse.flex.no.nav.helse.flex.bucket.BucketClient
+import no.nav.helse.flex.no.nav.helse.flex.bucket.BucketKlient
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.MethodOrderer
@@ -21,13 +21,13 @@ internal class MaskinApiTest : FellesTestOppsett() {
     private lateinit var kvitteringId: String
 
     @Autowired
-    private lateinit var bucketClient: BucketClient
+    private lateinit var bucketKlient: BucketKlient
 
     @BeforeAll
     fun lagreKvittering() {
         kvitteringId = UUID.randomUUID().toString()
         val bilde = hentTestbilde("example.jpg")
-        bucketClient.lagreBlob(kvitteringId, bilde.contentType, mapOf("fnr" to "fnr-1"), bilde.bytes)
+        bucketKlient.lagreBlob(kvitteringId, bilde.contentType, mapOf("fnr" to "fnr-1"), bilde.bytes)
     }
 
     @Test

@@ -2,24 +2,24 @@ package no.nav.helse.flex.kvittering
 
 import no.nav.helse.flex.logger
 import no.nav.helse.flex.no.nav.helse.flex.bildeprosessering.Bilde
-import no.nav.helse.flex.no.nav.helse.flex.bildeprosessering.Bildeprosessering
-import no.nav.helse.flex.no.nav.helse.flex.bucket.BucketClient
-import no.nav.helse.flex.no.nav.helse.flex.bucket.BucketClient.BlobContent
+import no.nav.helse.flex.no.nav.helse.flex.bildeprosessering.BildeprosesseringKlient
+import no.nav.helse.flex.no.nav.helse.flex.bucket.BucketKlient
+import no.nav.helse.flex.no.nav.helse.flex.bucket.BucketKlient.BlobContent
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 
 @Service
 class Kvitteringer(
-    private val bucketClient: BucketClient,
-    private val bildeprosessering: Bildeprosessering,
+    private val bucketKlient: BucketKlient,
+    private val bildeprosesseringKlient: BildeprosesseringKlient,
 ) {
 
     private val log = logger()
 
     fun lagreKvittering(fnr: String, blobNavn: String, mediaType: MediaType, blobContent: ByteArray) {
-        val prosessertBilde = bildeprosessering.prosesserBilde(Bilde(mediaType, blobContent))
+        val prosessertBilde = bildeprosesseringKlient.prosesserBilde(Bilde(mediaType, blobContent))
 
-        bucketClient.lagreBlob(
+        bucketKlient.lagreBlob(
             blobNavn = blobNavn,
             contentType = prosessertBilde!!.contentType,
             metadata = mapOf("fnr" to fnr),
@@ -30,7 +30,7 @@ class Kvitteringer(
     }
 
     fun hentKvittering(blobNavn: String): Kvittering? {
-        return bucketClient.hentBlob(blobNavn)?.let {
+        return bucketKlient.hentBlob(blobNavn)?.let {
             return Kvittering(
                 filnavn = "kvittering-$blobNavn.${it.filType()}",
                 fnr = it.metadata["fnr"]!!,
@@ -41,7 +41,7 @@ class Kvitteringer(
     }
 
     fun slettKvittering(blobNavn: String) {
-        val slettetBlob = bucketClient.slettBlob(blobNavn)
+        val slettetBlob = bucketKlient.slettBlob(blobNavn)
         if (!slettetBlob) {
             log.warn("Slettet ikke blob $blobNavn da den ikke finnes.")
         }

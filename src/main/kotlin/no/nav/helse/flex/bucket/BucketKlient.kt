@@ -8,7 +8,7 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 
 @Component
-class BucketClient(
+class BucketKlient(
     @Value("\${BUCKET_NAME}")
     private val bucketName: String,
     private val storage: Storage,

@@ -50,18 +50,14 @@ spec:
       rules:
         - application: flex-bildeprosessering
       external:
-        - host: navnob2c.b2clogin.com
         - host: www.googleapis.com
         - host: storage.googleapis.com
         - host: oauth2.googleapis.com
     inbound:
       rules:
-        - application: flex-bildeprosessering
         - application: flex-gateway
         - application: sykepengesoknad-backend
         - application: sykepengesoknad-arkivering-oppgave
-          namespace: flex
-          cluster: prod-gcp
   env:
     - name: BUCKET_NAME
       value: {{gcp_bucket}}
