@@ -2,6 +2,7 @@ package no.nav.helse.flex.api
 
 import no.nav.helse.flex.AbstractApiError
 import no.nav.helse.flex.LogLevel
+import no.nav.helse.flex.kvittering.Kvittering
 import no.nav.helse.flex.kvittering.Kvitteringer
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
@@ -36,18 +37,20 @@ class FrontendApi(
     @GetMapping("/kvittering/{blobName}")
     @ProtectedWithClaims(issuer = "loginservice", claimMap = ["acr=Level4"])
     fun hentKvittering(@PathVariable blobName: String): ResponseEntity<ByteArray> {
-        try {
-            val kvittering = kvitteringer.hentKvittering(
-                hentFnrFraClaim(),
-                blobName
-            ) ?: return ResponseEntity.notFound().build()
-            return ResponseEntity
-                .ok()
-                .contentType(MediaType.parseMediaType(kvittering.contentType))
-                .body(kvittering.byteArray)
-        } catch (e: IllegalAccessException) {
-            throw UkjentClientException(e.message!!)
+        val kvittering = kvitteringer.hentKvittering(blobName) ?: return ResponseEntity.notFound().build()
+
+        if (!kvitteringEiesAvBruker(kvittering)) {
+            throw UkjentClientException("Kvittering $blobName er forsøkt hentet av feil bruker.")
         }
+
+        return ResponseEntity
+            .ok()
+            .contentType(MediaType.parseMediaType(kvittering.contentType))
+            .body(kvittering.bytes)
+    }
+
+    private fun kvitteringEiesAvBruker(kvittering: Kvittering): Boolean {
+        return hentFnrFraClaim() == kvittering.fnr
     }
 
     private fun hentFnrFraClaim(): String {

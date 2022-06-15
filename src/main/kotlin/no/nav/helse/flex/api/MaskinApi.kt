@@ -36,7 +36,7 @@ class MaskinApi(
         return ResponseEntity
             .ok()
             .contentType(MediaType.parseMediaType(kvittering.contentType))
-            .body(kvittering.byteArray)
+            .body(kvittering.bytes)
     }
 
     @GetMapping("/maskin/slett/{blobName}")

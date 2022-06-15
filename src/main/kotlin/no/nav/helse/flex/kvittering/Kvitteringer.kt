@@ -27,24 +27,13 @@ class Kvitteringer(
         )
     }
 
-    fun hentKvittering(fnr: String, blobNavn: String): Kvittering? {
-        return bucketClient.hentBlob(blobNavn)?.let {
-            validerBruker(fnr, it.metadata, blobNavn)
-
-            return Kvittering(
-                filNavn = "kvittering-$blobNavn.${it.filType()}",
-                contentType = it.metadata["content-type"]!!,
-                byteArray = it.blob.getContent(),
-            )
-        }
-    }
-
     fun hentKvittering(blobNavn: String): Kvittering? {
         return bucketClient.hentBlob(blobNavn)?.let {
             return Kvittering(
-                filNavn = "kvittering-$blobNavn.${it.filType()}",
+                filnavn = "kvittering-$blobNavn.${it.filType()}",
+                fnr = it.metadata["fnr"]!!,
                 contentType = it.metadata["content-type"]!!,
-                byteArray = it.blob.getContent(),
+                bytes = it.blob.getContent(),
             )
         }
     }
@@ -59,17 +48,12 @@ class Kvitteringer(
     private fun BlobContent.filType(): String {
         return metadata["content-type"]!!.split("/")[1]
     }
-
-    private fun validerBruker(fnr: String, blobMetadata: Map<String, String>, blobNavn: String) {
-        if (fnr != blobMetadata["fnr"]!!) {
-            throw IllegalAccessException("Kvittering $blobNavn er forsøkt hentet av feil bruker.")
-        }
-    }
 }
 
 class Kvittering(
-    val filNavn: String,
+    val filnavn: String,
+    val fnr: String,
+    val bytes: ByteArray,
     val contentType: String,
-    val byteArray: ByteArray,
-    val contentSize: Long = byteArray.size.toLong()
+    val contentSize: Long = bytes.size.toLong()
 )
