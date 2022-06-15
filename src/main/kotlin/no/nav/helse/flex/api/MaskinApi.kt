@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.ResponseBody
@@ -30,7 +31,7 @@ class MaskinApi(
     @GetMapping("/maskin/kvittering/{blobNavn}")
     @ProtectedWithClaims(issuer = "azureator")
     @ResponseBody
-    fun hentMaskinKvittering(@PathVariable blobNavn: String): ResponseEntity<ByteArray> {
+    fun hentKvittering(@PathVariable blobNavn: String): ResponseEntity<ByteArray> {
         validateClientId(validClients())
         val kvittering = kvitteringer.hentKvittering(blobNavn) ?: return ResponseEntity.notFound().build()
         return ResponseEntity
@@ -40,6 +41,14 @@ class MaskinApi(
     }
 
     @GetMapping("/maskin/slett/{blobNavn}")
+    @ResponseBody
+    @ProtectedWithClaims(issuer = "azureator")
+    fun slettMaskinKvittering(@PathVariable blobNavn: String): ResponseEntity<VedleggRespons> {
+        // TODO: Slett når sykepengesoknad-backend bruker HTTP DELETE til å slette kvitteringer.
+        return slettKvittering(blobNavn = blobNavn)
+    }
+
+    @DeleteMapping("/maskin/slett/{blobNavn}")
     @ResponseBody
     @ProtectedWithClaims(issuer = "azureator")
     fun slettKvittering(@PathVariable blobNavn: String): ResponseEntity<VedleggRespons> {
