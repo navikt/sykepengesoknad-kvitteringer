@@ -34,13 +34,13 @@ class FrontendApi(
         return ResponseEntity.status(HttpStatus.CREATED).body(VedleggRespons(id, "Lagret kvittering med id: $id."))
     }
 
-    @GetMapping("/kvittering/{blobName}")
+    @GetMapping("/kvittering/{blobNavn}")
     @ProtectedWithClaims(issuer = "loginservice", claimMap = ["acr=Level4"])
-    fun hentKvittering(@PathVariable blobName: String): ResponseEntity<ByteArray> {
-        val kvittering = kvitteringer.hentKvittering(blobName) ?: return ResponseEntity.notFound().build()
+    fun hentKvittering(@PathVariable blobNavn: String): ResponseEntity<ByteArray> {
+        val kvittering = kvitteringer.hentKvittering(blobNavn) ?: return ResponseEntity.notFound().build()
 
         if (!kvitteringEiesAvBruker(kvittering)) {
-            throw UkjentClientException("Kvittering $blobName er forsøkt hentet av feil bruker.")
+            throw UkjentClientException("Kvittering $blobNavn er forsøkt hentet av feil bruker.")
         }
 
         return ResponseEntity

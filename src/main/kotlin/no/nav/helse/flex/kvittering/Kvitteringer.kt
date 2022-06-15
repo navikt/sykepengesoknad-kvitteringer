@@ -16,15 +16,17 @@ class Kvitteringer(
 
     private val log = logger()
 
-    fun lagreKvittering(fnr: String, navn: String, mediaType: MediaType, blobContent: ByteArray) {
+    fun lagreKvittering(fnr: String, blobNavn: String, mediaType: MediaType, blobContent: ByteArray) {
         val prosessertBilde = bildeprosessering.prosesserBilde(Bilde(mediaType, blobContent))
 
         bucketClient.lagreBlob(
-            blobName = navn,
+            blobNavn = blobNavn,
             contentType = prosessertBilde!!.contentType,
             metadata = mapOf("fnr" to fnr),
-            content = prosessertBilde.bytes
+            bytes = prosessertBilde.bytes
         )
+
+        log.info("Lagret kvittering med blobNavn: $blobNavn.")
     }
 
     fun hentKvittering(blobNavn: String): Kvittering? {
@@ -43,6 +45,7 @@ class Kvitteringer(
         if (!slettetBlob) {
             log.warn("Slettet ikke blob $blobNavn da den ikke finnes.")
         }
+        log.info("Slettet kvittering med blobNavn: $blobNavn.")
     }
 
     private fun BlobContent.filType(): String {

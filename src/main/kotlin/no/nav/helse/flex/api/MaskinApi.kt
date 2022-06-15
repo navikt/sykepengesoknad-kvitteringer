@@ -27,25 +27,25 @@ class MaskinApi(
 
     private val allowedClients: List<PreAuthorizedClient> = objectMapper.readValue(azurePreAuthorizedApps)
 
-    @GetMapping("/maskin/kvittering/{blobName}")
+    @GetMapping("/maskin/kvittering/{blobNavn}")
     @ProtectedWithClaims(issuer = "azureator")
     @ResponseBody
-    fun hentMaskinKvittering(@PathVariable blobName: String): ResponseEntity<ByteArray> {
+    fun hentMaskinKvittering(@PathVariable blobNavn: String): ResponseEntity<ByteArray> {
         validateClientId(validClients())
-        val kvittering = kvitteringer.hentKvittering(blobName) ?: return ResponseEntity.notFound().build()
+        val kvittering = kvitteringer.hentKvittering(blobNavn) ?: return ResponseEntity.notFound().build()
         return ResponseEntity
             .ok()
             .contentType(MediaType.parseMediaType(kvittering.contentType))
             .body(kvittering.bytes)
     }
 
-    @GetMapping("/maskin/slett/{blobName}")
+    @GetMapping("/maskin/slett/{blobNavn}")
     @ResponseBody
     @ProtectedWithClaims(issuer = "azureator")
-    fun slettKvittering(@PathVariable blobName: String): ResponseEntity<VedleggRespons> {
+    fun slettKvittering(@PathVariable blobNavn: String): ResponseEntity<VedleggRespons> {
         validateClientId(validClients())
-        kvitteringer.slettKvittering(blobName)
-        return ResponseEntity.ok().body(VedleggRespons(blobName, "Slettet kvittering med id: $blobName."))
+        kvitteringer.slettKvittering(blobNavn)
+        return ResponseEntity.ok().body(VedleggRespons(blobNavn, "Slettet kvittering med id: $blobNavn."))
     }
 
     private fun validClients() = listOf(
