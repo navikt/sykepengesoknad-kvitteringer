@@ -3,7 +3,6 @@ package no.nav.helse.flex.bildeprosessering
 import no.nav.helse.flex.FellesTestOppsett
 import no.nav.helse.flex.no.nav.helse.flex.bildeprosessering.Bildeprosessering
 import org.amshove.kluent.`should be equal to`
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -16,7 +15,6 @@ internal class BildeprosesseringTest : FellesTestOppsett() {
     private lateinit var bildeprosessering: Bildeprosessering
 
     @Test
-    @Disabled
     fun `Prosesser JPEG-bilde`() {
         val bilde = hentTestbilde("example.jpg")
 
@@ -31,7 +29,8 @@ internal class BildeprosesseringTest : FellesTestOppsett() {
 
     @Test
     fun `Prosesser HEIC-bilde`() {
-        val bilde = hentTestbilde("example.heic")
+        // Automatisk deteksjon av "image/heic" feiler i GibHub Actions.
+        val bilde = hentTestbilde("example.heic", MediaType.parseMediaType("image/heic"))
 
         val prosessertBilde = bildeprosessering.prosesserBilde(bilde)
 

@@ -48,15 +48,20 @@ abstract class FellesTestOppsett() {
     private val log = logger()
 
     fun hentTestbilde(filnavn: String): Bilde {
-        val bildeFil = Paths.get("$TESTBILDER/$filnavn")
-
-        val probedContentType = Files.probeContentType(bildeFil)
-
-        log.info("probedContentType is $probedContentType")
+        val bildefil = Paths.get("$TESTBILDER/$filnavn")
 
         return Bilde(
-            MediaType.parseMediaType(Files.probeContentType(bildeFil)),
-            Files.readAllBytes(bildeFil)
+            MediaType.parseMediaType(Files.probeContentType(bildefil)),
+            Files.readAllBytes(bildefil)
+        )
+    }
+
+    fun hentTestbilde(filnavn: String, contentType: MediaType): Bilde {
+        val bildefil = Paths.get("$TESTBILDER/$filnavn")
+
+        return Bilde(
+            contentType,
+            Files.readAllBytes(bildefil)
         )
     }
 
