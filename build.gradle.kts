@@ -35,7 +35,7 @@ ext["okhttp3.version"] = "4.9.3" // Mockwebserver
 val tokenSupportVersion = "2.0.14"
 val logstashLogbackEncoderVersion = "7.0.1"
 val kluentVersion = "1.68"
-val googleCloudVersion = "2.6.1"
+val googleCloudVersion = "2.8.1"
 val gcsNioVersion = "0.124.2"
 val testcontainersVersion = "1.17.2"
 
