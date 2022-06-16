@@ -1,0 +1,7 @@
+environment: prod
+replicas_min: 2
+replicas_max: 3
+gcp_bucket: flex-kvitteringer-prod
+env:
+  SPRING_PROFILES_ACTIVE: default
+  FLEX_BILDEPROSESSERING_URL: "http://flex-bildeprosessering"
