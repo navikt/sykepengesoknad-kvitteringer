@@ -45,16 +45,18 @@ class MaskinApi(
     @ProtectedWithClaims(issuer = "azureator")
     fun slettMaskinKvittering(@PathVariable blobNavn: String): ResponseEntity<VedleggRespons> {
         // TODO: Slett når sykepengesoknad-backend bruker HTTP DELETE til å slette kvitteringer.
-        return slettKvittering(blobNavn = blobNavn)
+        validateClientId(validClients())
+        kvitteringer.slettKvittering(blobNavn)
+        return ResponseEntity.ok().body(VedleggRespons(blobNavn, "Slettet kvittering med id: $blobNavn."))
     }
 
     @DeleteMapping("/maskin/slett/{blobNavn}")
     @ResponseBody
     @ProtectedWithClaims(issuer = "azureator")
-    fun slettKvittering(@PathVariable blobNavn: String): ResponseEntity<VedleggRespons> {
+    fun slettKvittering(@PathVariable blobNavn: String): ResponseEntity<Any> {
         validateClientId(validClients())
         kvitteringer.slettKvittering(blobNavn)
-        return ResponseEntity.ok().body(VedleggRespons(blobNavn, "Slettet kvittering med id: $blobNavn."))
+        return ResponseEntity.noContent().build()
     }
 
     private fun validClients() = listOf(
