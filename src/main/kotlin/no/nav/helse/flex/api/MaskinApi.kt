@@ -3,7 +3,6 @@ package no.nav.helse.flex.no.nav.helse.flex.api
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.helse.flex.AbstractApiError
 import no.nav.helse.flex.LogLevel
-import no.nav.helse.flex.api.VedleggRespons
 import no.nav.helse.flex.kvittering.Kvitteringer
 import no.nav.helse.flex.objectMapper
 import no.nav.security.token.support.core.api.ProtectedWithClaims
@@ -38,16 +37,6 @@ class MaskinApi(
             .ok()
             .contentType(MediaType.parseMediaType(kvittering.contentType))
             .body(kvittering.bytes)
-    }
-
-    @GetMapping("/maskin/slett/{blobNavn}")
-    @ResponseBody
-    @ProtectedWithClaims(issuer = "azureator")
-    fun slettMaskinKvittering(@PathVariable blobNavn: String): ResponseEntity<VedleggRespons> {
-        // TODO: Slett når sykepengesoknad-backend bruker HTTP DELETE til å slette kvitteringer.
-        validateClientId(validClients())
-        kvitteringer.slettKvittering(blobNavn)
-        return ResponseEntity.ok().body(VedleggRespons(blobNavn, "Slettet kvittering med id: $blobNavn."))
     }
 
     @DeleteMapping("/maskin/slett/{blobNavn}")
