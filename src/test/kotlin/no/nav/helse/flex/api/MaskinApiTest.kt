@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.*
@@ -72,9 +73,9 @@ internal class MaskinApiTest : FellesTestOppsett() {
         val azureToken = azureToken(subject = "sykepengesoknad-backend-client-id")
 
         mockMvc.perform(
-            get("/maskin/slett/$kvitteringId")
+            delete("/maskin/slett/$kvitteringId")
                 .header("Authorization", "Bearer $azureToken")
-        ).andExpect(status().isOk)
+        ).andExpect(status().isNoContent)
     }
 
     @Test
@@ -83,9 +84,9 @@ internal class MaskinApiTest : FellesTestOppsett() {
         val azureToken = azureToken(subject = "sykepengesoknad-backend-client-id")
 
         mockMvc.perform(
-            get("/maskin/slett/$kvitteringId")
+            delete("/maskin/slett/$kvitteringId")
                 .header("Authorization", "Bearer $azureToken")
-        ).andExpect(status().isOk)
+        ).andExpect(status().isNoContent)
     }
 
     @Test
