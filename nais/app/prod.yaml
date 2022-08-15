@@ -5,3 +5,5 @@ gcp_bucket: flex-kvitteringer-prod
 env:
   SPRING_PROFILES_ACTIVE: default
   FLEX_BILDEPROSESSERING_URL: "http://flex-bildeprosessering"
+  SYKEPENGESOKNAD_FRONTEND_CLIENT_ID: prod-gcp:flex:sykepengesoknad
+  TOKENX_IDPORTEN_IDP: https://oidc.difi.no/idporten-oidc-provider/

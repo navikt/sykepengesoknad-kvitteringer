@@ -1,14 +1,11 @@
 package no.nav.helse.flex.no.nav.helse.flex.api
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import no.nav.helse.flex.AbstractApiError
-import no.nav.helse.flex.LogLevel
 import no.nav.helse.flex.kvittering.Kvitteringer
 import no.nav.helse.flex.objectMapper
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -77,14 +74,6 @@ class MaskinApi(
         return NamespaceOgApp(namespace = splitt[1], app = splitt[2])
     }
 }
-
-class UkjentClientException(message: String, grunn: Throwable? = null) : AbstractApiError(
-    message = message,
-    httpStatus = HttpStatus.FORBIDDEN,
-    reason = "UKJENT_CLIENT",
-    loglevel = LogLevel.WARN,
-    grunn = grunn
-)
 
 data class NamespaceOgApp(val namespace: String, val app: String)
 
