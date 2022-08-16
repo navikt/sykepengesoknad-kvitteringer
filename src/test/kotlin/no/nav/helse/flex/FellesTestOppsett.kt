@@ -66,6 +66,32 @@ abstract class FellesTestOppsett() {
 
     fun loginserviceToken(fnr: String) = mockOAuth2Server.lagToken(subject = fnr)
 
+    fun tokenxToken(
+        fnr: String,
+        audience: String = "flex-bucket-uploader-client-id",
+        issuerId: String = "tokenx",
+        clientId: String = "sykepengesoknad-frontend-client-id",
+        claims: Map<String, Any> = mapOf(
+            "acr" to "Level4",
+            "idp" to "idporten",
+            "client_id" to clientId,
+            "pid" to fnr,
+        ),
+    ): String {
+
+        return mockOAuth2Server.issueToken(
+            issuerId,
+            clientId,
+            DefaultOAuth2TokenCallback(
+                issuerId = issuerId,
+                subject = UUID.randomUUID().toString(),
+                audience = listOf(audience),
+                claims = claims,
+                expiry = 3600
+            )
+        ).serialize()
+    }
+
     fun azureToken(subject: String) = mockOAuth2Server.lagToken(
         subject = subject,
         issuerId = "azureator",

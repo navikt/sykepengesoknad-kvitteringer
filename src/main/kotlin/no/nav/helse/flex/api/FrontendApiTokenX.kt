@@ -1,4 +1,4 @@
-package no.nav.helse.flex.api
+package no.nav.helse.flex.no.nav.helse.flex.api
 
 import no.nav.helse.flex.AbstractApiError
 import no.nav.helse.flex.LogLevel
@@ -6,6 +6,8 @@ import no.nav.helse.flex.kvittering.Kvittering
 import no.nav.helse.flex.kvittering.Kvitteringer
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import no.nav.security.token.support.core.context.TokenValidationContextHolder
+import no.nav.security.token.support.core.jwt.JwtTokenClaims
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -19,27 +21,36 @@ import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
 @Controller
-class FrontendApi(
+class FrontendApiTokenX(
     private val tokenValidationContextHolder: TokenValidationContextHolder,
-    private val kvitteringer: Kvitteringer
+    private val kvitteringer: Kvitteringer,
+
+    @Value("\${SYKEPENGESOKNAD_FRONTEND_CLIENT_ID}")
+    val sykepengesoknadFrontendClientId: String,
+
+    @Value("\${TOKENX_IDPORTEN_IDP}")
+    val tokenxIdportenIdp: String,
 ) {
 
-    @PostMapping("/opplasting")
-    @ProtectedWithClaims(issuer = "loginservice", claimMap = ["acr=Level4"])
+    @PostMapping("/api/v2/opplasting")
+    @ProtectedWithClaims(issuer = "tokenx", claimMap = ["acr=Level4"])
     @ResponseBody
     fun lagreKvittering(@RequestParam("file") file: MultipartFile): ResponseEntity<VedleggRespons> {
         val id = UUID.randomUUID().toString()
+        val fnr = validerTokenXClaims(sykepengesoknadFrontendClientId).hentFnr()
 
-        kvitteringer.lagreKvittering(hentFnrFraClaim(), id, MediaType.parseMediaType(file.contentType!!), file.bytes)
+        kvitteringer.lagreKvittering(fnr, id, MediaType.parseMediaType(file.contentType!!), file.bytes)
         return ResponseEntity.status(HttpStatus.CREATED).body(VedleggRespons(id, "Lagret kvittering med id: $id."))
     }
 
-    @GetMapping("/kvittering/{blobNavn}")
-    @ProtectedWithClaims(issuer = "loginservice", claimMap = ["acr=Level4"])
+    @GetMapping("/api/v2/kvittering/{blobNavn}")
+    @ProtectedWithClaims(issuer = "tokenx", claimMap = ["acr=Level4"])
     fun hentKvittering(@PathVariable blobNavn: String): ResponseEntity<ByteArray> {
+        val fnr = validerTokenXClaims(sykepengesoknadFrontendClientId).hentFnr()
+
         val kvittering = kvitteringer.hentKvittering(blobNavn) ?: return ResponseEntity.notFound().build()
 
-        if (!kvitteringEiesAvBruker(kvittering)) {
+        if (!kvitteringEiesAvBruker(kvittering, fnr)) {
             throw UkjentClientException("Kvittering $blobNavn er forsøkt hentet av feil bruker.")
         }
 
@@ -49,17 +60,28 @@ class FrontendApi(
             .body(kvittering.bytes)
     }
 
-    private fun kvitteringEiesAvBruker(kvittering: Kvittering): Boolean {
-        return hentFnrFraClaim() == kvittering.fnr
+    private fun kvitteringEiesAvBruker(kvittering: Kvittering, fnr: String): Boolean {
+        return fnr == kvittering.fnr
     }
 
-    private fun hentFnrFraClaim(): String {
-        fun TokenValidationContextHolder.hentFnr(): String {
-            val claims = this.tokenValidationContext.getClaims("loginservice")
-            return claims.getStringClaim("pid") ?: claims.subject
-        }
+    private fun JwtTokenClaims.hentFnr(): String {
+        return this.getStringClaim("pid")
+    }
 
-        return tokenValidationContextHolder.hentFnr()
+    private fun validerTokenXClaims(vararg tillattClient: String): JwtTokenClaims {
+        val context = tokenValidationContextHolder.tokenValidationContext
+        val claims = context.getClaims("tokenx")
+        val clientId = claims.getStringClaim("client_id")
+
+        if (!tillattClient.toList().contains(clientId)) {
+            throw UkjentClientException("Uventet client id $clientId")
+        }
+        val idp = claims.getStringClaim("idp")
+        if (idp != tokenxIdportenIdp) {
+            // Sjekker at det var idporten som er IDP for tokenX tokenet
+            throw UkjentClientException("Uventet idp $idp")
+        }
+        return claims
     }
 }
 

@@ -15,8 +15,6 @@ spec:
     max: {{replicas_max}}
     cpuThresholdPercentage: 90
   port: 8080
-  ingresses:
-    - https://flex-bucket-uploader.intern.nav.no
   liveness:
     path: /internal/health/liveness
     initialDelay: 30
@@ -45,6 +43,8 @@ spec:
   azure:
     application:
       enabled: true
+  tokenx:
+    enabled: true
   accessPolicy:
     outbound:
       rules:
@@ -57,6 +57,7 @@ spec:
       rules:
         - application: flex-gateway
         - application: sykepengesoknad-backend
+        - application: sykepengesoknad
         - application: sykepengesoknad-arkivering-oppgave
   env:
     - name: BUCKET_NAME
