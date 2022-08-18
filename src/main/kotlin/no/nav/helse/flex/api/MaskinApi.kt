@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.ResponseBody
@@ -34,15 +33,6 @@ class MaskinApi(
             .ok()
             .contentType(MediaType.parseMediaType(kvittering.contentType))
             .body(kvittering.bytes)
-    }
-
-    @DeleteMapping("/maskin/slett/{blobNavn}")
-    @ResponseBody
-    @ProtectedWithClaims(issuer = "azureator")
-    fun slettKvittering(@PathVariable blobNavn: String): ResponseEntity<Any> {
-        validateClientId(validClients())
-        kvitteringer.slettKvittering(blobNavn)
-        return ResponseEntity.noContent().build()
     }
 
     private fun validClients() = listOf(
