@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -27,6 +28,9 @@ class BrukerApi(
 
     @Value("\${SYKEPENGESOKNAD_FRONTEND_CLIENT_ID}")
     val sykepengesoknadFrontendClientId: String,
+
+    @Value("\${SYKEPENGESOKNAD_BACKEND_CLIENT_ID}")
+    val sykepengesoknadBackendClientId: String,
 
     @Value("\${TOKENX_IDPORTEN_IDP}")
     val tokenxIdportenIdp: String,
@@ -58,6 +62,20 @@ class BrukerApi(
             .ok()
             .contentType(MediaType.parseMediaType(kvittering.contentType))
             .body(kvittering.bytes)
+    }
+
+    @DeleteMapping("/api/v2/kvittering/{blobNavn}")
+    @ResponseBody
+    @ProtectedWithClaims(issuer = "tokenx", claimMap = ["acr=Level4"])
+    fun slettKvittering(@PathVariable blobNavn: String): ResponseEntity<Any> {
+        val fnr = validerTokenXClaims(sykepengesoknadBackendClientId).hentFnr()
+        val kvittering = kvitteringer.hentKvittering(blobNavn) ?: return ResponseEntity.noContent().build()
+
+        if (!kvitteringEiesAvBruker(kvittering, fnr)) {
+            throw UkjentClientException("Kvittering $blobNavn er forsøkt slettet av feil bruker.")
+        }
+        kvitteringer.slettKvittering(blobNavn)
+        return ResponseEntity.noContent().build()
     }
 
     private fun kvitteringEiesAvBruker(kvittering: Kvittering, fnr: String): Boolean {

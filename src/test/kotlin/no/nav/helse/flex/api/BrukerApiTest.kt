@@ -13,12 +13,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-internal class FrontendApiTokenxTest : FellesTestOppsett() {
+internal class BrukerApiTest : FellesTestOppsett() {
 
     private lateinit var kvitteringId: String
 
@@ -59,5 +60,41 @@ internal class FrontendApiTokenxTest : FellesTestOppsett() {
             get("/api/v2/kvittering/$kvitteringId")
                 .header("Authorization", "Bearer ${tokenxToken("fnr-2")}")
         ).andExpect(status().isForbidden)
+    }
+
+    @Test
+    @Order(4)
+    fun `Slett kvittering med feil bruker`() {
+        mockMvc.perform(
+            delete("/api/v2/kvittering/$kvitteringId")
+                .header("Authorization", "Bearer ${tokenxToken(fnr = "fnr-2" , clientId = "sykepengesoknad-backend-client-id")}")
+        ).andExpect(status().isForbidden)
+    }
+
+    @Test
+    @Order(5)
+    fun `Slett kvittering`() {
+        mockMvc.perform(
+            delete("/api/v2/kvittering/$kvitteringId")
+                .header("Authorization", "Bearer ${tokenxToken(fnr = "fnr-1" , clientId = "sykepengesoknad-backend-client-id")}")
+        ).andExpect(status().isNoContent)
+    }
+
+    @Test
+    @Order(6)
+    fun `Hent slettet kvittering som bruker`() {
+        mockMvc.perform(
+            get("/api/v2/kvittering/$kvitteringId")
+                .header("Authorization", "Bearer ${tokenxToken("fnr-1")}")
+        ).andExpect(status().isNotFound)
+    }
+
+    @Test
+    @Order(5)
+    fun `Slett allerede slettet kvittering`() {
+        mockMvc.perform(
+            delete("/api/v2/kvittering/$kvitteringId")
+                .header("Authorization", "Bearer ${tokenxToken(fnr = "fnr-1" , clientId = "sykepengesoknad-backend-client-id")}")
+        ).andExpect(status().isNoContent)
     }
 }

@@ -64,8 +64,6 @@ abstract class FellesTestOppsett() {
         )
     }
 
-    fun loginserviceToken(fnr: String) = mockOAuth2Server.lagToken(subject = fnr)
-
     fun tokenxToken(
         fnr: String,
         audience: String = "flex-bucket-uploader-client-id",
@@ -102,9 +100,9 @@ abstract class FellesTestOppsett() {
 
     private fun MockOAuth2Server.lagToken(
         subject: String,
-        issuerId: String = "loginservice",
-        clientId: String = UUID.randomUUID().toString(),
-        audience: String = "loginservice-client-id",
+        issuerId: String,
+        clientId: String,
+        audience: String,
         claims: Map<String, Any> = mapOf("acr" to "Level4"),
     ): String {
         return this.issueToken(
