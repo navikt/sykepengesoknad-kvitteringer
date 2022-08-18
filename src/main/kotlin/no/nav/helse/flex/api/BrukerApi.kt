@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
 @Controller
-class FrontendApiTokenX(
+class BrukerApi(
     private val tokenValidationContextHolder: TokenValidationContextHolder,
     private val kvitteringer: Kvitteringer,
 
