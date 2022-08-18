@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import java.util.*
@@ -63,39 +62,6 @@ internal class MaskinApiTest : FellesTestOppsett() {
 
         mockMvc.perform(
             get("/maskin/kvittering/ukjent-kvittering")
-                .header("Authorization", "Bearer $azureToken")
-        ).andExpect(status().isNotFound)
-    }
-
-    @Test
-    @Order(4)
-    fun `Slett kvittering`() {
-        val azureToken = azureToken(subject = "sykepengesoknad-backend-client-id")
-
-        mockMvc.perform(
-            delete("/maskin/slett/$kvitteringId")
-                .header("Authorization", "Bearer $azureToken")
-        ).andExpect(status().isNoContent)
-    }
-
-    @Test
-    @Order(5)
-    fun `Slett kvittering som ikke finnes`() {
-        val azureToken = azureToken(subject = "sykepengesoknad-backend-client-id")
-
-        mockMvc.perform(
-            delete("/maskin/slett/$kvitteringId")
-                .header("Authorization", "Bearer $azureToken")
-        ).andExpect(status().isNoContent)
-    }
-
-    @Test
-    @Order(6)
-    fun `Hent slettet kvittering`() {
-        val azureToken = azureToken(subject = "sykepengesoknad-backend-client-id")
-
-        mockMvc.perform(
-            get("/maskin/kvittering/$kvitteringId")
                 .header("Authorization", "Bearer $azureToken")
         ).andExpect(status().isNotFound)
     }
