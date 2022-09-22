@@ -26,7 +26,7 @@ class Kvitteringer(
             bytes = prosessertBilde.bytes
         )
 
-        log.info("Lagret kvittering med blobNavn: $blobNavn.")
+        log.info("Lagret kvittering med blobNavn: $blobNavn og mediaType: $mediaType.")
     }
 
     fun hentKvittering(blobNavn: String): Kvittering? {
@@ -43,7 +43,7 @@ class Kvitteringer(
     fun slettKvittering(blobNavn: String) {
         val slettetBlob = bucketKlient.slettBlob(blobNavn)
         if (!slettetBlob) {
-            log.warn("Slettet ikke blob $blobNavn da den ikke finnes.")
+            log.warn("Slettet ikke kvittering med blobNavn: $blobNavn da den ikke finnes.")
         }
         log.info("Slettet kvittering med blobNavn: $blobNavn.")
     }
