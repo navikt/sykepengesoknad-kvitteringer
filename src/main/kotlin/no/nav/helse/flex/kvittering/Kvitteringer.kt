@@ -2,7 +2,7 @@ package no.nav.helse.flex.kvittering
 
 import no.nav.helse.flex.logger
 import no.nav.helse.flex.no.nav.helse.flex.bildeprosessering.Bilde
-import no.nav.helse.flex.no.nav.helse.flex.bildeprosessering.BildeprosesseringKlient
+import no.nav.helse.flex.no.nav.helse.flex.bildeprosessering.Bildeprosessering
 import no.nav.helse.flex.no.nav.helse.flex.bucket.BucketKlient
 import no.nav.helse.flex.no.nav.helse.flex.bucket.BucketKlient.BlobContent
 import org.springframework.http.MediaType
@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service
 @Service
 class Kvitteringer(
     private val bucketKlient: BucketKlient,
-    private val bildeprosesseringKlient: BildeprosesseringKlient,
+    private val bildeprosessering: Bildeprosessering,
 ) {
 
     private val log = logger()
 
     fun lagreKvittering(fnr: String, blobNavn: String, mediaType: MediaType, blobContent: ByteArray) {
-        val prosessertBilde = bildeprosesseringKlient.prosesserBilde(Bilde(mediaType, blobContent))
+        val prosessertBilde = bildeprosessering.prosesserBilde(Bilde(mediaType, blobContent))
 
         bucketKlient.lagreBlob(
             blobNavn = blobNavn,

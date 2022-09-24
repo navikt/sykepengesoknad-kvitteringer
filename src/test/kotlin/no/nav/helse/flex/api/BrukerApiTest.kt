@@ -2,7 +2,6 @@ package no.nav.helse.flex.api
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.helse.flex.FellesTestOppsett
-import no.nav.helse.flex.PROSESSERT_BILDE_BYTE_SIZE
 import no.nav.helse.flex.no.nav.helse.flex.api.VedleggRespons
 import no.nav.helse.flex.objectMapper
 import org.amshove.kluent.`should be equal to`
@@ -26,7 +25,7 @@ internal class BrukerApiTest : FellesTestOppsett() {
     @Test
     @Order(1)
     fun `Last opp kvittering som bruker`() {
-        val bilde = hentTestbilde("example.jpg")
+        val bilde = hentTestbilde("1200x800.jpeg")
         val multipartFile = MockMultipartFile("file", null, bilde.contentType.toString(), bilde.bytes)
 
         val response = mockMvc.perform(
@@ -50,7 +49,6 @@ internal class BrukerApiTest : FellesTestOppsett() {
         ).andExpect(status().isOk).andReturn().response
 
         response.contentType `should be equal to` MediaType.IMAGE_JPEG_VALUE
-        response.contentLength `should be equal to` PROSESSERT_BILDE_BYTE_SIZE
     }
 
     @Test

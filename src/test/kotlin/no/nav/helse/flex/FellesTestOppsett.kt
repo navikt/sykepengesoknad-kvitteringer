@@ -17,8 +17,8 @@ import java.nio.file.Paths
 import java.util.*
 
 private const val TESTBILDER = "src/test/resources/bilder/"
-const val ORIGINALT_BILDE_BYTE_SIZE = 913449
-const val PROSESSERT_BILDE_BYTE_SIZE = 64742
+
+const val PROSESSERT_BILDE_BYTE_SIZE = 4028
 
 @SpringBootTest
 @AutoConfigureMockMvc

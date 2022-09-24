@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.RestTemplate
 
 @Component
-class BildeprosesseringKlient(
+class Bildeprosessering(
     @Value("\${FLEX_BILDEPROSESSERING_URL}")
     private val bildeprosesseringUrl: String,
     private val restTemplate: RestTemplate

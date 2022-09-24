@@ -1,7 +1,6 @@
 package no.nav.helse.flex.api
 
 import no.nav.helse.flex.FellesTestOppsett
-import no.nav.helse.flex.ORIGINALT_BILDE_BYTE_SIZE
 import no.nav.helse.flex.no.nav.helse.flex.bucket.BucketKlient
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.BeforeAll
@@ -26,7 +25,7 @@ internal class MaskinApiTest : FellesTestOppsett() {
     @BeforeAll
     fun lagreKvittering() {
         kvitteringId = UUID.randomUUID().toString()
-        val bilde = hentTestbilde("example.jpg")
+        val bilde = hentTestbilde("1200x800.jpeg")
         bucketKlient.lagreBlob(kvitteringId, bilde.contentType, mapOf("fnr" to "fnr-1"), bilde.bytes)
     }
 
@@ -41,7 +40,6 @@ internal class MaskinApiTest : FellesTestOppsett() {
         ).andExpect(status().isOk).andReturn().response
 
         response.contentType `should be equal to` MediaType.IMAGE_JPEG_VALUE
-        response.contentLength `should be equal to` ORIGINALT_BILDE_BYTE_SIZE
     }
 
     @Test
