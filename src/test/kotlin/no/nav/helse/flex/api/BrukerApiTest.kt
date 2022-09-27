@@ -41,6 +41,19 @@ internal class BrukerApiTest : FellesTestOppsett() {
     }
 
     @Test
+    @Order(1)
+    fun `Last opp ugyldig bilde`() {
+        val bilde = hentTestbilde("1200x800.heic")
+        val multipartFile = MockMultipartFile("file", null, bilde.contentType.toString(), bilde.bytes)
+
+        mockMvc.perform(
+            multipart("/api/v2/opplasting")
+                .file(multipartFile)
+                .header("Authorization", "Bearer ${tokenxToken("fnr-1")}")
+        ).andExpect(status().isInternalServerError)
+    }
+
+    @Test
     @Order(2)
     fun `Hent kvittering som bruker`() {
         val response = mockMvc.perform(
@@ -65,7 +78,10 @@ internal class BrukerApiTest : FellesTestOppsett() {
     fun `Slett kvittering med feil bruker`() {
         mockMvc.perform(
             delete("/api/v2/kvittering/$kvitteringId")
-                .header("Authorization", "Bearer ${tokenxToken(fnr = "fnr-2" , clientId = "sykepengesoknad-backend-client-id")}")
+                .header(
+                    "Authorization",
+                    "Bearer ${tokenxToken(fnr = "fnr-2", clientId = "sykepengesoknad-backend-client-id")}"
+                )
         ).andExpect(status().isForbidden)
     }
 
@@ -74,7 +90,10 @@ internal class BrukerApiTest : FellesTestOppsett() {
     fun `Slett kvittering`() {
         mockMvc.perform(
             delete("/api/v2/kvittering/$kvitteringId")
-                .header("Authorization", "Bearer ${tokenxToken(fnr = "fnr-1" , clientId = "sykepengesoknad-backend-client-id")}")
+                .header(
+                    "Authorization",
+                    "Bearer ${tokenxToken(fnr = "fnr-1", clientId = "sykepengesoknad-backend-client-id")}"
+                )
         ).andExpect(status().isNoContent)
     }
 
@@ -92,7 +111,10 @@ internal class BrukerApiTest : FellesTestOppsett() {
     fun `Slett allerede slettet kvittering`() {
         mockMvc.perform(
             delete("/api/v2/kvittering/$kvitteringId")
-                .header("Authorization", "Bearer ${tokenxToken(fnr = "fnr-1" , clientId = "sykepengesoknad-backend-client-id")}")
+                .header(
+                    "Authorization",
+                    "Bearer ${tokenxToken(fnr = "fnr-1", clientId = "sykepengesoknad-backend-client-id")}"
+                )
         ).andExpect(status().isNoContent)
     }
 }

@@ -14,7 +14,20 @@ class Bildeprosessering(
     private val restTemplate: RestTemplate
 ) {
 
+    private val gyldigeBildetyper = listOf(MediaType.IMAGE_PNG, MediaType.IMAGE_JPEG)
+
     fun prosesserBilde(bilde: Bilde): Bilde? {
+        if (!gyldigeBildetyper.contains(bilde.contentType)) {
+            throw IllegalArgumentException(
+                "Kan ikke prosessere bilde av typen ${bilde.contentType}. " +
+                    "Kun ${MediaType.IMAGE_JPEG_VALUE} og ${MediaType.IMAGE_PNG_VALUE} er støttet."
+            )
+        }
+
+        return prosesser(bilde)
+    }
+
+    private fun prosesser(bilde: Bilde): Bilde? {
         val headers = HttpHeaders()
         headers.contentType = bilde.contentType
 
