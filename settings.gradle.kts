@@ -1,1 +1,1 @@
-rootProject.name = "flex-bucket-uploader"
+rootProject.name = "sykepengesoknad-kvitteringer"
