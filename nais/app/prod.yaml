@@ -4,7 +4,6 @@ replicas_max: 3
 gcp_bucket: flex-kvitteringer-prod
 env:
   SPRING_PROFILES_ACTIVE: default
-  FLEX_BILDEPROSESSERING_URL: "http://flex-bildeprosessering"
   SYKEPENGESOKNAD_FRONTEND_CLIENT_ID: prod-gcp:flex:sykepengesoknad
   SYKEPENGESOKNAD_BACKEND_CLIENT_ID: prod-gcp:flex:sykepengesoknad-backend
   TOKENX_IDPORTEN_IDP: https://oidc.difi.no/idporten-oidc-provider/
