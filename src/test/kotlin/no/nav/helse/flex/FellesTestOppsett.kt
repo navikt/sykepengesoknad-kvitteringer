@@ -11,8 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.testcontainers.containers.GenericContainer
-import org.testcontainers.utility.DockerImageName
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.*
@@ -34,20 +32,6 @@ abstract class FellesTestOppsett() {
 
     @Autowired
     lateinit var mockOAuth2Server: MockOAuth2Server
-
-    companion object {
-
-        init {
-            GenericContainer(DockerImageName.parse("ghcr.io/navikt/flex-bildeprosessering/flex-bildeprosessering:latest"))
-                .also {
-                    it.withExposedPorts(8080)
-                }
-                .also {
-                    it.start()
-                    System.setProperty("FLEX_BILDEPROSESSERING_URL", "http://localhost:${it.firstMappedPort}")
-                }
-        }
-    }
 
     fun hentTestbilde(filnavn: String): Bilde {
         val bytes = Files.readAllBytes(Paths.get("$TESTBILDER/$filnavn"))

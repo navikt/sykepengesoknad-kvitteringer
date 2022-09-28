@@ -4,7 +4,6 @@ replicas_max: 1
 gcp_bucket: flex-reisetilskudd-kvitteringer
 env:
   SPRING_PROFILES_ACTIVE: default
-  FLEX_BILDEPROSESSERING_URL: "http://flex-bildeprosessering"
   SYKEPENGESOKNAD_FRONTEND_CLIENT_ID: dev-gcp:flex:sykepengesoknad
   SYKEPENGESOKNAD_BACKEND_CLIENT_ID: dev-gcp:flex:sykepengesoknad-backend
   TOKENX_IDPORTEN_IDP: https://oidc-ver2.difi.no/idporten-oidc-provider/
