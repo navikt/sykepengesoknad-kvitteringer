@@ -4,6 +4,7 @@ import no.nav.helse.flex.no.nav.helse.flex.bildeprosessering.Bilde
 import no.nav.security.mock.oauth2.MockOAuth2Server
 import no.nav.security.mock.oauth2.token.DefaultOAuth2TokenCallback
 import no.nav.security.token.support.spring.test.EnableMockOAuth2Server
+import org.apache.tika.Tika
 import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -17,14 +18,16 @@ import java.nio.file.Paths
 import java.util.*
 
 private const val TESTBILDER = "src/test/resources/bilder/"
-const val ORIGINALT_BILDE_BYTE_SIZE = 913449
-const val PROSESSERT_BILDE_BYTE_SIZE = 64742
+
+const val PROSESSERT_BILDE_BYTE_SIZE = 4028
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @EnableMockOAuth2Server
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class FellesTestOppsett() {
+
+    val tika = Tika()
 
     @Autowired
     lateinit var mockMvc: MockMvc
@@ -47,22 +50,24 @@ abstract class FellesTestOppsett() {
     }
 
     fun hentTestbilde(filnavn: String): Bilde {
+        val bytes = Files.readAllBytes(Paths.get("$TESTBILDER/$filnavn"))
+
+        return Bilde(
+            MediaType.parseMediaType(tika.detect(bytes)),
+            bytes
+        )
+    }
+
+    fun hentTestbilde(filnavn: String, mediaType: MediaType): Bilde {
         val bildefil = Paths.get("$TESTBILDER/$filnavn")
 
         return Bilde(
-            MediaType.parseMediaType(Files.probeContentType(bildefil)),
+            mediaType,
             Files.readAllBytes(bildefil)
         )
     }
 
-    fun hentTestbilde(filnavn: String, contentType: MediaType): Bilde {
-        val bildefil = Paths.get("$TESTBILDER/$filnavn")
-
-        return Bilde(
-            contentType,
-            Files.readAllBytes(bildefil)
-        )
-    }
+    fun finnMediaType(prosessertBilde: Bilde?): String = tika.detect(prosessertBilde!!.bytes)
 
     fun tokenxToken(
         fnr: String,

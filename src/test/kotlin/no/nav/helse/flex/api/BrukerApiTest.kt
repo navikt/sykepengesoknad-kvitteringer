@@ -2,7 +2,6 @@ package no.nav.helse.flex.api
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.helse.flex.FellesTestOppsett
-import no.nav.helse.flex.PROSESSERT_BILDE_BYTE_SIZE
 import no.nav.helse.flex.no.nav.helse.flex.api.VedleggRespons
 import no.nav.helse.flex.objectMapper
 import org.amshove.kluent.`should be equal to`
@@ -26,7 +25,7 @@ internal class BrukerApiTest : FellesTestOppsett() {
     @Test
     @Order(1)
     fun `Last opp kvittering som bruker`() {
-        val bilde = hentTestbilde("example.jpg")
+        val bilde = hentTestbilde("1200x800.jpeg")
         val multipartFile = MockMultipartFile("file", null, bilde.contentType.toString(), bilde.bytes)
 
         val response = mockMvc.perform(
@@ -42,6 +41,19 @@ internal class BrukerApiTest : FellesTestOppsett() {
     }
 
     @Test
+    @Order(1)
+    fun `Last opp ugyldig bilde`() {
+        val bilde = hentTestbilde("1200x800.heic")
+        val multipartFile = MockMultipartFile("file", null, bilde.contentType.toString(), bilde.bytes)
+
+        mockMvc.perform(
+            multipart("/api/v2/opplasting")
+                .file(multipartFile)
+                .header("Authorization", "Bearer ${tokenxToken("fnr-1")}")
+        ).andExpect(status().isInternalServerError)
+    }
+
+    @Test
     @Order(2)
     fun `Hent kvittering som bruker`() {
         val response = mockMvc.perform(
@@ -50,7 +62,6 @@ internal class BrukerApiTest : FellesTestOppsett() {
         ).andExpect(status().isOk).andReturn().response
 
         response.contentType `should be equal to` MediaType.IMAGE_JPEG_VALUE
-        response.contentLength `should be equal to` PROSESSERT_BILDE_BYTE_SIZE
     }
 
     @Test
@@ -67,7 +78,10 @@ internal class BrukerApiTest : FellesTestOppsett() {
     fun `Slett kvittering med feil bruker`() {
         mockMvc.perform(
             delete("/api/v2/kvittering/$kvitteringId")
-                .header("Authorization", "Bearer ${tokenxToken(fnr = "fnr-2" , clientId = "sykepengesoknad-backend-client-id")}")
+                .header(
+                    "Authorization",
+                    "Bearer ${tokenxToken(fnr = "fnr-2", clientId = "sykepengesoknad-backend-client-id")}"
+                )
         ).andExpect(status().isForbidden)
     }
 
@@ -76,7 +90,10 @@ internal class BrukerApiTest : FellesTestOppsett() {
     fun `Slett kvittering`() {
         mockMvc.perform(
             delete("/api/v2/kvittering/$kvitteringId")
-                .header("Authorization", "Bearer ${tokenxToken(fnr = "fnr-1" , clientId = "sykepengesoknad-backend-client-id")}")
+                .header(
+                    "Authorization",
+                    "Bearer ${tokenxToken(fnr = "fnr-1", clientId = "sykepengesoknad-backend-client-id")}"
+                )
         ).andExpect(status().isNoContent)
     }
 
@@ -94,7 +111,10 @@ internal class BrukerApiTest : FellesTestOppsett() {
     fun `Slett allerede slettet kvittering`() {
         mockMvc.perform(
             delete("/api/v2/kvittering/$kvitteringId")
-                .header("Authorization", "Bearer ${tokenxToken(fnr = "fnr-1" , clientId = "sykepengesoknad-backend-client-id")}")
+                .header(
+                    "Authorization",
+                    "Bearer ${tokenxToken(fnr = "fnr-1", clientId = "sykepengesoknad-backend-client-id")}"
+                )
         ).andExpect(status().isNoContent)
     }
 }

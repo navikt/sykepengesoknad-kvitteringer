@@ -38,6 +38,7 @@ val kluentVersion = "1.68"
 val googleCloudVersion = "2.12.0"
 val gcsNioVersion = "0.124.15"
 val testcontainersVersion = "1.17.3"
+val tikaVersion = "2.4.1"
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
@@ -62,6 +63,7 @@ dependencies {
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
     testImplementation("no.nav.security:token-validation-spring-test:$tokenSupportVersion")
     testImplementation("com.google.cloud:google-cloud-nio:$gcsNioVersion")
+    testImplementation("org.apache.tika:tika-core:$tikaVersion")
 }
 
 tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {

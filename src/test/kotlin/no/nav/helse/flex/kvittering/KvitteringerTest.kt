@@ -1,7 +1,6 @@
 package no.nav.helse.flex.kvittering
 
 import no.nav.helse.flex.FellesTestOppsett
-import no.nav.helse.flex.PROSESSERT_BILDE_BYTE_SIZE
 import org.amshove.kluent.`should be`
 import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.MethodOrderer
@@ -20,7 +19,7 @@ internal class KvitteringerTest : FellesTestOppsett() {
     @Test
     @Order(1)
     fun `Lagrer kvittering`() {
-        val bilde = hentTestbilde("example.jpg")
+        val bilde = hentTestbilde("1200x800.jpeg")
 
         kvitteringer.lagreKvittering("fnr-1", "blob-1", bilde.contentType, bilde.bytes)
     }
@@ -29,9 +28,8 @@ internal class KvitteringerTest : FellesTestOppsett() {
     @Order(2)
     fun `Henter lagret kvittering`() {
         kvitteringer.hentKvittering("blob-1")?.let {
-            it.contentType `should be equal to` MediaType.IMAGE_JPEG.toString()
+            it.contentType `should be equal to` MediaType.IMAGE_JPEG_VALUE
             it.filnavn `should be equal to` "kvittering-blob-1.jpeg"
-            it.contentSize `should be equal to` PROSESSERT_BILDE_BYTE_SIZE.toLong()
         }
     }
 
