@@ -45,8 +45,6 @@ spec:
     enabled: true
   accessPolicy:
     outbound:
-      rules:
-        - application: flex-bildeprosessering
       external:
         - host: www.googleapis.com
         - host: storage.googleapis.com
