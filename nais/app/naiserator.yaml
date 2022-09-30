@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: flex-bucket-uploader
+  name: sykepengesoknad-kvitteringer
   namespace: flex
   labels:
     team: flex
@@ -34,7 +34,7 @@ spec:
       cpu: 1000m
       memory: 2000Mi
     requests:
-      cpu: 400m
+      cpu: 200m
       memory: 1000Mi
   vault:
     enabled: false

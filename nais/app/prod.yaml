@@ -1,7 +1,7 @@
 environment: prod
 replicas_min: 2
 replicas_max: 3
-gcp_bucket: flex-kvitteringer-prod
+gcp_bucket: flex-sykepengesoknad-kvitteringer-prod
 env:
   SPRING_PROFILES_ACTIVE: default
   SYKEPENGESOKNAD_FRONTEND_CLIENT_ID: prod-gcp:flex:sykepengesoknad

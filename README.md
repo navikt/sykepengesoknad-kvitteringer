@@ -1,8 +1,11 @@
 # flex-bucket-uploader
 
-Brukes til å laste opp kvitteringer fra reisetilskuddsøknader.
+Applikasjon som tar i mot og behandler bilder av kvitteringer til sykepengesøknader med reisetilskudd. 
+Bildene konverteres til `jpeg` og justeres til riktig størrelse før til lastes opp til en GCP bucket.
 
-Applikasjonen har en bucket i GCP hvor den lagrer kvitteringer som er lastet opp med fødselsnummer som metadata. Dataene er personidentifiserbare. Kvitteringer slettes hvis brukeren sletter kvitteringen i søknadsdialogen før innsending. Etter innsending er det ingen sletting av kvitteringene. 
+Applikasjonen lagrer kvitteringer i GCP bucket med fødselsnummer som metadata. Dataene er personidentifiserbare. 
+Kvitteringer slettes hvis brukeren sletter kvitteringen i søknadsdialogen før innsending. 
+Etter innsending er det ingen sletting av kvitteringene. 
 
 ## Teknologi
 
