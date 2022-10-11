@@ -1,8 +1,8 @@
 environment: prod
 replicas_min: 2
 replicas_max: 3
-cpu_request: 500m
-cpu_limit: 1000m
+cpu_request: 200m
+cpu_limit: 800m
 memory_limit: 1000Mi
 gcp_bucket: flex-sykepengesoknad-kvitteringer-prod
 env:
