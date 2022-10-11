@@ -31,11 +31,11 @@ spec:
     path: /internal/prometheus
   resources:
     limits:
-      cpu: {{cpu_limits}}
-      memory: {{memory}}
+      cpu: {{cpu_limit}}
+      memory: {{memory_limit}}
     requests:
-      cpu: {{cpu_requests}}
-      memory: {{memory}}
+      cpu: {{cpu_request}}
+      memory: {{memory_limit}}
   vault:
     enabled: false
   azure:
