@@ -32,7 +32,7 @@ repositories {
 
 ext["okhttp3.version"] = "4.9.3" // Mockwebserver
 
-val tokenSupportVersion = "2.1.6"
+val tokenSupportVersion = "2.1.7"
 val logstashLogbackEncoderVersion = "7.2"
 val kluentVersion = "1.72"
 val googleCloudVersion = "2.13.0"
