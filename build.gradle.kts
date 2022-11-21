@@ -37,7 +37,7 @@ val logstashLogbackEncoderVersion = "7.2"
 val kluentVersion = "1.72"
 val googleCloudVersion = "2.14.0"
 val gcsNioVersion = "0.124.19"
-val testcontainersVersion = "1.17.5"
+val testcontainersVersion = "1.17.6"
 val tikaVersion = "2.5.0"
 
 dependencies {
