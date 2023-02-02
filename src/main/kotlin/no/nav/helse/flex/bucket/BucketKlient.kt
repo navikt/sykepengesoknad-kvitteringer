@@ -35,7 +35,7 @@ class BucketKlient(
     }
 
     data class BlobContent(
-        val metadata: Map<String, String>,
+        val metadata: MutableMap<String, String?>?,
         val blob: Blob,
     )
 }

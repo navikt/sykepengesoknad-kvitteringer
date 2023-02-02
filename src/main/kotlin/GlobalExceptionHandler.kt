@@ -1,5 +1,6 @@
 package no.nav.helse.flex
 
+import jakarta.servlet.http.HttpServletRequest
 import no.nav.security.token.support.core.exceptions.JwtTokenInvalidClaimException
 import no.nav.security.token.support.spring.validation.interceptor.JwtTokenUnauthorizedException
 import org.springframework.http.HttpStatus
@@ -8,7 +9,6 @@ import org.springframework.web.HttpMediaTypeNotAcceptableException
 import org.springframework.web.bind.MissingRequestHeaderException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import javax.servlet.http.HttpServletRequest
 
 @ControllerAdvice
 class GlobalExceptionHandler {

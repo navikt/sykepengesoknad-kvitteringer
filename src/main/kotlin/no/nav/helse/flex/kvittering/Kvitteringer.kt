@@ -33,7 +33,7 @@ class Kvitteringer(
         return bucketKlient.hentBlob(blobNavn)?.let {
             return Kvittering(
                 filnavn = "kvittering-$blobNavn.${it.filType()}",
-                fnr = it.metadata["fnr"]!!,
+                fnr = it.metadata!!["fnr"]!!,
                 contentType = it.metadata["content-type"]!!,
                 bytes = it.blob.getContent(),
             )
@@ -49,7 +49,7 @@ class Kvitteringer(
     }
 
     private fun BlobContent.filType(): String {
-        return metadata["content-type"]!!.split("/")[1]
+        return metadata!!["content-type"]!!.split("/")[1]
     }
 }
 
