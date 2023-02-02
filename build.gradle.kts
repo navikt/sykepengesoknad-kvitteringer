@@ -1,11 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.7.5"
+    id("org.springframework.boot") version "3.0.2"
     id("io.spring.dependency-management") version "1.1.0"
     id("org.jlleitschuh.gradle.ktlint") version "11.1.0"
     kotlin("jvm") version "1.8.0"
     kotlin("plugin.spring") version "1.8.0"
+    id("com.github.ben-manes.versions") version "0.45.0"
 }
 
 group = "no.nav.helse.flex"
@@ -32,17 +33,17 @@ repositories {
 
 ext["okhttp3.version"] = "4.9.3" // Mockwebserver
 
-val tokenSupportVersion = "2.1.9"
+val tokenSupportVersion = "3.0.2"
 val logstashLogbackEncoderVersion = "7.2"
 val kluentVersion = "1.72"
-val googleCloudVersion = "2.16.0"
+val googleCloudVersion = "2.17.0"
 val gcsNioVersion = "0.126.3"
 val testcontainersVersion = "1.17.6"
 val tikaVersion = "2.6.0"
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("stdlib"))
     implementation(kotlin("reflect"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -51,8 +52,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashLogbackEncoderVersion")
-    implementation("no.nav.security:token-client-spring:$tokenSupportVersion")
     implementation("no.nav.security:token-validation-spring:$tokenSupportVersion")
+    implementation("no.nav.security:token-client-spring:$tokenSupportVersion")
     implementation("com.google.cloud:google-cloud-storage:$googleCloudVersion")
 
     testImplementation(platform("org.testcontainers:testcontainers-bom:$testcontainersVersion"))
