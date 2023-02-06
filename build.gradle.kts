@@ -38,7 +38,7 @@ val kluentVersion = "1.72"
 val googleCloudVersion = "2.17.2"
 val gcsNioVersion = "0.126.3"
 val testcontainersVersion = "1.17.6"
-val tikaVersion = "2.6.0"
+val tikaVersion = "2.7.0"
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
