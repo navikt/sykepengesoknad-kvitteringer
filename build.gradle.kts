@@ -36,16 +36,7 @@ val tokenSupportVersion = "3.0.3"
 val logstashLogbackEncoderVersion = "7.2"
 val kluentVersion = "1.72"
 val googleCloudVersion = "2.18.0"
-<<<<<<< Updated upstream
-val gcsNioVersion = "0.126.6"
-val testcontainersVersion = "1.17.6"
-||||||| Stash base
 val gcsNioVersion = "0.126.4"
-val testcontainersVersion = "1.17.6"
-=======
-val gcsNioVersion = "0.126.4"
-val testContainersVersion = "1.17.6"
->>>>>>> Stashed changes
 val tikaVersion = "2.7.0"
 
 dependencies {
@@ -63,10 +54,7 @@ dependencies {
     implementation("no.nav.security:token-client-spring:$tokenSupportVersion")
     implementation("com.google.cloud:google-cloud-storage:$googleCloudVersion")
 
-    testImplementation(platform("org.testcontainers:testcontainers-bom:$testContainersVersion"))
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.testcontainers:testcontainers")
-    testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.awaitility:awaitility")
     testImplementation("org.amshove.kluent:kluent:$kluentVersion")
     testImplementation("no.nav.security:token-validation-spring-test:$tokenSupportVersion")
