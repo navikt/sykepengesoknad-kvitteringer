@@ -62,10 +62,9 @@ abstract class FellesTestOppsett() {
             "acr" to "Level4",
             "idp" to "idporten",
             "client_id" to clientId,
-            "pid" to fnr,
-        ),
+            "pid" to fnr
+        )
     ): String {
-
         return mockOAuth2Server.issueToken(
             issuerId,
             clientId,
@@ -92,7 +91,7 @@ abstract class FellesTestOppsett() {
         issuerId: String,
         clientId: String,
         audience: String,
-        claims: Map<String, Any> = mapOf("acr" to "Level4"),
+        claims: Map<String, Any> = mapOf("acr" to "Level4")
     ): String {
         return this.issueToken(
             issuerId,

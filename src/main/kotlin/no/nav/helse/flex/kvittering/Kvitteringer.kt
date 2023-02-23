@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service
 @Service
 class Kvitteringer(
     private val bucketKlient: BucketKlient,
-    private val bildeprosessering: Bildeprosessering,
+    private val bildeprosessering: Bildeprosessering
 ) {
 
     private val log = logger()
@@ -35,7 +35,7 @@ class Kvitteringer(
                 filnavn = "kvittering-$blobNavn.${it.filType()}",
                 fnr = it.metadata!!["fnr"]!!,
                 contentType = it.metadata["content-type"]!!,
-                bytes = it.blob.getContent(),
+                bytes = it.blob.getContent()
             )
         }
     }

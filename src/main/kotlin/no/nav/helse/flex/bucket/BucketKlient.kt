@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component
 class BucketKlient(
     @Value("\${BUCKET_NAME}")
     private val bucketName: String,
-    private val storage: Storage,
+    private val storage: Storage
 ) {
 
     fun lagreBlob(blobNavn: String, contentType: MediaType, metadata: Map<String, String>, bytes: ByteArray) {
@@ -36,6 +36,6 @@ class BucketKlient(
 
     data class BlobContent(
         val metadata: MutableMap<String, String?>?,
-        val blob: Blob,
+        val blob: Blob
     )
 }

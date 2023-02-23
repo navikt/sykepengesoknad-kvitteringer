@@ -37,7 +37,7 @@ class MaskinApi(
 
     private fun validClients() = listOf(
         NamespaceOgApp(namespace = "flex", app = "sykepengesoknad-backend"),
-        NamespaceOgApp(namespace = "flex", app = "sykepengesoknad-arkivering-oppgave"),
+        NamespaceOgApp(namespace = "flex", app = "sykepengesoknad-arkivering-oppgave")
     )
 
     fun validateClientId(apps: List<NamespaceOgApp>) {
