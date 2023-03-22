@@ -9,6 +9,7 @@ spec:
   gcp:
     buckets:
       - name: {{gcp_bucket}}
+        publicAccessPrevention: true
   image: {{ image }}
   replicas:
     min: {{replicas_min}}
