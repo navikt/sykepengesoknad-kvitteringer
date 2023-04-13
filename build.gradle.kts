@@ -36,7 +36,7 @@ val tokenSupportVersion = "3.0.9"
 val logstashLogbackEncoderVersion = "7.2"
 val kluentVersion = "1.72"
 val googleCloudVersion = "2.21.0"
-val gcsNioVersion = "0.126.11"
+val gcsNioVersion = "0.126.12"
 val tikaVersion = "2.7.0"
 
 dependencies {
