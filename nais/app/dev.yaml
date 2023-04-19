@@ -1,9 +1,8 @@
 environment: dev
 replicas_min: 1
 replicas_max: 1
-cpu_request: 200m
-cpu_limit: 400m
-memory_limit: 500Mi
+cpu: 100m
+memory: 400Mi
 gcp_bucket: flex-sykepengesoknad-kvitteringer-dev
 env:
   SPRING_PROFILES_ACTIVE: default
