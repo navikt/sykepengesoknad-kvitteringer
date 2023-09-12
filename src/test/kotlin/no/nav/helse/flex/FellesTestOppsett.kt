@@ -59,7 +59,7 @@ abstract class FellesTestOppsett() {
         issuerId: String = "tokenx",
         clientId: String = "sykepengesoknad-frontend-client-id",
         claims: Map<String, Any> = mapOf(
-            "acr" to "Level4",
+            "acr" to "idporten-loa-high",
             "idp" to "idporten",
             "client_id" to clientId,
             "pid" to fnr
@@ -91,7 +91,7 @@ abstract class FellesTestOppsett() {
         issuerId: String,
         clientId: String,
         audience: String,
-        claims: Map<String, Any> = mapOf("acr" to "Level4")
+        claims: Map<String, Any> = mapOf("acr" to "idporten-loa-high")
     ): String {
         return this.issueToken(
             issuerId,

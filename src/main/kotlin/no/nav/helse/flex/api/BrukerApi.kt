@@ -37,7 +37,7 @@ class BrukerApi(
 ) {
 
     @PostMapping("/api/v2/opplasting")
-    @ProtectedWithClaims(issuer = "tokenx", claimMap = ["acr=Level4"])
+    @ProtectedWithClaims(issuer = "tokenx", combineWithOr = true, claimMap = ["acr=Level4", "acr=idporten-loa-high"])
     @ResponseBody
     fun lagreKvittering(@RequestParam("file") file: MultipartFile): ResponseEntity<VedleggRespons> {
         val id = UUID.randomUUID().toString()
@@ -48,7 +48,7 @@ class BrukerApi(
     }
 
     @GetMapping("/api/v2/kvittering/{blobNavn}")
-    @ProtectedWithClaims(issuer = "tokenx", claimMap = ["acr=Level4"])
+    @ProtectedWithClaims(issuer = "tokenx", combineWithOr = true, claimMap = ["acr=Level4", "acr=idporten-loa-high"])
     fun hentKvittering(@PathVariable blobNavn: String): ResponseEntity<ByteArray> {
         val fnr = validerTokenXClaims(sykepengesoknadFrontendClientId).hentFnr()
 
@@ -66,7 +66,7 @@ class BrukerApi(
 
     @DeleteMapping("/api/v2/kvittering/{blobNavn}")
     @ResponseBody
-    @ProtectedWithClaims(issuer = "tokenx", claimMap = ["acr=Level4"])
+    @ProtectedWithClaims(issuer = "tokenx", combineWithOr = true, claimMap = ["acr=Level4", "acr=idporten-loa-high"])
     fun slettKvittering(@PathVariable blobNavn: String): ResponseEntity<Any> {
         val fnr = validerTokenXClaims(sykepengesoknadBackendClientId).hentFnr()
         val kvittering = kvitteringer.hentKvittering(blobNavn) ?: return ResponseEntity.noContent().build()
