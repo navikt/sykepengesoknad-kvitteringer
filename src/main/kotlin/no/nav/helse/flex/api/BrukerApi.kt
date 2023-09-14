@@ -94,11 +94,6 @@ class BrukerApi(
         if (!tillattClient.toList().contains(clientId)) {
             throw UkjentClientException("Uventet client id $clientId")
         }
-        val idp = claims.getStringClaim("idp")
-        if (idp != tokenxIdportenIdp) {
-            // Sjekker at det var idporten som er IDP for tokenX tokenet
-            throw UkjentClientException("Uventet idp $idp")
-        }
         return claims
     }
 }
