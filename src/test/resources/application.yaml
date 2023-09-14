@@ -4,7 +4,6 @@ AZURE_APP_PRE_AUTHORIZED_APPS: "[{\"name\":\"dev-gcp:flex:sykepengesoknad-backen
 
 SYKEPENGESOKNAD_FRONTEND_CLIENT_ID: sykepengesoknad-frontend-client-id
 SYKEPENGESOKNAD_BACKEND_CLIENT_ID: sykepengesoknad-backend-client-id
-TOKENX_IDPORTEN_IDP: idporten
 
 management:
   endpoint.prometheus.enabled: true

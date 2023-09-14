@@ -31,9 +31,6 @@ class BrukerApi(
 
     @Value("\${SYKEPENGESOKNAD_BACKEND_CLIENT_ID}")
     val sykepengesoknadBackendClientId: String,
-
-    @Value("\${TOKENX_IDPORTEN_IDP}")
-    val tokenxIdportenIdp: String
 ) {
 
     @PostMapping("/api/v2/opplasting")
