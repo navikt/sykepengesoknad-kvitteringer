@@ -30,7 +30,7 @@ class BrukerApi(
     val sykepengesoknadFrontendClientId: String,
 
     @Value("\${SYKEPENGESOKNAD_BACKEND_CLIENT_ID}")
-    val sykepengesoknadBackendClientId: String,
+    val sykepengesoknadBackendClientId: String
 ) {
 
     @PostMapping("/api/v2/opplasting")
