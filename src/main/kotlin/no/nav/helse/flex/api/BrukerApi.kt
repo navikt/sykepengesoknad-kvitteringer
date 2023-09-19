@@ -30,10 +30,7 @@ class BrukerApi(
     val sykepengesoknadFrontendClientId: String,
 
     @Value("\${SYKEPENGESOKNAD_BACKEND_CLIENT_ID}")
-    val sykepengesoknadBackendClientId: String,
-
-    @Value("\${TOKENX_IDPORTEN_IDP}")
-    val tokenxIdportenIdp: String
+    val sykepengesoknadBackendClientId: String
 ) {
 
     @PostMapping("/api/v2/opplasting")
@@ -93,11 +90,6 @@ class BrukerApi(
 
         if (!tillattClient.toList().contains(clientId)) {
             throw UkjentClientException("Uventet client id $clientId")
-        }
-        val idp = claims.getStringClaim("idp")
-        if (idp != tokenxIdportenIdp) {
-            // Sjekker at det var idporten som er IDP for tokenX tokenet
-            throw UkjentClientException("Uventet idp $idp")
         }
         return claims
     }
