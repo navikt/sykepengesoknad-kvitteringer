@@ -1,5 +1,6 @@
 package no.nav.helse.flex.no.nav.helse.flex.api
 
+import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.helse.flex.AbstractApiError
 import no.nav.helse.flex.LogLevel
@@ -47,6 +48,7 @@ class BrukerApi(
     }
 
     @GetMapping("/api/v2/kvittering/{blobNavn}")
+    @Operation(description = "Hent kvittering")
     @ProtectedWithClaims(issuer = "tokenx", combineWithOr = true, claimMap = ["acr=Level4", "acr=idporten-loa-high"])
     fun hentKvittering(@PathVariable blobNavn: String): ResponseEntity<ByteArray> {
         val fnr = validerTokenXClaims(sykepengesoknadFrontendClientId).hentFnr()
