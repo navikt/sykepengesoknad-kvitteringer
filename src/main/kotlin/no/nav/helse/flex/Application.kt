@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.web.client.RestTemplate
 
 @SpringBootApplication
-@EnableJwtTokenValidation
+@EnableJwtTokenValidation(ignore = ["org.springdoc"])
 class Application() {
 
     @Bean
