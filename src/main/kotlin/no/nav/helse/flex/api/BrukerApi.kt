@@ -1,5 +1,6 @@
 package no.nav.helse.flex.no.nav.helse.flex.api
 
+import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.helse.flex.AbstractApiError
 import no.nav.helse.flex.LogLevel
 import no.nav.helse.flex.kvittering.Kvittering
@@ -22,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
 @Controller
+@Tag(name = "kvitteringer", description = "Operasjoner for å laste opp reisetilskudd kvitteringer")
 class BrukerApi(
     private val tokenValidationContextHolder: TokenValidationContextHolder,
     private val kvitteringer: Kvitteringer,
