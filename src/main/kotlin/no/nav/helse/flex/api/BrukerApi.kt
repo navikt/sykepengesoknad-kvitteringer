@@ -14,12 +14,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseBody
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
@@ -51,6 +46,8 @@ class BrukerApi(
     @Operation(description = "Hent kvittering")
     @ProtectedWithClaims(issuer = "tokenx", combineWithOr = true, claimMap = ["acr=Level4", "acr=idporten-loa-high"])
     fun hentKvittering(@PathVariable blobNavn: String): ResponseEntity<ByteArray> {
+        blobNavn.checkValidInput()
+
         val fnr = validerTokenXClaims(sykepengesoknadFrontendClientId).hentFnr()
 
         val kvittering = kvitteringer.hentKvittering(blobNavn) ?: return ResponseEntity.notFound().build()
@@ -69,6 +66,7 @@ class BrukerApi(
     @ResponseBody
     @ProtectedWithClaims(issuer = "tokenx", combineWithOr = true, claimMap = ["acr=Level4", "acr=idporten-loa-high"])
     fun slettKvittering(@PathVariable blobNavn: String): ResponseEntity<Any> {
+        blobNavn.checkValidInput()
         val fnr = validerTokenXClaims(sykepengesoknadBackendClientId).hentFnr()
         val kvittering = kvitteringer.hentKvittering(blobNavn) ?: return ResponseEntity.noContent().build()
 
@@ -96,6 +94,13 @@ class BrukerApi(
             throw UkjentClientException("Uventet client id $clientId")
         }
         return claims
+    }
+
+    fun String.checkValidInput() {
+        if (this.matches("^[a-zA-Z0-9-]+$".toRegex())) {
+            return
+        }
+        throw IllegalArgumentException("Ugyldig bruker input")
     }
 }
 
