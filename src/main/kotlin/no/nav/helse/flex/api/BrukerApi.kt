@@ -46,35 +46,38 @@ class BrukerApi(
     @Operation(description = "Hent kvittering")
     @ProtectedWithClaims(issuer = "tokenx", combineWithOr = true, claimMap = ["acr=Level4", "acr=idporten-loa-high"])
     fun hentKvittering(@PathVariable blobNavn: String): ResponseEntity<ByteArray> {
-        blobNavn.checkValidInput()
+        if (blobNavn.matches("^[a-zA-Z0-9-]+$".toRegex())) {
+            val fnr = validerTokenXClaims(sykepengesoknadFrontendClientId).hentFnr()
 
-        val fnr = validerTokenXClaims(sykepengesoknadFrontendClientId).hentFnr()
+            val kvittering = kvitteringer.hentKvittering(blobNavn) ?: return ResponseEntity.notFound().build()
 
-        val kvittering = kvitteringer.hentKvittering(blobNavn) ?: return ResponseEntity.notFound().build()
+            if (!kvitteringEiesAvBruker(kvittering, fnr)) {
+                throw UkjentClientException("Kvittering $blobNavn er forsøkt hentet av feil bruker.")
+            }
 
-        if (!kvitteringEiesAvBruker(kvittering, fnr)) {
-            throw UkjentClientException("Kvittering $blobNavn er forsøkt hentet av feil bruker.")
+            return ResponseEntity
+                .ok()
+                .contentType(MediaType.parseMediaType(kvittering.contentType))
+                .body(kvittering.bytes)
         }
-
-        return ResponseEntity
-            .ok()
-            .contentType(MediaType.parseMediaType(kvittering.contentType))
-            .body(kvittering.bytes)
+        throw IllegalArgumentException("blobNavn validerer ikke")
     }
 
     @DeleteMapping("/api/v2/kvittering/{blobNavn}")
     @ResponseBody
     @ProtectedWithClaims(issuer = "tokenx", combineWithOr = true, claimMap = ["acr=Level4", "acr=idporten-loa-high"])
     fun slettKvittering(@PathVariable blobNavn: String): ResponseEntity<Any> {
-        blobNavn.checkValidInput()
-        val fnr = validerTokenXClaims(sykepengesoknadBackendClientId).hentFnr()
-        val kvittering = kvitteringer.hentKvittering(blobNavn) ?: return ResponseEntity.noContent().build()
+        if (blobNavn.matches("^[a-zA-Z0-9-]+$".toRegex())) {
+            val fnr = validerTokenXClaims(sykepengesoknadBackendClientId).hentFnr()
+            val kvittering = kvitteringer.hentKvittering(blobNavn) ?: return ResponseEntity.noContent().build()
 
-        if (!kvitteringEiesAvBruker(kvittering, fnr)) {
-            throw UkjentClientException("Kvittering $blobNavn er forsøkt slettet av feil bruker.")
+            if (!kvitteringEiesAvBruker(kvittering, fnr)) {
+                throw UkjentClientException("Kvittering $blobNavn er forsøkt slettet av feil bruker.")
+            }
+            kvitteringer.slettKvittering(blobNavn)
+            return ResponseEntity.noContent().build()
         }
-        kvitteringer.slettKvittering(blobNavn)
-        return ResponseEntity.noContent().build()
+        throw IllegalArgumentException("blobNavn validerer ikke")
     }
 
     private fun kvitteringEiesAvBruker(kvittering: Kvittering, fnr: String): Boolean {
@@ -94,13 +97,6 @@ class BrukerApi(
             throw UkjentClientException("Uventet client id $clientId")
         }
         return claims
-    }
-
-    fun String.checkValidInput() {
-        if (this.matches("^[a-zA-Z0-9-]+$".toRegex())) {
-            return
-        }
-        throw IllegalArgumentException("Ugyldig bruker input")
     }
 }
 
