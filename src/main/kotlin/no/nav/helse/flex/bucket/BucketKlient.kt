@@ -14,14 +14,14 @@ class BucketKlient(
     private val storage: Storage
 ) {
 
-    fun lagreBlob(blobNavn: String, contentType: MediaType, metadata: Map<String, String>, bytes: ByteArray) {
+    fun lagreBlob(blobNavn: String, contentType: MediaType, metadata: Map<String, String>, bytes: ByteArray): Blob {
         val contentTypeVerdi = contentType.toString()
         val blobInfo = BlobInfo.newBuilder(bucketName, blobNavn)
             .setContentType(contentTypeVerdi)
             .setMetadata(metadata + mapOf("content-type" to contentTypeVerdi))
             .build()
 
-        storage.create(blobInfo, bytes)
+        return storage.create(blobInfo, bytes)
     }
 
     fun hentBlob(blobNavn: String): BlobContent? {
