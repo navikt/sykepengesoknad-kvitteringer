@@ -10,7 +10,6 @@ import org.threeten.bp.Duration
 
 @Configuration
 class BucketConfig {
-
     @Bean
     @Profile("default")
     fun storage(): Storage {

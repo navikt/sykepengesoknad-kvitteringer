@@ -20,15 +20,16 @@ class MaskinApi(
     @Value("\${AZURE_APP_PRE_AUTHORIZED_APPS}")
     private val azurePreAuthorizedApps: String,
     private val tokenValidationContextHolder: TokenValidationContextHolder,
-    private val kvitteringer: Kvitteringer
+    private val kvitteringer: Kvitteringer,
 ) {
-
     private val allowedClients: List<PreAuthorizedClient> = objectMapper.readValue(azurePreAuthorizedApps)
 
     @GetMapping("/maskin/kvittering/{blobNavn}")
     @ProtectedWithClaims(issuer = "azureator")
     @ResponseBody
-    fun hentKvittering(@PathVariable blobNavn: String): ResponseEntity<ByteArray> {
+    fun hentKvittering(
+        @PathVariable blobNavn: String,
+    ): ResponseEntity<ByteArray> {
         validateClientId(validClients())
         val kvittering = kvitteringer.hentKvittering(blobNavn) ?: return ResponseEntity.notFound().build()
         return ResponseEntity
@@ -37,15 +38,17 @@ class MaskinApi(
             .body(kvittering.bytes)
     }
 
-    private fun validClients() = listOf(
-        NamespaceOgApp(namespace = "flex", app = "sykepengesoknad-backend"),
-        NamespaceOgApp(namespace = "flex", app = "sykepengesoknad-arkivering-oppgave")
-    )
+    private fun validClients() =
+        listOf(
+            NamespaceOgApp(namespace = "flex", app = "sykepengesoknad-backend"),
+            NamespaceOgApp(namespace = "flex", app = "sykepengesoknad-arkivering-oppgave"),
+        )
 
     fun validateClientId(apps: List<NamespaceOgApp>) {
-        val clientIds = allowedClients
-            .filter { apps.contains(it.tilNamespaceOgApp()) }
-            .map { it.clientId }
+        val clientIds =
+            allowedClients
+                .filter { apps.contains(it.tilNamespaceOgApp()) }
+                .map { it.clientId }
 
         val azp = tokenValidationContextHolder.hentAzpClaim()
         if (!clientIds.contains(azp)) {

@@ -11,19 +11,23 @@ import org.springframework.stereotype.Service
 @Service
 class Kvitteringer(
     private val bucketKlient: BucketKlient,
-    private val bildeprosessering: Bildeprosessering
+    private val bildeprosessering: Bildeprosessering,
 ) {
-
     private val log = logger()
 
-    fun lagreKvittering(fnr: String, blobNavn: String, mediaType: MediaType, blobContent: ByteArray) {
+    fun lagreKvittering(
+        fnr: String,
+        blobNavn: String,
+        mediaType: MediaType,
+        blobContent: ByteArray,
+    ) {
         val prosessertBilde = bildeprosessering.prosesserBilde(Bilde(mediaType, blobContent))
 
         bucketKlient.lagreBlob(
             blobNavn = blobNavn,
             contentType = prosessertBilde!!.contentType,
             metadata = mapOf("fnr" to fnr),
-            bytes = prosessertBilde.bytes
+            bytes = prosessertBilde.bytes,
         )
 
         log.info("Lagret kvittering med blobNavn: $blobNavn og mediaType: $mediaType.")
@@ -35,7 +39,7 @@ class Kvitteringer(
                 filnavn = "kvittering-$blobNavn.${it.filType()}",
                 fnr = it.metadata!!["fnr"]!!,
                 contentType = it.metadata["content-type"]!!,
-                bytes = it.blob.getContent()
+                bytes = it.blob.getContent(),
             )
         }
     }
@@ -58,5 +62,5 @@ class Kvittering(
     val fnr: String,
     val bytes: ByteArray,
     val contentType: String,
-    val contentSize: Long = bytes.size.toLong()
+    val contentSize: Long = bytes.size.toLong(),
 )

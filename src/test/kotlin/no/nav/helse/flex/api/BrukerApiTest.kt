@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class BrukerApiTest : FellesTestOppsett() {
-
     private lateinit var kvitteringId: String
 
     @Test
@@ -28,11 +27,12 @@ internal class BrukerApiTest : FellesTestOppsett() {
         val bilde = hentTestbilde("1200x800.jpeg")
         val multipartFile = MockMultipartFile("file", null, bilde.contentType.toString(), bilde.bytes)
 
-        val response = mockMvc.perform(
-            multipart("/api/v2/opplasting")
-                .file(multipartFile)
-                .header("Authorization", "Bearer ${tokenxToken("fnr-1")}")
-        ).andExpect(status().isCreated).andReturn().response
+        val response =
+            mockMvc.perform(
+                multipart("/api/v2/opplasting")
+                    .file(multipartFile)
+                    .header("Authorization", "Bearer ${tokenxToken("fnr-1")}"),
+            ).andExpect(status().isCreated).andReturn().response
 
         val vedleggRespons: VedleggRespons = objectMapper.readValue(response.contentAsString)
         vedleggRespons.id.shouldNotBeNullOrEmpty()
@@ -49,17 +49,18 @@ internal class BrukerApiTest : FellesTestOppsett() {
         mockMvc.perform(
             multipart("/api/v2/opplasting")
                 .file(multipartFile)
-                .header("Authorization", "Bearer ${tokenxToken("fnr-1")}")
+                .header("Authorization", "Bearer ${tokenxToken("fnr-1")}"),
         ).andExpect(status().isInternalServerError)
     }
 
     @Test
     @Order(2)
     fun `Hent kvittering som bruker`() {
-        val response = mockMvc.perform(
-            get("/api/v2/kvittering/$kvitteringId")
-                .header("Authorization", "Bearer ${tokenxToken("fnr-1")}")
-        ).andExpect(status().isOk).andReturn().response
+        val response =
+            mockMvc.perform(
+                get("/api/v2/kvittering/$kvitteringId")
+                    .header("Authorization", "Bearer ${tokenxToken("fnr-1")}"),
+            ).andExpect(status().isOk).andReturn().response
 
         response.contentType `should be equal to` MediaType.IMAGE_JPEG_VALUE
     }
@@ -69,7 +70,7 @@ internal class BrukerApiTest : FellesTestOppsett() {
     fun `Hent kvittering med feil bruker`() {
         mockMvc.perform(
             get("/api/v2/kvittering/$kvitteringId")
-                .header("Authorization", "Bearer ${tokenxToken("fnr-2")}")
+                .header("Authorization", "Bearer ${tokenxToken("fnr-2")}"),
         ).andExpect(status().isForbidden)
     }
 
@@ -80,8 +81,8 @@ internal class BrukerApiTest : FellesTestOppsett() {
             delete("/api/v2/kvittering/$kvitteringId")
                 .header(
                     "Authorization",
-                    "Bearer ${tokenxToken(fnr = "fnr-2", clientId = "sykepengesoknad-backend-client-id")}"
-                )
+                    "Bearer ${tokenxToken(fnr = "fnr-2", clientId = "sykepengesoknad-backend-client-id")}",
+                ),
         ).andExpect(status().isForbidden)
     }
 
@@ -92,8 +93,8 @@ internal class BrukerApiTest : FellesTestOppsett() {
             delete("/api/v2/kvittering/$kvitteringId")
                 .header(
                     "Authorization",
-                    "Bearer ${tokenxToken(fnr = "fnr-1", clientId = "sykepengesoknad-backend-client-id")}"
-                )
+                    "Bearer ${tokenxToken(fnr = "fnr-1", clientId = "sykepengesoknad-backend-client-id")}",
+                ),
         ).andExpect(status().isNoContent)
     }
 
@@ -102,7 +103,7 @@ internal class BrukerApiTest : FellesTestOppsett() {
     fun `Hent slettet kvittering som bruker`() {
         mockMvc.perform(
             get("/api/v2/kvittering/$kvitteringId")
-                .header("Authorization", "Bearer ${tokenxToken("fnr-1")}")
+                .header("Authorization", "Bearer ${tokenxToken("fnr-1")}"),
         ).andExpect(status().isNotFound)
     }
 
@@ -113,8 +114,8 @@ internal class BrukerApiTest : FellesTestOppsett() {
             delete("/api/v2/kvittering/$kvitteringId")
                 .header(
                     "Authorization",
-                    "Bearer ${tokenxToken(fnr = "fnr-1", clientId = "sykepengesoknad-backend-client-id")}"
-                )
+                    "Bearer ${tokenxToken(fnr = "fnr-1", clientId = "sykepengesoknad-backend-client-id")}",
+                ),
         ).andExpect(status().isNoContent)
     }
 }

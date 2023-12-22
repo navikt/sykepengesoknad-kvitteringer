@@ -24,7 +24,6 @@ const val PROSESSERT_BILDE_BYTE_SIZE = 4028
 @EnableMockOAuth2Server
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 abstract class FellesTestOppsett() {
-
     val tika = Tika()
 
     @Autowired
@@ -38,16 +37,19 @@ abstract class FellesTestOppsett() {
 
         return Bilde(
             MediaType.parseMediaType(tika.detect(bytes)),
-            bytes
+            bytes,
         )
     }
 
-    fun hentTestbilde(filnavn: String, mediaType: MediaType): Bilde {
+    fun hentTestbilde(
+        filnavn: String,
+        mediaType: MediaType,
+    ): Bilde {
         val bildefil = Paths.get("$TESTBILDER/$filnavn")
 
         return Bilde(
             mediaType,
-            Files.readAllBytes(bildefil)
+            Files.readAllBytes(bildefil),
         )
     }
 
@@ -58,12 +60,13 @@ abstract class FellesTestOppsett() {
         audience: String = "flex-bucket-uploader-client-id",
         issuerId: String = "tokenx",
         clientId: String = "sykepengesoknad-frontend-client-id",
-        claims: Map<String, Any> = mapOf(
-            "acr" to "idporten-loa-high",
-            "idp" to "idporten",
-            "client_id" to clientId,
-            "pid" to fnr
-        )
+        claims: Map<String, Any> =
+            mapOf(
+                "acr" to "idporten-loa-high",
+                "idp" to "idporten",
+                "client_id" to clientId,
+                "pid" to fnr,
+            ),
     ): String {
         return mockOAuth2Server.issueToken(
             issuerId,
@@ -73,25 +76,26 @@ abstract class FellesTestOppsett() {
                 subject = UUID.randomUUID().toString(),
                 audience = listOf(audience),
                 claims = claims,
-                expiry = 3600
-            )
+                expiry = 3600,
+            ),
         ).serialize()
     }
 
-    fun azureToken(subject: String) = mockOAuth2Server.lagToken(
-        subject = subject,
-        issuerId = "azureator",
-        clientId = subject,
-        audience = "flex-bucket-uploader-client-id",
-        claims = HashMap<String, String>()
-    )
+    fun azureToken(subject: String) =
+        mockOAuth2Server.lagToken(
+            subject = subject,
+            issuerId = "azureator",
+            clientId = subject,
+            audience = "flex-bucket-uploader-client-id",
+            claims = HashMap<String, String>(),
+        )
 
     private fun MockOAuth2Server.lagToken(
         subject: String,
         issuerId: String,
         clientId: String,
         audience: String,
-        claims: Map<String, Any> = mapOf("acr" to "idporten-loa-high")
+        claims: Map<String, Any> = mapOf("acr" to "idporten-loa-high"),
     ): String {
         return this.issueToken(
             issuerId,
@@ -101,8 +105,8 @@ abstract class FellesTestOppsett() {
                 subject = subject,
                 audience = listOf(audience),
                 claims = claims,
-                expiry = 3600
-            )
+                expiry = 3600,
+            ),
         ).serialize()
     }
 }
