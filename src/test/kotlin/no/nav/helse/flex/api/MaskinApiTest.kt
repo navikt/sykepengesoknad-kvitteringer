@@ -16,7 +16,6 @@ import java.util.*
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class MaskinApiTest : FellesTestOppsett() {
-
     private lateinit var kvitteringId: String
 
     @Autowired
@@ -34,10 +33,11 @@ internal class MaskinApiTest : FellesTestOppsett() {
     fun `Hent kvittering`() {
         val azureToken = azureToken(subject = "sykepengesoknad-backend-client-id")
 
-        val response = mockMvc.perform(
-            get("/maskin/kvittering/$kvitteringId")
-                .header("Authorization", "Bearer $azureToken")
-        ).andExpect(status().isOk).andReturn().response
+        val response =
+            mockMvc.perform(
+                get("/maskin/kvittering/$kvitteringId")
+                    .header("Authorization", "Bearer $azureToken"),
+            ).andExpect(status().isOk).andReturn().response
 
         response.contentType `should be equal to` MediaType.IMAGE_JPEG_VALUE
     }
@@ -49,7 +49,7 @@ internal class MaskinApiTest : FellesTestOppsett() {
 
         mockMvc.perform(
             get("/maskin/kvittering/$kvitteringId")
-                .header("Authorization", "Bearer $azureToken")
+                .header("Authorization", "Bearer $azureToken"),
         ).andExpect(status().isForbidden)
     }
 
@@ -60,7 +60,7 @@ internal class MaskinApiTest : FellesTestOppsett() {
 
         mockMvc.perform(
             get("/maskin/kvittering/ukjent-kvittering")
-                .header("Authorization", "Bearer $azureToken")
+                .header("Authorization", "Bearer $azureToken"),
         ).andExpect(status().isNotFound)
     }
 }

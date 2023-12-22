@@ -12,7 +12,6 @@ import org.springframework.http.MediaType
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 internal class KvitteringerTest : FellesTestOppsett() {
-
     @Autowired
     private lateinit var kvitteringer: Kvitteringer
 

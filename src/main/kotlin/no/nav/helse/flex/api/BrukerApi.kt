@@ -23,18 +23,17 @@ import java.util.*
 class BrukerApi(
     private val tokenValidationContextHolder: TokenValidationContextHolder,
     private val kvitteringer: Kvitteringer,
-
     @Value("\${SYKEPENGESOKNAD_FRONTEND_CLIENT_ID}")
     val sykepengesoknadFrontendClientId: String,
-
     @Value("\${SYKEPENGESOKNAD_BACKEND_CLIENT_ID}")
-    val sykepengesoknadBackendClientId: String
+    val sykepengesoknadBackendClientId: String,
 ) {
-
     @PostMapping("/api/v2/opplasting")
     @ProtectedWithClaims(issuer = "tokenx", combineWithOr = true, claimMap = ["acr=Level4", "acr=idporten-loa-high"])
     @ResponseBody
-    fun lagreKvittering(@RequestParam("file") file: MultipartFile): ResponseEntity<VedleggRespons> {
+    fun lagreKvittering(
+        @RequestParam("file") file: MultipartFile,
+    ): ResponseEntity<VedleggRespons> {
         val id = UUID.randomUUID().toString()
         val fnr = validerTokenXClaims(sykepengesoknadFrontendClientId).hentFnr()
 
@@ -45,7 +44,9 @@ class BrukerApi(
     @GetMapping("/api/v2/kvittering/{blobNavn}")
     @Operation(description = "Hent kvittering")
     @ProtectedWithClaims(issuer = "tokenx", combineWithOr = true, claimMap = ["acr=Level4", "acr=idporten-loa-high"])
-    fun hentKvittering(@PathVariable blobNavn: String): ResponseEntity<ByteArray> {
+    fun hentKvittering(
+        @PathVariable blobNavn: String,
+    ): ResponseEntity<ByteArray> {
         if (blobNavn.matches("^[a-zA-Z0-9-]+$".toRegex())) {
             val fnr = validerTokenXClaims(sykepengesoknadFrontendClientId).hentFnr()
 
@@ -66,7 +67,9 @@ class BrukerApi(
     @DeleteMapping("/api/v2/kvittering/{blobNavn}")
     @ResponseBody
     @ProtectedWithClaims(issuer = "tokenx", combineWithOr = true, claimMap = ["acr=Level4", "acr=idporten-loa-high"])
-    fun slettKvittering(@PathVariable blobNavn: String): ResponseEntity<Any> {
+    fun slettKvittering(
+        @PathVariable blobNavn: String,
+    ): ResponseEntity<Any> {
         if (blobNavn.matches("^[a-zA-Z0-9-]+$".toRegex())) {
             val fnr = validerTokenXClaims(sykepengesoknadBackendClientId).hentFnr()
             val kvittering = kvitteringer.hentKvittering(blobNavn) ?: return ResponseEntity.noContent().build()
@@ -80,7 +83,10 @@ class BrukerApi(
         throw IllegalArgumentException("blobNavn validerer ikke")
     }
 
-    private fun kvitteringEiesAvBruker(kvittering: Kvittering, fnr: String): Boolean {
+    private fun kvitteringEiesAvBruker(
+        kvittering: Kvittering,
+        fnr: String,
+    ): Boolean {
         return fnr == kvittering.fnr
     }
 
@@ -105,7 +111,7 @@ class UkjentClientException(message: String, grunn: Throwable? = null) : Abstrac
     httpStatus = HttpStatus.FORBIDDEN,
     reason = "UKJENT_CLIENT",
     loglevel = LogLevel.WARN,
-    grunn = grunn
+    grunn = grunn,
 )
 
 data class VedleggRespons(val id: String? = null, val melding: String)

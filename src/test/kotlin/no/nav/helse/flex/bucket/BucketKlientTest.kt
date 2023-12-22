@@ -14,7 +14,6 @@ import org.springframework.http.MediaType
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class BucketKlientTest {
-
     private val storage = LocalStorageHelper.getOptions().service
     private val bucketName = "local-bucker"
     private val bucketKlient = BucketKlient(bucketName, storage)

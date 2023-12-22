@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Profile
 
 @Configuration
 class LokalBucketConfig {
-
     @Bean
     @Profile("test")
     fun storage(): Storage {

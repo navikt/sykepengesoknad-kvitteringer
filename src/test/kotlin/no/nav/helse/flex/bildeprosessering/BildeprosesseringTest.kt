@@ -12,7 +12,6 @@ import java.lang.IllegalArgumentException
 import javax.imageio.ImageIO
 
 internal class BildeprosesseringTest : FellesTestOppsett() {
-
     @Autowired
     private lateinit var bildeprosessering: Bildeprosessering
 
