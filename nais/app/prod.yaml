@@ -2,7 +2,7 @@ environment: prod
 replicas_min: 2
 replicas_max: 3
 cpu: 200m
-memory: 800Mi
+memory: 1280Mi
 gcp_bucket: flex-sykepengesoknad-kvitteringer-prod
 env:
   SPRING_PROFILES_ACTIVE: default
