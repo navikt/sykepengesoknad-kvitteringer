@@ -95,7 +95,7 @@ class BrukerApi(
     }
 
     private fun validerTokenXClaims(vararg tillattClient: String): JwtTokenClaims {
-        val context = tokenValidationContextHolder.tokenValidationContext
+        val context = tokenValidationContextHolder.getTokenValidationContext()
         val claims = context.getClaims("tokenx")
         val clientId = claims.getStringClaim("client_id")
 
