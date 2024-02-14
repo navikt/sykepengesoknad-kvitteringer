@@ -17,13 +17,11 @@ import java.util.*
 
 private const val TESTBILDER = "src/test/resources/bilder/"
 
-const val PROSESSERT_BILDE_BYTE_SIZE = 4028
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @EnableMockOAuth2Server
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-abstract class FellesTestOppsett() {
+abstract class FellesTestOppsett {
     val tika = Tika()
 
     @Autowired
