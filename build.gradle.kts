@@ -33,7 +33,7 @@ val tokenSupportVersion = "4.1.3"
 val logstashLogbackEncoderVersion = "7.4"
 val kluentVersion = "1.73"
 val googleCloudVersion = "2.36.1"
-val gcsNioVersion = "0.127.14"
+val gcsNioVersion = "0.127.15"
 val tikaVersion = "2.9.1"
 val springDocOpenApiVersion = "2.4.0"
 
