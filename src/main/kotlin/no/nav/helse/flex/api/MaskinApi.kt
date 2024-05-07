@@ -1,7 +1,6 @@
 package no.nav.helse.flex.no.nav.helse.flex.api
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import io.swagger.v3.oas.annotations.Hidden
 import no.nav.helse.flex.kvittering.Kvitteringer
 import no.nav.helse.flex.objectMapper
 import no.nav.security.token.support.core.api.ProtectedWithClaims
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.ResponseBody
 
 @Controller
-@Hidden
 class MaskinApi(
     @Value("\${AZURE_APP_PRE_AUTHORIZED_APPS}")
     private val azurePreAuthorizedApps: String,

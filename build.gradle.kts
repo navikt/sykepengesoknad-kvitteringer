@@ -35,7 +35,6 @@ val kluentVersion = "1.73"
 val googleCloudVersion = "2.37.0"
 val gcsNioVersion = "0.127.16"
 val tikaVersion = "2.9.2"
-val springDocOpenApiVersion = "2.5.0"
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
@@ -53,7 +52,6 @@ dependencies {
     implementation("no.nav.security:token-validation-spring:$tokenSupportVersion")
     implementation("no.nav.security:token-client-spring:$tokenSupportVersion")
     implementation("com.google.cloud:google-cloud-storage:$googleCloudVersion")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocOpenApiVersion")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.awaitility:awaitility")
