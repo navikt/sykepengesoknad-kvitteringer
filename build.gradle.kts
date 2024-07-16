@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("org.springframework.boot") version "3.3.1"
-    id("io.spring.dependency-management") version "1.1.5"
+    id("io.spring.dependency-management") version "1.1.6"
     id("org.jlleitschuh.gradle.ktlint") version "12.1.1"
     kotlin("jvm") version "2.0.0"
     kotlin("plugin.spring") version "2.0.0"
@@ -32,8 +32,8 @@ ext["okhttp3.version"] = "4.12" // Token-support tester trenger MockWebServer.
 val tokenSupportVersion = "4.1.8"
 val logstashLogbackEncoderVersion = "7.4"
 val kluentVersion = "1.73"
-val googleCloudVersion = "2.40.1"
-val gcsNioVersion = "0.127.20"
+val googleCloudVersion = "2.39.0"
+val gcsNioVersion = "0.127.18"
 val tikaVersion = "2.9.2"
 
 dependencies {
