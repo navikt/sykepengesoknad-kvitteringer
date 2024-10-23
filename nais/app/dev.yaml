@@ -1,7 +1,7 @@
 environment: dev
 replicas_min: 1
 replicas_max: 1
-cpu: 500m
+cpu: 200m
 memory: 600Mi
 gcp_bucket: flex-sykepengesoknad-kvitteringer-dev
 flex-openapi-docs-ui: true
