@@ -34,7 +34,7 @@ val logstashLogbackEncoderVersion = "8.0"
 val kluentVersion = "1.73"
 val googleCloudVersion = "2.44.1"
 val gcsNioVersion = "0.127.26"
-val tikaVersion = "2.9.2"
+val tikaVersion = "3.0.0"
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
