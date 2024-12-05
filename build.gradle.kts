@@ -14,9 +14,6 @@ version = "1.0.0"
 description = "flex-bucket-uploader"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
-val githubUser: String by project
-val githubPassword: String by project
-
 repositories {
     mavenCentral()
     maven {
