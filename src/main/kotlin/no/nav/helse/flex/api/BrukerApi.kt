@@ -82,13 +82,9 @@ class BrukerApi(
     private fun kvitteringEiesAvBruker(
         kvittering: Kvittering,
         fnr: String,
-    ): Boolean {
-        return fnr == kvittering.fnr
-    }
+    ): Boolean = fnr == kvittering.fnr
 
-    private fun JwtTokenClaims.hentFnr(): String {
-        return this.getStringClaim("pid")
-    }
+    private fun JwtTokenClaims.hentFnr(): String = this.getStringClaim("pid")
 
     private fun validerTokenXClaims(vararg tillattClient: String): JwtTokenClaims {
         val context = tokenValidationContextHolder.getTokenValidationContext()
@@ -102,12 +98,18 @@ class BrukerApi(
     }
 }
 
-class UkjentClientException(message: String, grunn: Throwable? = null) : AbstractApiError(
-    message = message,
-    httpStatus = HttpStatus.FORBIDDEN,
-    reason = "UKJENT_CLIENT",
-    loglevel = LogLevel.WARN,
-    grunn = grunn,
-)
+class UkjentClientException(
+    message: String,
+    grunn: Throwable? = null,
+) : AbstractApiError(
+        message = message,
+        httpStatus = HttpStatus.FORBIDDEN,
+        reason = "UKJENT_CLIENT",
+        loglevel = LogLevel.WARN,
+        grunn = grunn,
+    )
 
-data class VedleggRespons(val id: String? = null, val melding: String)
+data class VedleggRespons(
+    val id: String? = null,
+    val melding: String,
+)

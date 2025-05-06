@@ -14,11 +14,9 @@ import org.springframework.web.client.RestTemplate
 
 @SpringBootApplication
 @EnableJwtTokenValidation
-class Application() {
+class Application {
     @Bean
-    fun restTemplate(restTemplateBuilder: RestTemplateBuilder): RestTemplate {
-        return restTemplateBuilder.build()
-    }
+    fun restTemplate(restTemplateBuilder: RestTemplateBuilder): RestTemplate = restTemplateBuilder.build()
 }
 
 fun main(args: Array<String>) {

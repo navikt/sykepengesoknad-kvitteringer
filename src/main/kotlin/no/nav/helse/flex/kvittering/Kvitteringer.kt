@@ -52,9 +52,7 @@ class Kvitteringer(
         log.info("Slettet kvittering med blobNavn: $blobNavn.")
     }
 
-    private fun BlobContent.filType(): String {
-        return metadata!!["content-type"]!!.split("/")[1]
-    }
+    private fun BlobContent.filType(): String = metadata!!["content-type"]!!.split("/")[1]
 }
 
 class Kvittering(

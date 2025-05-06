@@ -21,7 +21,8 @@ class BucketKlient(
     ): Blob {
         val contentTypeVerdi = contentType.toString()
         val blobInfo =
-            BlobInfo.newBuilder(bucketName, blobNavn)
+            BlobInfo
+                .newBuilder(bucketName, blobNavn)
                 .setContentType(contentTypeVerdi)
                 .setMetadata(metadata + mapOf("content-type" to contentTypeVerdi))
                 .build()
@@ -35,9 +36,7 @@ class BucketKlient(
         }
     }
 
-    fun slettBlob(blobNavn: String): Boolean {
-        return storage.delete(bucketName, blobNavn)
-    }
+    fun slettBlob(blobNavn: String): Boolean = storage.delete(bucketName, blobNavn)
 
     data class BlobContent(
         val metadata: MutableMap<String, String?>?,

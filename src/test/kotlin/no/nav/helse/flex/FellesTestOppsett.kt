@@ -65,19 +65,19 @@ abstract class FellesTestOppsett {
                 "client_id" to clientId,
                 "pid" to fnr,
             ),
-    ): String {
-        return mockOAuth2Server.issueToken(
-            issuerId,
-            clientId,
-            DefaultOAuth2TokenCallback(
-                issuerId = issuerId,
-                subject = UUID.randomUUID().toString(),
-                audience = listOf(audience),
-                claims = claims,
-                expiry = 3600,
-            ),
-        ).serialize()
-    }
+    ): String =
+        mockOAuth2Server
+            .issueToken(
+                issuerId,
+                clientId,
+                DefaultOAuth2TokenCallback(
+                    issuerId = issuerId,
+                    subject = UUID.randomUUID().toString(),
+                    audience = listOf(audience),
+                    claims = claims,
+                    expiry = 3600,
+                ),
+            ).serialize()
 
     fun azureToken(subject: String) =
         mockOAuth2Server.lagToken(
@@ -94,17 +94,17 @@ abstract class FellesTestOppsett {
         clientId: String,
         audience: String,
         claims: Map<String, Any> = mapOf("acr" to "idporten-loa-high"),
-    ): String {
-        return this.issueToken(
-            issuerId,
-            clientId,
-            DefaultOAuth2TokenCallback(
-                issuerId = issuerId,
-                subject = subject,
-                audience = listOf(audience),
-                claims = claims,
-                expiry = 3600,
-            ),
-        ).serialize()
-    }
+    ): String =
+        this
+            .issueToken(
+                issuerId,
+                clientId,
+                DefaultOAuth2TokenCallback(
+                    issuerId = issuerId,
+                    subject = subject,
+                    audience = listOf(audience),
+                    claims = claims,
+                    expiry = 3600,
+                ),
+            ).serialize()
 }
