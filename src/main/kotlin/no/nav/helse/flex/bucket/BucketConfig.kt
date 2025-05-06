@@ -14,6 +14,10 @@ class BucketConfig {
     @Profile("default")
     fun storage(): Storage {
         val retrySettings = RetrySettings.newBuilder().setTotalTimeout(Duration.ofMillis(3000)).build()
-        return StorageOptions.newBuilder().setRetrySettings(retrySettings).build().service
+        return StorageOptions
+            .newBuilder()
+            .setRetrySettings(retrySettings)
+            .build()
+            .service
     }
 }

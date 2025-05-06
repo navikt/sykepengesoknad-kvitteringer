@@ -34,10 +34,13 @@ internal class MaskinApiTest : FellesTestOppsett() {
         val azureToken = azureToken(subject = "sykepengesoknad-backend-client-id")
 
         val response =
-            mockMvc.perform(
-                get("/maskin/kvittering/$kvitteringId")
-                    .header("Authorization", "Bearer $azureToken"),
-            ).andExpect(status().isOk).andReturn().response
+            mockMvc
+                .perform(
+                    get("/maskin/kvittering/$kvitteringId")
+                        .header("Authorization", "Bearer $azureToken"),
+                ).andExpect(status().isOk)
+                .andReturn()
+                .response
 
         response.contentType `should be equal to` MediaType.IMAGE_JPEG_VALUE
     }
@@ -47,10 +50,11 @@ internal class MaskinApiTest : FellesTestOppsett() {
     fun `Hent kvittering med ukjent clientId`() {
         val azureToken = azureToken(subject = "ukjent-client-id")
 
-        mockMvc.perform(
-            get("/maskin/kvittering/$kvitteringId")
-                .header("Authorization", "Bearer $azureToken"),
-        ).andExpect(status().isForbidden)
+        mockMvc
+            .perform(
+                get("/maskin/kvittering/$kvitteringId")
+                    .header("Authorization", "Bearer $azureToken"),
+            ).andExpect(status().isForbidden)
     }
 
     @Test
@@ -58,9 +62,10 @@ internal class MaskinApiTest : FellesTestOppsett() {
     fun `Hent kvittering som ikke finnes`() {
         val azureToken = azureToken(subject = "sykepengesoknad-backend-client-id")
 
-        mockMvc.perform(
-            get("/maskin/kvittering/ukjent-kvittering")
-                .header("Authorization", "Bearer $azureToken"),
-        ).andExpect(status().isNotFound)
+        mockMvc
+            .perform(
+                get("/maskin/kvittering/ukjent-kvittering")
+                    .header("Authorization", "Bearer $azureToken"),
+            ).andExpect(status().isNotFound)
     }
 }

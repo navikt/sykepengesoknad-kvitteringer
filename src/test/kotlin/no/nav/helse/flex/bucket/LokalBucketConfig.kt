@@ -10,7 +10,5 @@ import org.springframework.context.annotation.Profile
 class LokalBucketConfig {
     @Bean
     @Profile("test")
-    fun storage(): Storage {
-        return LocalStorageHelper.getOptions().service
-    }
+    fun storage(): Storage = LocalStorageHelper.getOptions().service
 }

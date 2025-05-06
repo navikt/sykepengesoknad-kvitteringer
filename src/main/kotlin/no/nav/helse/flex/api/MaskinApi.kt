@@ -54,10 +54,13 @@ class MaskinApi(
         }
     }
 
-    private fun TokenValidationContextHolder.hentAzpClaim(): String {
-        return this.getTokenValidationContext().getJwtToken("azureator")?.jwtTokenClaims?.getStringClaim("azp")
+    private fun TokenValidationContextHolder.hentAzpClaim(): String =
+        this
+            .getTokenValidationContext()
+            .getJwtToken("azureator")
+            ?.jwtTokenClaims
+            ?.getStringClaim("azp")
             ?: throw UkjentClientException("Fant ikke azp claim.")
-    }
 }
 
 private fun PreAuthorizedClient.tilNamespaceOgApp(): NamespaceOgApp {
@@ -65,6 +68,12 @@ private fun PreAuthorizedClient.tilNamespaceOgApp(): NamespaceOgApp {
     return NamespaceOgApp(namespace = splitt[1], app = splitt[2])
 }
 
-data class NamespaceOgApp(val namespace: String, val app: String)
+data class NamespaceOgApp(
+    val namespace: String,
+    val app: String,
+)
 
-data class PreAuthorizedClient(val name: String, val clientId: String)
+data class PreAuthorizedClient(
+    val name: String,
+    val clientId: String,
+)
