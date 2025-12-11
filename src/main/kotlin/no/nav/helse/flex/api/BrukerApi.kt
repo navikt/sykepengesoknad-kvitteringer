@@ -20,9 +20,9 @@ import java.util.*
 class BrukerApi(
     private val tokenValidationContextHolder: TokenValidationContextHolder,
     private val kvitteringer: Kvitteringer,
-    @Value("\${SYKEPENGESOKNAD_FRONTEND_CLIENT_ID}")
+    @param:Value("\${SYKEPENGESOKNAD_FRONTEND_CLIENT_ID}")
     val sykepengesoknadFrontendClientId: String,
-    @Value("\${SYKEPENGESOKNAD_BACKEND_CLIENT_ID}")
+    @param:Value("\${SYKEPENGESOKNAD_BACKEND_CLIENT_ID}")
     val sykepengesoknadBackendClientId: String,
 ) {
     @PostMapping("/api/v2/opplasting")
