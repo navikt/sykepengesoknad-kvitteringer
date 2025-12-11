@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class BucketKlient(
-    @Value("\${BUCKET_NAME}")
+    @param:Value("\${BUCKET_NAME}")
     private val bucketName: String,
     private val storage: Storage,
 ) {

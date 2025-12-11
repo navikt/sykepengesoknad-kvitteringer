@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody
 
 @Controller
 class MaskinApi(
-    @Value("\${AZURE_APP_PRE_AUTHORIZED_APPS}")
+    @param:Value("\${AZURE_APP_PRE_AUTHORIZED_APPS}")
     private val azurePreAuthorizedApps: String,
     private val tokenValidationContextHolder: TokenValidationContextHolder,
     private val kvitteringer: Kvitteringer,
