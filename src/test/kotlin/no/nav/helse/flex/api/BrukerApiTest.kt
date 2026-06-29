@@ -40,7 +40,7 @@ internal class BrukerApiTest : FellesTestOppsett() {
         val vedleggRespons: VedleggRespons = objectMapper.readValue(response.contentAsString)
         vedleggRespons.id.shouldNotBeNullOrEmpty()
 
-        kvitteringId = vedleggRespons.id!!
+        kvitteringId = vedleggRespons.id
     }
 
     @Test
