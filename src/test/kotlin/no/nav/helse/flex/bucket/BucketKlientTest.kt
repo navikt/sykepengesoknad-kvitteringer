@@ -42,7 +42,7 @@ internal class BucketKlientTest {
 
         String(blobContent!!.blob.getContent()) `should be equal to` "blob-content-1"
         blobContent.metadata!!["fnr"] `should be equal to` "fnr-1"
-        blobContent.metadata!!["content-type"] `should be equal to` MediaType.TEXT_PLAIN.toString()
+        blobContent.metadata["content-type"] `should be equal to` MediaType.TEXT_PLAIN.toString()
     }
 
     @Test
