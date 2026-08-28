@@ -28,7 +28,7 @@ val tokenSupportVersion = "6.0.12"
 val logstashLogbackEncoderVersion = "9.0"
 val kluentVersion = "1.73"
 val googleCloudVersion = "2.71.0"
-val gcsNioVersion = "0.135.0"
+val gcsNioVersion = "0.136.0"
 val tikaVersion = "3.3.2"
 val mockWebServerVersion = "5.2.1"
 
