@@ -30,7 +30,7 @@ val kluentVersion = "1.73"
 val googleCloudVersion = "2.75.0"
 val gcsNioVersion = "0.139.0"
 val tikaVersion = "3.3.2"
-val mockWebServerVersion = "5.5.0"
+val mockWebServerVersion = "5.5.1"
 
 dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
