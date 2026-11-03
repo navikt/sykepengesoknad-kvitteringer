@@ -1,8 +1,7 @@
 package no.nav.helse.flex.kvittering
 
+import io.kotest.matchers.shouldBe
 import no.nav.helse.flex.FellesTestOppsett
-import org.amshove.kluent.`should be`
-import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
@@ -27,8 +26,8 @@ internal class KvitteringerTest : FellesTestOppsett() {
     @Order(2)
     fun `Henter lagret kvittering`() {
         kvitteringer.hentKvittering("blob-1")?.let {
-            it.contentType `should be equal to` MediaType.IMAGE_JPEG_VALUE
-            it.filnavn `should be equal to` "kvittering-blob-1.jpeg"
+            it.contentType shouldBe MediaType.IMAGE_JPEG_VALUE
+            it.filnavn shouldBe "kvittering-blob-1.jpeg"
         }
     }
 
@@ -37,7 +36,7 @@ internal class KvitteringerTest : FellesTestOppsett() {
     fun `Sletter kvittering som finnes`() {
         kvitteringer.slettKvittering("blob-1")
 
-        kvitteringer.hentKvittering("blob-1") `should be` null
+        kvitteringer.hentKvittering("blob-1") shouldBe null
     }
 
     @Test
@@ -49,6 +48,6 @@ internal class KvitteringerTest : FellesTestOppsett() {
     @Test
     @Order(5)
     fun `Henter kvittering som ikke finnes`() {
-        kvitteringer.hentKvittering("blob-1") `should be` null
+        kvitteringer.hentKvittering("blob-1") shouldBe null
     }
 }

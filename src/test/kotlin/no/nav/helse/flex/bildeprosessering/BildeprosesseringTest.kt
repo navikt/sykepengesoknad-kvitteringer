@@ -1,8 +1,8 @@
 package no.nav.helse.flex.bildeprosessering
 
+import io.kotest.matchers.shouldBe
 import no.nav.helse.flex.FellesTestOppsett
 import no.nav.helse.flex.no.nav.helse.flex.bildeprosessering.Bildeprosessering
-import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,11 +20,11 @@ internal class BildeprosesseringTest : FellesTestOppsett() {
         val bilde = hentTestbilde("1200x800.jpeg")
 
         val prosessertBilde = bildeprosessering.prosesserBilde(bilde)
-        finnMediaType(prosessertBilde) `should be equal to` MediaType.IMAGE_JPEG_VALUE
+        finnMediaType(prosessertBilde) shouldBe MediaType.IMAGE_JPEG_VALUE
 
         val image = ImageIO.read(ByteArrayInputStream(prosessertBilde!!.bytes))
-        image.width `should be equal to` 600
-        image.height `should be equal to` 400
+        image.width shouldBe 600
+        image.height shouldBe 400
     }
 
     @Test
@@ -32,11 +32,11 @@ internal class BildeprosesseringTest : FellesTestOppsett() {
         val bilde = hentTestbilde("600x400.jpeg")
 
         val prosessertBilde = bildeprosessering.prosesserBilde(bilde)
-        finnMediaType(prosessertBilde) `should be equal to` MediaType.IMAGE_JPEG_VALUE
+        finnMediaType(prosessertBilde) shouldBe MediaType.IMAGE_JPEG_VALUE
 
         val image = ImageIO.read(ByteArrayInputStream(prosessertBilde!!.bytes))
-        image.width `should be equal to` 600
-        image.height `should be equal to` 400
+        image.width shouldBe 600
+        image.height shouldBe 400
     }
 
     @Test
@@ -44,11 +44,11 @@ internal class BildeprosesseringTest : FellesTestOppsett() {
         val bilde = hentTestbilde("540x360.jpeg")
 
         val prosessertBilde = bildeprosessering.prosesserBilde(bilde)
-        finnMediaType(prosessertBilde) `should be equal to` MediaType.IMAGE_JPEG_VALUE
+        finnMediaType(prosessertBilde) shouldBe MediaType.IMAGE_JPEG_VALUE
 
         val image = ImageIO.read(ByteArrayInputStream(prosessertBilde!!.bytes))
-        image.width `should be equal to` 600
-        image.height `should be equal to` 400
+        image.width shouldBe 600
+        image.height shouldBe 400
     }
 
     @Test
@@ -56,11 +56,11 @@ internal class BildeprosesseringTest : FellesTestOppsett() {
         val bilde = hentTestbilde("800x1200.jpeg")
 
         val prosessertBilde = bildeprosessering.prosesserBilde(bilde)
-        finnMediaType(prosessertBilde) `should be equal to` MediaType.IMAGE_JPEG_VALUE
+        finnMediaType(prosessertBilde) shouldBe MediaType.IMAGE_JPEG_VALUE
 
         val image = ImageIO.read(ByteArrayInputStream(prosessertBilde!!.bytes))
-        image.width `should be equal to` 600
-        image.height `should be equal to` 900
+        image.width shouldBe 600
+        image.height shouldBe 900
     }
 
     @Test
@@ -68,11 +68,11 @@ internal class BildeprosesseringTest : FellesTestOppsett() {
         val bilde = hentTestbilde("600x900.jpeg")
 
         val prosessertBilde = bildeprosessering.prosesserBilde(bilde)
-        finnMediaType(prosessertBilde) `should be equal to` MediaType.IMAGE_JPEG_VALUE
+        finnMediaType(prosessertBilde) shouldBe MediaType.IMAGE_JPEG_VALUE
 
         val image = ImageIO.read(ByteArrayInputStream(prosessertBilde!!.bytes))
-        image.width `should be equal to` 600
-        image.height `should be equal to` 900
+        image.width shouldBe 600
+        image.height shouldBe 900
     }
 
     @Test
@@ -80,11 +80,11 @@ internal class BildeprosesseringTest : FellesTestOppsett() {
         val bilde = hentTestbilde("400x600.jpeg")
 
         val prosessertBilde = bildeprosessering.prosesserBilde(bilde)
-        finnMediaType(prosessertBilde) `should be equal to` MediaType.IMAGE_JPEG_VALUE
+        finnMediaType(prosessertBilde) shouldBe MediaType.IMAGE_JPEG_VALUE
 
         val image = ImageIO.read(ByteArrayInputStream(prosessertBilde!!.bytes))
-        image.width `should be equal to` 600
-        image.height `should be equal to` 900
+        image.width shouldBe 600
+        image.height shouldBe 900
     }
 
     @Test
@@ -92,11 +92,11 @@ internal class BildeprosesseringTest : FellesTestOppsett() {
         val bilde = hentTestbilde("1200x800.png", MediaType.parseMediaType("image/png"))
 
         val prosessertBilde = bildeprosessering.prosesserBilde(bilde)
-        finnMediaType(prosessertBilde) `should be equal to` MediaType.IMAGE_JPEG_VALUE
+        finnMediaType(prosessertBilde) shouldBe MediaType.IMAGE_JPEG_VALUE
 
         val image = ImageIO.read(ByteArrayInputStream(prosessertBilde!!.bytes))
-        image.width `should be equal to` 600
-        image.height `should be equal to` 400
+        image.width shouldBe 600
+        image.height shouldBe 400
     }
 
     @Test
@@ -104,11 +104,11 @@ internal class BildeprosesseringTest : FellesTestOppsett() {
         val bilde = hentTestbilde("800x1200.png", MediaType.parseMediaType("image/png"))
 
         val prosessertBilde = bildeprosessering.prosesserBilde(bilde)
-        finnMediaType(prosessertBilde) `should be equal to` MediaType.IMAGE_JPEG_VALUE
+        finnMediaType(prosessertBilde) shouldBe MediaType.IMAGE_JPEG_VALUE
 
         val image = ImageIO.read(ByteArrayInputStream(prosessertBilde!!.bytes))
-        image.width `should be equal to` 600
-        image.height `should be equal to` 900
+        image.width shouldBe 600
+        image.height shouldBe 900
     }
 
     @Test

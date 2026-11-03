@@ -26,7 +26,7 @@ repositories {
 
 val tokenSupportVersion = "6.0.13"
 val logstashLogbackEncoderVersion = "9.0"
-val kluentVersion = "1.73"
+val kotestVersion = "6.2.6"
 val googleCloudVersion = "2.75.0"
 val gcsNioVersion = "0.139.0"
 val tikaVersion = "3.3.2"
@@ -48,7 +48,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("org.awaitility:awaitility")
     testImplementation("no.nav.security:token-validation-spring-test:$tokenSupportVersion")
-    testImplementation("org.amshove.kluent:kluent:$kluentVersion")
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
     testImplementation("com.google.cloud:google-cloud-nio:$gcsNioVersion")
     testImplementation("org.apache.tika:tika-core:$tikaVersion")
     testImplementation("com.squareup.okhttp3:mockwebserver3:$mockWebServerVersion")
