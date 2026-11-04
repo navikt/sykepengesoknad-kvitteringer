@@ -1,9 +1,8 @@
 package no.nav.helse.flex.bucket
 
 import com.google.cloud.storage.contrib.nio.testing.LocalStorageHelper
+import io.kotest.matchers.shouldBe
 import no.nav.helse.flex.no.nav.helse.flex.bucket.BucketKlient
-import org.amshove.kluent.`should be`
-import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
@@ -23,7 +22,7 @@ internal class BucketKlientTest {
     fun `List filer i tom bucket`() {
         val innhold = storage.list(bucketName).values.toList()
 
-        innhold.isEmpty() `should be` true
+        innhold.isEmpty() shouldBe true
     }
 
     @Test
@@ -32,7 +31,7 @@ internal class BucketKlientTest {
         val bytes = "blob-content-1".toByteArray()
         bucketKlient.lagreBlob("blob-1", MediaType.TEXT_PLAIN, mapOf("fnr" to "fnr-1"), bytes)
 
-        listInnhold().isEmpty() `should be` false
+        listInnhold().isEmpty() shouldBe false
     }
 
     @Test
@@ -40,9 +39,9 @@ internal class BucketKlientTest {
     fun `Henter fil fra bucket`() {
         val blobContent = bucketKlient.hentBlob("blob-1")
 
-        String(blobContent!!.blob.getContent()) `should be equal to` "blob-content-1"
-        blobContent.metadata!!["fnr"] `should be equal to` "fnr-1"
-        blobContent.metadata["content-type"] `should be equal to` MediaType.TEXT_PLAIN.toString()
+        String(blobContent!!.blob.getContent()) shouldBe "blob-content-1"
+        blobContent.metadata!!["fnr"] shouldBe "fnr-1"
+        blobContent.metadata["content-type"] shouldBe MediaType.TEXT_PLAIN.toString()
     }
 
     @Test
@@ -50,13 +49,13 @@ internal class BucketKlientTest {
     fun `Sletter fil fra bucket`() {
         bucketKlient.slettBlob("blob-1")
 
-        listInnhold().isEmpty() `should be` true
+        listInnhold().isEmpty() shouldBe true
     }
 
     @Test
     @Order(5)
     fun `Henter blob som ikke finnes`() {
-        bucketKlient.hentBlob("blob-1") `should be` null
+        bucketKlient.hentBlob("blob-1") shouldBe null
     }
 
     private fun listInnhold() = storage.list(bucketName).values.toList()

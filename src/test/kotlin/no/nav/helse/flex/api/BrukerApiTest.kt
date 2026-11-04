@@ -1,10 +1,11 @@
 package no.nav.helse.flex.api
 
+import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldNotBeEmpty
 import no.nav.helse.flex.FellesTestOppsett
 import no.nav.helse.flex.no.nav.helse.flex.api.VedleggRespons
 import no.nav.helse.flex.objectMapper
-import org.amshove.kluent.`should be equal to`
-import org.amshove.kluent.shouldNotBeNullOrEmpty
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
@@ -38,7 +39,7 @@ internal class BrukerApiTest : FellesTestOppsett() {
                 .response
 
         val vedleggRespons: VedleggRespons = objectMapper.readValue(response.contentAsString)
-        vedleggRespons.id.shouldNotBeNullOrEmpty()
+        vedleggRespons.id.shouldNotBeNull().shouldNotBeEmpty()
 
         kvitteringId = vedleggRespons.id
     }
@@ -69,7 +70,7 @@ internal class BrukerApiTest : FellesTestOppsett() {
                 .andReturn()
                 .response
 
-        response.contentType `should be equal to` MediaType.IMAGE_JPEG_VALUE
+        response.contentType shouldBe MediaType.IMAGE_JPEG_VALUE
     }
 
     @Test

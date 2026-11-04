@@ -1,8 +1,8 @@
 package no.nav.helse.flex.api
 
+import io.kotest.matchers.shouldBe
 import no.nav.helse.flex.FellesTestOppsett
 import no.nav.helse.flex.no.nav.helse.flex.bucket.BucketKlient
-import org.amshove.kluent.`should be equal to`
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
@@ -42,7 +42,7 @@ internal class MaskinApiTest : FellesTestOppsett() {
                 .andReturn()
                 .response
 
-        response.contentType `should be equal to` MediaType.IMAGE_JPEG_VALUE
+        response.contentType shouldBe MediaType.IMAGE_JPEG_VALUE
     }
 
     @Test
