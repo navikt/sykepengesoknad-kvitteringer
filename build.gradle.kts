@@ -26,7 +26,7 @@ repositories {
 
 val tokenSupportVersion = "6.0.13"
 val logstashLogbackEncoderVersion = "9.0"
-val kotestVersion = "6.2.6"
+val kotestVersion = "6.2.7"
 val googleCloudVersion = "2.78.0"
 val gcsNioVersion = "0.139.0"
 val tikaVersion = "3.3.2"
